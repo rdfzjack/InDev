@@ -105,6 +105,7 @@ func _open(id: String) -> void:
 	visible = true
 	_msg.text = ""
 	Meta.bump("trade_opened")
+	Music.push(&"shop", &"trade")
 	# 事前有人提醒过（只提醒一次）
 	if not Game.flag(&"warned_slot3"):
 		Game.set_flag(&"warned_slot3")
@@ -115,6 +116,7 @@ func _open(id: String) -> void:
 
 func close() -> void:
 	visible = false
+	Music.pop(&"trade")
 
 
 func _refresh() -> void:

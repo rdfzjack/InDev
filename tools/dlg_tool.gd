@@ -72,14 +72,13 @@ func _stamp(path: String, file_key: String, old: Dictionary) -> Array:
 		var body: String = sp[0]
 		var speaker := ""
 		if kind == "opt":
-			body = body.substr(1).strip_edges()
-			if body.begins_with("["):
-				body = body.substr(body.find("]") + 1).strip_edges()
+			body = DialogueScript.strip_conds(body.substr(1).strip_edges())[0]
 			var arrow := body.rfind("->")
 			if arrow >= 0:
 				body = body.substr(0, arrow).strip_edges()
 			speaker = "(option)"
 		else:
+			body = DialogueScript.strip_conds(body)[0]
 			var c := body.find(":")
 			var cf := body.find(DialogueScript.FULLWIDTH_COLON)
 			if c < 0 or (cf >= 0 and cf < c):

@@ -53,6 +53,8 @@ func goto(path: String, spawn := "") -> void:
 	current_level.set_meta("spawn", spawn)
 	_host.add_child(current_level)
 	Game.on_level_loaded()
+	if current_level.has_meta("music"):
+		Music.set_base(StringName(current_level.get_meta("music")))
 	level_loaded.emit(current_level)
 	_loading.visible = false
 	_busy = false

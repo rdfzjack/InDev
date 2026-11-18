@@ -6,8 +6,12 @@ extends Area3D
 @export var trap_id := "trap"
 @export var rearm_sec := 4.0
 @export var size := Vector3(1.5, 0.3, 1.5)
+## 被动察觉 DC。0 = 一直看得见
+@export var hidden_dc := 12
 
 var _armed := true
+var _plate: Node3D
+var detected := false
 
 
 func _ready() -> void:
@@ -20,11 +24,27 @@ func _ready() -> void:
 	cs.shape = s
 	cs.position.y = size.y * 0.5
 	add_child(cs)
-	var plate := Placeholders.box(Vector3(size.x, 0.04, size.z), Color(0.5, 0.42, 0.35))
-	plate.position.y = 0.02
-	add_child(plate)
+	_plate = Placeholders.box(Vector3(size.x, 0.04, size.z), Color(0.5, 0.42, 0.35))
+	_plate.position.y = 0.02
+	if hidden_dc > 0:
+		var p := Perceivable.new()
+		p.dc = hidden_dc
+		p.name = "Perceivable"
+		add_child(p)
+		p.add_child(_plate)
+		p.discovered.connect(func(by): _on_detected(by))
+		collision_layer = 0   # 没发现之前点不到
+	else:
+		add_child(_plate)
+		detected = true
 	body_entered.connect(_on_enter)
 	area_entered.connect(_on_enter)
+
+
+func _on_detected(by: StringName) -> void:
+	detected = true
+	collision_layer = 8
+	Bus.report(&"trap_detected", by, global_position)
 
 
 func _on_enter(n: Node) -> void:

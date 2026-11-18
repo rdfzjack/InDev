@@ -13,5 +13,5 @@ func _join_groups() -> void:
 func interact() -> bool:
 	if dialogue == "":
 		return false
-	DialogueBox.open(dialogue, dialogue_node)
+	DialogueBox.open(dialogue, dialogue_node, self)
 	return true

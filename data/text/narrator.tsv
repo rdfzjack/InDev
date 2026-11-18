@@ -61,3 +61,5 @@ check_fail_plain	你失败了。
 # ---- 战斗 ----
 husband_fireball	该法术不在这个等级可以学会的列表中。它仍然生效。	
 husband_fireball	火球术是三环法术。他没有三环法术位。火球照常落下。	
+trap_detected	地面上有一块颜色略深的石板。它的边缘有缝隙。	
+trap_detected	你注意到一块压力板。它被做得很仔细，只是没有被做完。	

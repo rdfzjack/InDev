@@ -364,3 +364,51 @@ lu_ready	可以升级	Level up available
 log_use_item	%s 使用了%s	%s uses %s
 status_vigilant	警戒	Vigilant
 status_burning	燃烧	Burning
+# ---- 状态补全 ----
+act_hide	躲藏	Hide
+act_hide_desc	隐匿检定对抗敌人的被动察觉。成功后进入隐匿：攻击有优势，敌人不会主动找你。攻击或施法后现形。	Stealth check against enemies' passive Perception. While hidden you attack with advantage and enemies won't seek you out. Attacking or casting reveals you.
+act_cunning_hide	灵巧动作：躲藏	Cunning Action: Hide
+act_cunning_hide_desc	附赠动作躲藏。	Hide as a bonus action.
+act_shove	推撞	Shove
+act_shove_desc	附赠动作。运动检定对抗目标的运动或特技，成功则目标倒伏（大型生物改为推开 1.5 米）。	Bonus action. Athletics against the target's Athletics or Acrobatics; on a success the target falls prone (Large creatures are pushed 1.5 m instead).
+status_surprised	被突袭	Surprised
+status_poisoned	中毒	Poisoned
+status_concentrating	专注	Concentrating
+dis_poisoned	你中毒了	You are poisoned
+log_check	%s 进行%s检定：%s = %d 对 DC %d，%s	%s makes a %s check: %s = %d vs DC %d, %s
+log_contest	%s 推撞 %s：%d 对 %d，%s	%s shoves %s: %d vs %d, %s
+log_surprised	%s 被突袭了	%s is surprised
+log_surprised_skip	%s 被突袭，这回合无法行动	%s is surprised and loses this turn
+# ---- 状态说明（悬停提示）----
+status_blessed_desc	攻击检定和豁免 +1d4。	+1d4 to attack rolls and saving throws.
+status_hexed_desc	施术者每次命中额外造成 1d6 黯蚀伤害。	The caster deals an extra 1d6 necrotic damage on each hit.
+status_inspired_desc	下一次攻击检定或豁免 +1d6。	+1d6 to the next attack roll or saving throw.
+status_shield_of_faith_desc	AC +2。	+2 AC.
+status_shield_spell_desc	AC +5，直到你的下个回合。	+5 AC until your next turn.
+status_mocked_desc	下一次攻击有劣势。	Disadvantage on the next attack.
+status_slowed_desc	移动速度 -3 米。	Speed reduced by 3 m.
+status_no_reactions_desc	无法使用反应。	Can't take reactions.
+status_prone_desc	近战攻击你有优势，远程攻击你有劣势；你的攻击有劣势。站起来花一半移动力。	Melee attacks against you have advantage, ranged attacks disadvantage; your attacks have disadvantage. Standing up costs half your movement.
+status_downed_desc	倒地不起。回合开始进行死亡豁免。近战命中必定重击。	Unconscious. Make a death saving throw at the start of each turn. Melee hits are critical.
+status_stable_desc	不再需要死亡豁免。	No longer making death saving throws.
+status_dodging_desc	攻击你有劣势，敏捷豁免有优势。	Attacks against you have disadvantage; advantage on Dexterity saves.
+status_disengaged_desc	移动不会引发借机攻击。	Movement doesn't provoke opportunity attacks.
+status_hidden_desc	攻击有优势。攻击或施法后现形。	Attacks have advantage. Attacking or casting reveals you.
+status_lying_down_desc	你躺着。AC +2。	You are lying down. +2 AC.
+status_true_strike_desc	下一次攻击有优势。	Advantage on the next attack.
+status_mage_armor_desc	未着甲时 AC 为 13 + 敏捷调整值。	Unarmoured AC becomes 13 + Dexterity modifier.
+status_outlined_desc	对你的攻击有优势。	Attacks against you have advantage.
+status_divine_favor_desc	武器攻击额外 1d4 光耀伤害。	Weapon attacks deal an extra 1d4 radiant damage.
+status_paralyzed_desc	无法行动，力量和敏捷豁免自动失败。对你的攻击有优势，近战命中必定重击。每回合重新感知豁免。	Can't act; automatically fails Strength and Dexterity saves. Attacks against you have advantage and melee hits are critical. Repeat the Wisdom save each turn.
+status_agathys_desc	带着临时生命被近战击中时，攻击者受到冷冻伤害。	Melee attackers take cold damage while your temporary hit points last.
+status_burning_desc	每回合开始受到 1d4 火焰伤害。	Take 1d4 fire damage at the start of each turn.
+status_vigilant_desc	先攻 +5。	+5 to initiative.
+status_surprised_desc	第一个回合无法行动，也无法使用反应。	Can't act or take reactions on the first turn.
+status_poisoned_desc	攻击检定和属性检定有劣势。	Disadvantage on attack rolls and ability checks.
+notice_perception	【察觉】	[Perception]
+notice_insight	【洞悉】	[Insight]
+race_human	人类	Human
+race_drow	卓尔	Drow
+race_tiefling	提夫林	Tiefling
+dice_expertise	专精	Expertise
+dice_proficiency	熟练	Proficiency

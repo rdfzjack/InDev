@@ -49,6 +49,7 @@ func fall_out_of_map() -> void:
 	stop()
 	agent.avoidance_enabled = false
 	Meta.bump("poet_fell")
+	Game.set_flag(&"poet_fell_seen")
 	Bus.report(&"poet_fell", char_id, global_position)
 
 

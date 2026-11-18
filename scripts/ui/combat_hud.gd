@@ -166,6 +166,9 @@ func _update_tip() -> void:
 	if pv["chance"] >= 0:
 		var key := "hud_hit_chance" if pv["kind"] == "hit" else "hud_save_fail_chance"
 		lines.append(TextDB.ui(key) % roundi(pv["chance"] * 100))
+	var sts: Array = t.status_names()
+	if not sts.is_empty():
+		lines.append("、".join(sts))
 	for r in pv.get("reasons", []):
 		lines.append(("▲ " if r.begins_with("adv_") else "▼ ") + TextDB.line("rules", r))
 	if c.dist_to(t) > float(a.get("range", 0)) + 0.01 and cc.hover_path.size() < 2:

@@ -37,7 +37,10 @@
 		"traits": [
 			"nimble_escape"
 		],
-		"humanoid": true
+		"humanoid": true,
+		"passive_perception": 9,
+		"stealth": 6,
+		"athletics": -1
 	},
 	"hobgoblin": {
 		"cr": "1/2",
@@ -76,7 +79,10 @@
 		"traits": [
 			"martial_advantage"
 		],
-		"humanoid": true
+		"humanoid": true,
+		"passive_perception": 10,
+		"stealth": 1,
+		"athletics": 1
 	},
 	"bugbear": {
 		"cr": "1",
@@ -115,7 +121,10 @@
 		"traits": [
 			"surprise_attack"
 		],
-		"humanoid": true
+		"humanoid": true,
+		"passive_perception": 10,
+		"stealth": 6,
+		"athletics": 2
 	},
 	"wolf": {
 		"cr": "1/4",
@@ -149,7 +158,10 @@
 		],
 		"traits": [
 			"pack_tactics"
-		]
+		],
+		"passive_perception": 13,
+		"stealth": 4,
+		"athletics": 1
 	},
 	"skeleton": {
 		"cr": "1/4",
@@ -191,7 +203,10 @@
 		"immune": [
 			"poison"
 		],
-		"undead": true
+		"undead": true,
+		"passive_perception": 9,
+		"stealth": 2,
+		"athletics": 0
 	},
 	"young_red_dragon": {
 		"_note": "白模区的龙。数值是 Young Red Dragon (CR 10)。打完什么都不给，所以 xp = 0（原本 5900）。",
@@ -264,7 +279,10 @@
 		"immune": [
 			"fire"
 		],
-		"boss": true
+		"boss": true,
+		"passive_perception": 18,
+		"stealth": 0,
+		"athletics": 6
 	},
 	"demon_lord": {
 		"_note": "魔王。数值取 Ogre (CR 2, SRD)，生命值翻倍 59 → 118。半血进入二阶段（音乐切成店铺 BGM）。",
@@ -304,6 +322,9 @@
 		"phases": [
 			0.5
 		],
-		"boss": true
+		"boss": true,
+		"passive_perception": 8,
+		"stealth": -1,
+		"athletics": 4
 	}
 }

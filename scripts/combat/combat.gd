@@ -68,11 +68,32 @@ func start(list: Array[Combatant]) -> void:
 	_start_snapshot = {}
 	for c in combatants:
 		_start_snapshot[c] = c.snapshot()
+	_apply_surprise()
 	Meta.bump("combats")
 	combat_started.emit()
 	round_started.emit(round_num)
 	turn_index = 0
 	_begin_turn()
+
+
+## 埋伏：start() 前设置成伏击方的队伍。伏击方的隐匿（取最低）对抗对方每个人的被动察觉。
+var ambush_by: StringName = &""
+
+
+func _apply_surprise() -> void:
+	if ambush_by == &"":
+		return
+	var sneakers := combatants.filter(func(x): return x.team == ambush_by)
+	var stealth := 99
+	for x in sneakers:
+		stealth = mini(stealth, Dice.d20(x.sheet.check_bonus("stealth")).total)
+	if not sneakers.is_empty():
+		for x in combatants:
+			if x.team != ambush_by and x.sheet.passive("perception") < stealth:
+				x.add_status(&"surprised", 1)
+				x.reaction = 0
+				log_text("log_surprised", [x.display_name()])
+	ambush_by = &""
 
 
 func current() -> Combatant:
@@ -92,6 +113,12 @@ func _begin_turn() -> void:
 		return
 	if c.is_down() and not c.sheet.is_monster:
 		_death_save(c)
+		end_turn.call_deferred()
+		return
+	if c.has_status(&"surprised"):
+		c.remove_status(&"surprised")
+		c.reaction = 0
+		log_text("log_surprised_skip", [c.display_name()])
 		end_turn.call_deferred()
 		return
 	if c.has_status(&"burning"):
@@ -196,6 +223,7 @@ func actions_for(c: Combatant) -> Array:
 		out.append({"id": "dash", "kind": "common", "cost": "action", "range": 0, "target": "self"})
 		if "nimble_escape" in s.traits:
 			out.append({"id": "disengage", "kind": "common", "cost": "bonus", "range": 0, "target": "self"})
+			out.append({"id": "hide", "kind": "common", "cost": "bonus", "range": 0, "target": "self"})
 		return out
 	var eq := s.equipment
 	out.append({"id": "attack", "kind": "weapon", "cost": "action", "weapon": eq.get("main_hand", "unarmed"), "range": REACH, "target": "enemy"})
@@ -221,8 +249,11 @@ func actions_for(c: Combatant) -> Array:
 	if s.has_feature("cunning_action"):
 		out.append({"id": "cunning_dash", "kind": "feature", "cost": "bonus", "range": 0, "target": "self"})
 		out.append({"id": "cunning_disengage", "kind": "feature", "cost": "bonus", "range": 0, "target": "self"})
-	for cid in ["dash", "disengage", "dodge"]:
+		out.append({"id": "cunning_hide", "kind": "feature", "cost": "bonus", "range": 0, "target": "self"})
+	for cid in ["dash", "disengage", "dodge", "hide"]:
 		out.append({"id": cid, "kind": "common", "cost": "action", "range": 0, "target": "self"})
+	# BG3：推撞是附赠动作
+	out.append({"id": "shove", "kind": "common", "cost": "bonus", "range": REACH, "target": "enemy"})
 	out.append({"id": "help", "kind": "common", "cost": "action", "range": TOUCH, "target": "downed_ally"})
 	# 背包里能用的物品（共享背包）
 	for e in Inv.bag:
@@ -483,6 +514,8 @@ func _adv(c: Combatant, t: Combatant, ranged: bool, normal_range: float) -> Dict
 		r.append("dis_mocked")
 	if c.has_status(&"true_strike"):
 		r.append("adv_true_strike")
+	if c.has_status(&"poisoned"):
+		r.append("dis_poisoned")
 	if t.has_status(&"outlined"):
 		r.append("adv_outlined")
 	if t.has_status(&"paralyzed"):
@@ -1057,6 +1090,8 @@ func _feature(c: Combatant, a: Dictionary, t: Combatant) -> void:
 		"cunning_disengage":
 			c.add_status(&"disengaged", 1)
 			log_text("log_feature", [c.display_name(), TextDB.line("rules", "act_disengage")])
+		"cunning_hide":
+			_hide(c)
 
 
 func _common(c: Combatant, a: Dictionary, t: Combatant) -> void:
@@ -1067,6 +1102,12 @@ func _common(c: Combatant, a: Dictionary, t: Combatant) -> void:
 			c.add_status(&"disengaged", 1)
 		"dodge":
 			c.add_status(&"dodging", 1)
+		"hide":
+			_hide(c)
+			return
+		"shove":
+			_shove(c, t)
+			return
 		"help":
 			_heal(c, t, 1, "1")
 		"lie_down":
@@ -1078,6 +1119,37 @@ func _common(c: Combatant, a: Dictionary, t: Combatant) -> void:
 			_load_save(c)
 			return
 	log_text("log_feature", [c.display_name(), TextDB.line("rules", "act_" + a["id"])])
+
+
+## 躲藏：隐匿检定对抗所有还能行动的敌人的被动察觉
+func _hide(c: Combatant) -> void:
+	var r := Dice.d20(c.sheet.check_bonus("stealth"))
+	var best := 0
+	for o in combatants:
+		if o.hostile_to(c) and o.can_act():
+			best = maxi(best, o.sheet.passive("perception"))
+	var ok := r.total >= best
+	log_text("log_check", [c.display_name(), TextDB.line("rules", "skill_stealth"), _d20_str(r), r.total, best,
+		TextDB.line("rules", "log_save_ok" if ok else "log_save_fail")])
+	if ok:
+		c.add_status(&"hidden", 99)
+		floated.emit(c, TextDB.line("rules", "status_hidden"), &"miss")
+
+
+## 推撞：运动对抗运动/特技，赢了推倒（大型生物改为推开）
+func _shove(c: Combatant, t: Combatant) -> void:
+	var a := Dice.d20(c.sheet.check_bonus("athletics"))
+	var def_bonus := maxi(t.sheet.check_bonus("athletics"), t.sheet.check_bonus("acrobatics"))
+	var d := Dice.d20(def_bonus)
+	var ok := a.total > d.total
+	log_text("log_contest", [c.display_name(), t.display_name(), a.total, d.total,
+		TextDB.line("rules", "log_save_ok" if ok else "log_save_fail")])
+	if ok:
+		if t.sheet.is_monster and Rules.monsters.get(t.sheet.monster_kind, {}).get("size", "") == "large":
+			_push(c, t, 1.5)
+		else:
+			t.add_status(&"prone", 99)
+			floated.emit(t, TextDB.line("rules", "status_prone"), &"miss")
 
 
 ## SL 的【读取存档】：战斗回到开始时的状态。没有缺陷，没有代价。

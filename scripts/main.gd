@@ -130,6 +130,9 @@ func _build_ui() -> void:
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
 	root.add_child(loading)
-	# 对话时隐藏技能栏（BG3 也是这样）
-	dlg.visibility_changed.connect(func(): hotbar.visible = not dlg.visible)
+	# 对话时隐藏 HUD（BG3 电影模式）
+	var hide_in_dialogue: Array = [hotbar, portraits, minimap, log, plates, overhead, narr, combat_hud]
+	dlg.cinematic_changed.connect(func(on):
+		for n in hide_in_dialogue:
+			n.visible = not on)
 	Router.register_host(viewport, loading)

@@ -16,3 +16,6 @@
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
+
+# 占位 BGM（工具生成，很小）不走 LFS。正式音乐覆盖后可以删掉这一行改回 LFS。
+assets/audio/music/*.ogg -filter -diff -merge binary

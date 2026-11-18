@@ -108,7 +108,7 @@ func _interactable_of(o: Object) -> Node3D:
 
 
 func _physics_process(_dt: float) -> void:
-	if leader == null or Combat.active:
+	if leader == null or Combat.active or DialogueBox.is_open():
 		return
 	if _pending_interact and is_instance_valid(_pending_interact):
 		if leader.global_position.distance_to(_pending_interact.global_position) < INTERACT_RANGE:

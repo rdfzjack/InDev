@@ -1,0 +1,41 @@
+# 小扬（SL）。对所有事情的建议都是读档。
+# 他不承认自己的贴图不对。他说的是对的——他永远处在被看清楚的位置上。
+
+~ talk
+sl: 怎么了？  #sl.talk.01
+- 你的贴图不对。 -> texture  #sl.talk.02
+- [race:tiefling] 你也是提夫林？ -> tiefling  #sl.talk.03
+- [check:intimidation:45] 把陷阱解了。 -> disarm_ok | disarm_no  #sl.talk.04
+- [check:deception:{难度}] 我们好像不需要读档了。 -> lie_ok | lie_no  #sl.talk.05
+- 没事。 -> END  #sl.talk.06
+
+~ texture
+sl: 哪有。现在不是对的吗？  #sl.texture.01
+@ cam close sl
+narrator: 从这个距离看，他是蓝色的。  #sl.texture.02
+@ cam auto
+protagonist: 我以为你是红色的提夫林，没想到你是蓝色的提夫林。  #sl.texture.03
+sl: 读个档试试。  #sl.texture.04
+-> END
+
+~ tiefling
+sl: 你不是吗？  #sl.tiefling.01
+-> END
+
+~ disarm_ok
+sl: 我应该能解的。  #sl.disarm_ok.01
+-> END
+
+~ disarm_no
+sl: 我应该能解的。  #sl.disarm_no.01
+-> END
+
+~ lie_ok
+sl: 哈哈。  #sl.lie_ok.01
+sl: 读个档试试。  #sl.lie_ok.02
+-> END
+
+~ lie_no
+sl: 有人走路外八，有人说话大声，有人总是迟到。没人因为这个不跟他玩。  #sl.lie_no.01
+sl: 读档。  #sl.lie_no.02
+-> END

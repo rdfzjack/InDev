@@ -59,7 +59,7 @@ func _ready() -> void:
 			b.pressed.emit()
 	await _frames(2)
 	print("  line: ", box._text.text)
-	_expect(box._text.text == TextDB.row("dialogue", "husband.talk_really.01").get("zh_CN", "?"), "talk_really line shown")
+	_expect(box._text.text.contains(TextDB.row("dialogue", "husband.talk_really.01").get("zh_CN", "?")), "talk_really line shown")
 	box._advance()
 	await _frames(2)
 	_expect(not box.visible, "dialogue closed")

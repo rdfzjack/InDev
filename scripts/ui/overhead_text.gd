@@ -14,9 +14,10 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	Banter.spoke.connect(_on_spoke)
+	Game.notice.connect(func(id, t): _on_spoke(id, t, Color(0.6, 0.85, 1.0)))
 
 
-func _on_spoke(speaker: StringName, text: String) -> void:
+func _on_spoke(speaker: StringName, text: String, col := Color(1, 0.97, 0.88)) -> void:
 	if _active.has(speaker) and is_instance_valid(_active[speaker]):
 		_active[speaker].queue_free()
 	var l := Label.new()
@@ -25,7 +26,7 @@ func _on_spoke(speaker: StringName, text: String) -> void:
 	l.custom_minimum_size.x = minf(MAX_WIDTH, 16.0 * text.length() + 8.0)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	l.add_theme_font_size_override("font_size", 15)
-	l.add_theme_color_override("font_color", Color(1, 0.97, 0.88))
+	l.add_theme_color_override("font_color", col)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 	l.add_theme_constant_override("outline_size", 5)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE

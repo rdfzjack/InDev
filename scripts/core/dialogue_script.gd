@@ -8,7 +8,17 @@ extends RefCounted
 ##   说话人id: 文本               台词。narrator = 旁白，protagonist/husband/poet/sl 见 characters.tsv，
 ##                                其他 id 原样显示（比如 NPC_Villager_04）
 ##   - 选项文本 -> 节点            选项。-> END 结束对话；不写 -> 则继续往下走
-##   - [flag] 选项文本 -> 节点     有条件的选项；[!flag] 取反
+##   - [flag] 选项文本 -> 节点     有条件的选项；[!flag] 取反。可以连写多个 [..][..]
+##   条件标签（选项和台词前都能写）：
+##     [flag] [!flag]               剧情标记
+##     [class:bard] [race:tiefling]  说话的玩家角色的职业 / 种族（选项前会显示 [吟游诗人]）
+##     [insight:12] [perception:12]  被动洞悉 / 察觉 >= 12 才出现（前面显示【洞悉】）
+##     [check:persuasion:12]         技能检定（只用于选项）：-> 成功节点 | 失败节点
+##        额外参数用逗号：[check:persuasion:12,ability=str,lie]
+##          ability=xxx 换成别的属性（"说服检定用力量"）；lie = 旁白的评语和结果相反
+##        DC 可以是负数、45、或者 {难度}（原样显示）
+##   @ cam 镜头 [参数]           镜头，作用于之后的台词（直到下一个 @ cam）：
+##     auto（默认）/ speaker / reverse / close <角色id> / wide / ots <被拍的id> <越肩的id>
 ##   -> 节点                      跳转
 ##   $ 命令 参数...               set/clear/join/leave/bump/glitch/narrate/emit，见 DialogueRunner
 ##   @ no_idk                     本节点的选项里不插入"我不知道/我没意见/哈哈哈"
@@ -35,6 +45,43 @@ static func split_id(s: String) -> Array:
 	if m == null:
 		return [s, ""]
 	return [s.substr(0, m.get_start()).strip_edges(), m.get_string(1)]
+
+
+## 拆出开头的 [..][..] 条件。返回 [剩下的文本, [{type, ...}]]
+static func strip_conds(s: String) -> Array:
+	var conds: Array = []
+	s = s.strip_edges()
+	while s.begins_with("["):
+		var close := s.find("]")
+		if close < 0:
+			break
+		conds.append(parse_cond(s.substr(1, close - 1).strip_edges()))
+		s = s.substr(close + 1).strip_edges()
+	return [s, conds]
+
+
+static func parse_cond(c: String) -> Dictionary:
+	if c.begins_with("!"):
+		return {"type": "flag", "flag": c.substr(1), "neg": true}
+	var parts := c.split(":")
+	match parts[0]:
+		"class", "race":
+			return {"type": parts[0], "value": parts[1]}
+		"insight", "perception":
+			return {"type": "passive", "skill": parts[0], "dc": int(parts[1])}
+		"check":
+			var rest := ":".join(parts.slice(1))
+			var items := rest.split(",")
+			var head := items[0].split(":")
+			var d := {"type": "check", "skill": head[0], "dc_text": head[1] if head.size() > 1 else "10", "ability": "", "lie": false}
+			for it in items.slice(1):
+				var kv := it.strip_edges()
+				if kv == "lie":
+					d["lie"] = true
+				elif kv.begins_with("ability="):
+					d["ability"] = kv.substr(8)
+			return d
+	return {"type": "flag", "flag": c, "neg": false}
 
 
 static func load_file(p: String) -> DialogueScript:
@@ -67,6 +114,11 @@ func parse(src: String) -> void:
 		var ops: Array = cur["ops"]
 		if s.begins_with("@"):
 			var d := s.substr(1).strip_edges()
+			if d.begins_with("cam"):
+				var parts := Array(d.split(" ", false))
+				parts.pop_front()
+				ops.append({"t": "cam", "shot": parts[0] if parts.size() > 0 else "auto", "args": parts.slice(1)})
+				continue
 			if d == "no_idk":
 				cur["no_idk"] = true
 			elif d.begins_with("idk"):
@@ -80,26 +132,28 @@ func parse(src: String) -> void:
 			continue
 		if s.begins_with("-"):
 			var sp := split_id(s.substr(1).strip_edges())
-			var body: String = sp[0]
-			var cond := ""
-			if body.begins_with("["):
-				var close := body.find("]")
-				cond = body.substr(1, close - 1).strip_edges()
-				body = body.substr(close + 1).strip_edges()
+			var cp := strip_conds(sp[0])
+			var body: String = cp[0]
 			var to := ""
+			var to_fail := ""
 			var arrow := body.rfind("->")
 			if arrow >= 0:
 				to = body.substr(arrow + 2).strip_edges()
 				body = body.substr(0, arrow).strip_edges()
-			ops.append({"t": "opt", "text": body, "to": to, "cond": cond, "id": sp[1]})
+				if to.contains("|"):
+					to_fail = to.get_slice("|", 1).strip_edges()
+					to = to.get_slice("|", 0).strip_edges()
+			ops.append({"t": "opt", "text": body, "to": to, "to_fail": to_fail, "conds": cp[1], "id": sp[1]})
 			continue
+		var lc := strip_conds(s)
+		s = lc[0]
 		var colon := s.find(":")
 		var colon_fw := s.find(FULLWIDTH_COLON)
 		if colon < 0 or (colon_fw >= 0 and colon_fw < colon):
 			colon = colon_fw
 		if colon > 0:
 			var lp := split_id(s.substr(colon + 1).strip_edges())
-			ops.append({"t": "line", "who": s.substr(0, colon).strip_edges(), "text": lp[0], "id": lp[1]})
+			ops.append({"t": "line", "who": s.substr(0, colon).strip_edges(), "text": lp[0], "id": lp[1], "conds": lc[1]})
 		else:
 			push_error("%s:%d cannot parse: %s" % [path, lineno, s])
 

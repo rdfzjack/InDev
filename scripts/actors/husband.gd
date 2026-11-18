@@ -18,5 +18,5 @@ func interact() -> bool:
 	if Game.flag(&"husband_summons_pending"):
 		# 点不动
 		return false
-	DialogueBox.open("res://data/dialogue/husband.dlg", "talk")
+	DialogueBox.open("res://data/dialogue/husband.dlg", "talk", self)
 	return true

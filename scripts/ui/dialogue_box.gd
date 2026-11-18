@@ -1,14 +1,22 @@
 class_name DialogueBox
 extends Control
-## 对话框 + 对话执行器。
-## 用法：DialogueBox.open("res://data/dialogue/xxx.dlg", "start")
+## 对话（BG3 式电影模式）+ 对话执行器。
 ##
-## 主角的三个选项（我不知道 / 我没意见 / 哈哈哈）在每一组选项里随机混进去，
-## 不特殊标注，语气平。节点写了 @ no_idk 就不插。
+## 用法：
+##   DialogueBox.open("res://data/dialogue/xxx.dlg", "start", 对话对象节点)
+##   有对话对象时进入电影模式：隐藏 HUD，切到对话镜头，双方面对面。
+##
+## 画面：屏幕下方居中是"说话人：台词"，下面是编号选项（悬停金色 + »）。
+##   字幕区只占屏幕下 30%，镜头构图保证脸在上面（见 DialogueCamera）。
+##
+## 选项标签：[吟游诗人] [提夫林] [游说] 【洞悉】……检定选项会弹出骰子面板。
+## 主角的三个选项（我不知道 / 我没意见 / 哈哈哈）随机混进每组选项，不标注。
 
 signal finished(script_path: String)
 signal line_shown(who: String, text: String)
 signal command(args: Array)
+## 电影模式开关（main 用它隐藏 HUD）
+signal cinematic_changed(on: bool)
 
 static var instance: DialogueBox
 
@@ -19,17 +27,26 @@ var _node := ""
 var _pc := 0
 var _waiting_click := false
 var _cache: Dictionary = {}
-var _pre_lines: Array = []    # 开场前插入的台词（比如"不是说了别点吗"）
+var _pre_lines: Array = []
 
-var _panel: PanelContainer
-var _speaker: Label
+# 电影模式
+var partner: Node3D
+var player_id: StringName = &"protagonist"
+var _cam: DialogueCamera
+var _prev_cam: Camera3D
+var _cam_override: Dictionary = {}   # 当前 @ cam 指令
+var _cinematic := false
+
+var _shade: TextureRect
+var _speaker: Label     # 说话人名字（并进字幕显示，这里只存值）
 var _text: RichTextLabel
 var _options: VBoxContainer
+var _dice: DiceRollPanel
 
 
-static func open(path: String, node := "start") -> void:
+static func open(path: String, node := "start", with: Node3D = null) -> void:
 	if instance:
-		instance.start(path, node)
+		instance.start(path, node, with)
 
 
 static func is_open() -> bool:
@@ -43,32 +60,54 @@ func _init() -> void:
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_panel = PanelContainer.new()
-	_panel.anchor_left = 0.1
-	_panel.anchor_right = 0.78
-	_panel.anchor_top = 0.62
-	_panel.anchor_bottom = 0.97
-	_panel.add_theme_stylebox_override("panel", UITheme.panel(UITheme.BG_DEEP, UITheme.BORDER, 1, 3, 16))
-	add_child(_panel)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 8)
-	_panel.add_child(vb)
+	# 底部渐暗，保证字幕可读，不加框
+	_shade = TextureRect.new()
+	var g := Gradient.new()
+	g.set_color(0, Color(0, 0, 0, 0))
+	g.set_color(1, Color(0, 0, 0, 0.85))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.fill_from = Vector2(0, 0)
+	gt.fill_to = Vector2(0, 1)
+	_shade.texture = gt
+	_shade.stretch_mode = TextureRect.STRETCH_SCALE
+	_shade.anchor_top = 0.6
+	_shade.anchor_right = 1.0
+	_shade.anchor_bottom = 1.0
+	_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_shade)
 	_speaker = Label.new()
-	_speaker.add_theme_color_override("font_color", UITheme.TEXT_GOLD)
-	_speaker.add_theme_font_size_override("font_size", 20)
-	vb.add_child(_speaker)
+	_speaker.visible = false
+	add_child(_speaker)
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = true
 	_text.scroll_active = false
-	_text.add_theme_font_size_override("normal_font_size", 18)
-	vb.add_child(_text)
+	_text.anchor_left = 0.14
+	_text.anchor_right = 0.86
+	_text.anchor_top = 0.69
+	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_text.add_theme_font_size_override("normal_font_size", 19)
+	_text.add_theme_font_size_override("italics_font_size", 19)
+	_text.add_theme_constant_override("outline_size", 4)
+	_text.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+	add_child(_text)
 	_options = VBoxContainer.new()
-	vb.add_child(_options)
+	_options.anchor_left = 0.2
+	_options.anchor_right = 0.84
+	_options.anchor_top = 0.78
+	_options.anchor_bottom = 0.99
+	_options.add_theme_constant_override("separation", 1)
+	add_child(_options)
+	_dice = DiceRollPanel.new()
+	_dice.name = "DiceRollPanel"
+	add_child(_dice)
 	visible = false
 
 
-func start(path: String, node := "start") -> void:
+# ================================================================== 开始 / 结束
+
+func start(path: String, node := "start", with: Node3D = null) -> void:
 	if not _cache.has(path):
 		_cache[path] = DialogueScript.load_file(path)
 	_ds = _cache[path]
@@ -77,14 +116,84 @@ func start(path: String, node := "start") -> void:
 		return
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	partner = with
+	player_id = Game.selected if Game.in_party(Game.selected) else Game.PROTAGONIST
+	_cam_override = {}
 	_pre_lines.clear()
 	var crash := Meta.consume_crash()
 	if crash != &"":
 		var who: String = TextDB.row("ui", "crash_" + String(crash)).get("speaker", "sl")
-		var t := TextDB.ui("crash_" + String(crash))
-		_pre_lines.append({"t": "line", "who": who, "text": t})
+		_pre_lines.append({"t": "line", "who": who, "text": TextDB.ui("crash_" + String(crash)), "conds": []})
+	_enter_cinematic()
 	_goto(node)
 
+
+func _end() -> void:
+	visible = false
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_waiting_click = false
+	_clear_options()
+	_exit_cinematic()
+	finished.emit(_ds.path if _ds else "")
+
+
+func _enter_cinematic() -> void:
+	_cinematic = partner != null and is_instance_valid(partner) and partner.is_inside_tree() and not Combat.active
+	cinematic_changed.emit(true)
+	if not _cinematic:
+		return
+	var player := actor_of(player_id)
+	_prev_cam = partner.get_viewport().get_camera_3d()
+	_cam = DialogueCamera.new()
+	_cam.name = "DialogueCamera"
+	partner.get_parent().add_child(_cam)
+	if _prev_cam:
+		_cam.global_transform = _prev_cam.global_transform
+	_cam.make_current()
+	# 面对面
+	if player and player != partner:
+		_face(player, partner)
+		_face(partner, player)
+		if player.has_method("stop"):
+			player.stop()
+
+
+func _exit_cinematic() -> void:
+	cinematic_changed.emit(false)
+	if _cam and is_instance_valid(_cam):
+		_cam.queue_free()
+	_cam = null
+	if _prev_cam and is_instance_valid(_prev_cam):
+		_prev_cam.make_current()
+	_prev_cam = null
+	_cinematic = false
+
+
+func _face(a: Node3D, b: Node3D) -> void:
+	var m: Node3D = a.get("model") if a.get("model") else a
+	var t := b.global_position
+	t.y = m.global_position.y
+	if m.global_position.distance_to(t) > 0.01:
+		m.look_at(t, Vector3.UP, true)
+
+
+## 场景里某个角色 id 对应的节点
+func actor_of(id) -> Node3D:
+	var sid := StringName(String(id))
+	if partner and is_instance_valid(partner) and partner.get("char_id") == sid:
+		return partner
+	for g in ["party", "npc"]:
+		for n in get_tree().get_nodes_in_group(g):
+			if n.get("char_id") == sid:
+				return n
+	return null
+
+
+func camera() -> DialogueCamera:
+	return _cam
+
+
+# ================================================================== 执行
 
 func _goto(node: String) -> void:
 	if node == "END" or node == "":
@@ -114,6 +223,8 @@ func _step() -> void:
 		match op["t"]:
 			"line":
 				_pc += 1
+				if not _conds_ok(op.get("conds", [])):
+					continue
 				_show_line(op)
 				return
 			"goto":
@@ -122,6 +233,11 @@ func _step() -> void:
 			"cmd":
 				_pc += 1
 				_run_cmd(op["args"])
+				if not visible:
+					return
+			"cam":
+				_pc += 1
+				_cam_override = op
 			"opt":
 				_show_options()
 				return
@@ -131,14 +247,16 @@ func _step() -> void:
 func _show_line(op: Dictionary) -> void:
 	var who: String = op["who"]
 	var body := TextDB.dialogue_line(op.get("id", ""), op["text"])
+	var tag := _passive_tag(op.get("conds", []))
 	if who == "narrator":
 		_speaker.text = ""
-		_text.text = "[i][color=#%s]%s[/color][/i]" % [UITheme.NARRATOR.to_html(false), body]
+		_text.text = "[center][i][color=#%s]%s%s[/color][/i][/center]" % [UITheme.NARRATOR.to_html(false), tag, body]
 	else:
 		_speaker.text = TextDB.char_name(StringName(who))
-		_text.text = body
-	line_shown.emit(who, body)
+		_text.text = "[center][color=#%s]%s[/color]%s%s%s[/center]" % [UITheme.TEXT_GOLD.to_html(false), _speaker.text, TextDB.ui("speaker_sep"), tag, body]
+	_frame_for(who)
 	_waiting_click = true
+	line_shown.emit(who, body)
 
 
 func _show_options() -> void:
@@ -147,24 +265,31 @@ func _show_options() -> void:
 	while _pc < ops.size() and ops[_pc]["t"] == "opt":
 		var o: Dictionary = ops[_pc]
 		_pc += 1
-		if _cond_ok(o["cond"]):
+		if _conds_ok(o.get("conds", [])):
 			opts.append(o)
 	var nd: Dictionary = _ds.nodes[_node]
 	var first_to: String = opts[0]["to"] if opts.size() > 0 else ""
 	if not nd["no_idk"] and Game.in_party(Game.PROTAGONIST):
 		var idk_to: String = nd["idk_to"] if nd["idk_to"] != "" else first_to
 		for k in IDK_KEYS:
-			var pos := randi_range(0, opts.size())
-			opts.insert(pos, {"text": TextDB.ui(k), "to": idk_to, "idk": k})
+			opts.insert(randi_range(0, opts.size()), {"text": TextDB.ui(k), "to": idk_to, "idk": k})
 	_waiting_click = false
+	_frame_for("__options__")
 	var n := 1
 	for o in opts:
 		var b := Button.new()
 		var label: String = o["text"] if o.has("idk") else TextDB.dialogue_line(o.get("id", ""), o["text"])
-		b.text = "%d. %s" % [n, label]
+		var base_text := "%d.  %s%s" % [n, _option_tags(o.get("conds", [])), label]
+		b.text = base_text
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.flat = true
 		b.focus_mode = Control.FOCUS_ALL
+		b.add_theme_font_size_override("font_size", 17)
+		b.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+		b.add_theme_constant_override("outline_size", 3)
+		b.mouse_entered.connect(func(): b.grab_focus())
+		b.focus_entered.connect(func(): b.text = "» " + base_text)
+		b.focus_exited.connect(func(): b.text = base_text)
 		b.pressed.connect(_choose.bind(o))
 		_options.add_child(b)
 		n += 1
@@ -175,8 +300,22 @@ func _show_options() -> void:
 func _choose(o: Dictionary) -> void:
 	if o.has("idk"):
 		Meta.bump("said_" + String(o["idk"]))
+		Bus.report(&"player_idk", Game.PROTAGONIST)
 	_clear_options()
+	var check := {}
+	for c in o.get("conds", []):
+		if c["type"] == "check":
+			check = c
 	var to: String = o["to"]
+	if not check.is_empty():
+		var res: Dictionary = await _dice.roll(check, Game.sheet(player_id))
+		var ok: bool = res.get("success", false)
+		if check.get("lie", false):
+			# 旁白偶尔说反话：你没过，它夸你干得漂亮
+			_pre_lines.append({"t": "line", "who": "narrator", "conds": [],
+				"text": TextDB.line("narrator", "check_praise" if not ok else "check_fail_plain")})
+		if not ok and o.get("to_fail", "") != "":
+			to = o["to_fail"]
 	if to == "":
 		_step()
 	else:
@@ -188,13 +327,108 @@ func _clear_options() -> void:
 		c.queue_free()
 
 
-func _cond_ok(cond: String) -> bool:
-	if cond == "":
-		return true
-	if cond.begins_with("!"):
-		return not Game.flag(StringName(cond.substr(1)))
-	return bool(Game.flag(StringName(cond)))
+# ================================================================== 条件
 
+func _player_sheet() -> CharacterSheet:
+	return Game.sheet(player_id)
+
+
+func _conds_ok(conds: Array) -> bool:
+	for c in conds:
+		if not _cond_ok(c):
+			return false
+	return true
+
+
+func _cond_ok(c: Dictionary) -> bool:
+	match c["type"]:
+		"flag":
+			var v := bool(Game.flag(StringName(c["flag"])))
+			return not v if c.get("neg", false) else v
+		"class":
+			return _player_sheet().class_level(c["value"]) > 0
+		"race":
+			return _player_sheet().race == c["value"]
+		"passive":
+			# 被动：队里任何一个人过了就算
+			for id in Game.party:
+				if Game.sheet(id).passive(c["skill"]) >= int(c["dc"]):
+					return true
+			return false
+	return true
+
+
+func _option_tags(conds: Array) -> String:
+	var out := ""
+	for c in conds:
+		match c["type"]:
+			"class":
+				out += "[%s] " % TextDB.line("rules", "class_" + c["value"])
+			"race":
+				out += "[%s] " % TextDB.line("rules", "race_" + c["value"])
+			"check":
+				out += "[%s] " % TextDB.line("rules", "skill_" + c["skill"])
+			"passive":
+				out += TextDB.line("rules", "notice_" + c["skill"]) + " "
+	return out
+
+
+func _passive_tag(conds: Array) -> String:
+	for c in conds:
+		if c["type"] == "passive":
+			return TextDB.line("rules", "notice_" + c["skill"]) + " "
+	return ""
+
+
+# ================================================================== 镜头
+
+func _frame_for(who: String) -> void:
+	if not _cinematic or _cam == null:
+		return
+	var player := actor_of(player_id)
+	var shot: String = _cam_override.get("shot", "auto")
+	var args: Array = _cam_override.get("args", [])
+	match shot:
+		"speaker":
+			var s := actor_of(who)
+			if s:
+				_cam.shot("ots", s, player if s != player else partner)
+			return
+		"reverse":
+			_cam.shot("ots", player, partner)
+			return
+		"close":
+			var s2 := actor_of(args[0] if args.size() > 0 else who)
+			if s2:
+				_cam.shot("close", s2, partner if s2 != partner else player)
+			return
+		"wide":
+			_cam.shot("wide", player, partner)
+			return
+		"ots":
+			var a := actor_of(args[0]) if args.size() > 0 else partner
+			var b := actor_of(args[1]) if args.size() > 1 else player
+			if a and b:
+				_cam.shot("ots", a, b)
+			return
+	# auto
+	if who == "narrator":
+		return
+	if who == "__options__":
+		_cam.shot("ots", partner, player)
+		return
+	var sp := actor_of(who)
+	if sp == null:
+		return
+	if sp == partner:
+		_cam.shot("ots", partner, player)
+	elif sp == player:
+		_cam.shot("ots", player, partner)     # 反打：越过对方肩膀拍主角
+	else:
+		_cam.shot("close", sp, partner)        # 旁边的队友插话：特写
+
+
+# ================================================================== 命令
 
 func _run_cmd(args: Array) -> void:
 	if args.is_empty():
@@ -220,17 +454,13 @@ func _run_cmd(args: Array) -> void:
 			TradeScreen.open(a1)
 		"xp":
 			Game.award_xp(int(a1))
+		"music":
+			Music.play(StringName(a1))
 		_:
 			command.emit(args)
 
 
-func _end() -> void:
-	visible = false
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_waiting_click = false
-	_clear_options()
-	finished.emit(_ds.path if _ds else "")
-
+# ================================================================== 输入
 
 func _gui_input(e: InputEvent) -> void:
 	if _waiting_click and e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
@@ -239,9 +469,9 @@ func _gui_input(e: InputEvent) -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if not visible:
+	if not visible or _dice.visible:
 		return
-	if _waiting_click and (e.is_action_pressed("ui_accept")):
+	if _waiting_click and e.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		_advance()
 		return

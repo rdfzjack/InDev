@@ -60,3 +60,14 @@ static func static_box(size: Vector3, color: Color, uv_per_meter := 0.5) -> Stat
 	sb.add_child(cs)
 	sb.add_child(box(size, color, Vector2(maxf(size.x, size.z), maxf(size.y, size.z)) * uv_per_meter))
 	return sb
+
+
+## 简单环境：纯色天空（材质都是 unlit，不需要光）
+static func environment(sky := Color(0.62, 0.74, 0.88)) -> WorldEnvironment:
+	var we := WorldEnvironment.new()
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = sky
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	we.environment = env
+	return we

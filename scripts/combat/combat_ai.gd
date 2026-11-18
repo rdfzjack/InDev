@@ -68,6 +68,9 @@ static func _pick_target(c: Combatant) -> Combatant:
 	for o in Combat.combatants:
 		if not o.hostile_to(c) or not o.is_alive():
 			continue
+		# 隐匿的人看不见（除非贴脸）
+		if o.has_status(&"hidden") and c.dist_to(o) > Combat.REACH:
+			continue
 		var score := c.dist_to(o)
 		if o.is_down():
 			score += 30.0

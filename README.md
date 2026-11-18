@@ -48,9 +48,14 @@ godot --headless --path . res://tests/rules_test.tscn
 godot --headless --path . res://tests/combat_test.tscn
 godot --headless --path . res://tests/shop_test.tscn
 godot --headless --path . res://tests/save_test.tscn
-# 需要显示器（用真实鼠标事件）：
+# 需要显示器（真实鼠标事件 / 镜头构图）：
 godot --path . res://tests/input_test.tscn
+godot --path . res://tests/dialogue_test.tscn
 ```
+
+对话台本语法（条件、检定、镜头）见 `scripts/core/dialogue_script.gd` 顶部。
+
+占位 BGM 用 `python3 tools/gen_placeholder_music.py` 生成（需要 numpy + ffmpeg），正式曲子直接覆盖 `assets/audio/music/<id>.ogg`。
 
 改了 `.dlg` 对话之后，给新台词盖 ID 并导出翻译表：
 

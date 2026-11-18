@@ -378,6 +378,26 @@ func skill_bonus(sk: String) -> int:
 	return b
 
 
+## 被动技能：10 + 技能加值（察觉 / 洞悉 / 调查）
+func passive(sk: String) -> int:
+	if is_monster:
+		var md: Dictionary = Rules.monsters.get(monster_kind, {})
+		if sk == "perception":
+			return int(md.get("passive_perception", 10 + mod("wis")))
+		return 10 + mod(SKILL_ABILITY.get(sk, "wis"))
+	return 10 + skill_bonus(sk)
+
+
+## 主动技能检定加值（怪物用 stat block 里写的数）
+func check_bonus(sk: String) -> int:
+	if is_monster:
+		var md: Dictionary = Rules.monsters.get(monster_kind, {})
+		if md.has(sk):
+			return int(md[sk])
+		return mod(SKILL_ABILITY.get(sk, "str"))
+	return skill_bonus(sk)
+
+
 func initiative_bonus() -> int:
 	var b := mod("dex")
 	if long_effects.has("vigilant"):

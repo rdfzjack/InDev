@@ -75,6 +75,18 @@ func can_act() -> bool:
 	return is_alive() and not is_down()
 
 
+## 显示用的状态名列表（含专注）
+func status_names() -> Array:
+	var out: Array = []
+	for s in statuses:
+		var n := TextDB.line("rules", "status_" + String(s))
+		if n != "":
+			out.append(n)
+	if not concentration.is_empty():
+		out.append("%s：%s" % [TextDB.line("rules", "status_concentrating"), TextDB.line("rules", "spell_" + concentration["spell"])])
+	return out
+
+
 func is_humanoid() -> bool:
 	return not sheet.is_monster or Rules.monsters.get(sheet.monster_kind, {}).get("humanoid", false)
 
@@ -153,7 +165,7 @@ func end_turn() -> void:
 	for s in statuses.keys():
 		var st: Dictionary = statuses[s]
 		st["turns"] -= 1
-		if st["turns"] <= 0 and s != &"prone" and s != &"hexed" and s != &"downed":
+		if st["turns"] <= 0 and not (s in [&"prone", &"hexed", &"downed", &"hidden", &"stable"]):
 			statuses.erase(s)
 	status_changed.emit()
 

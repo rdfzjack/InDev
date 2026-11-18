@@ -48,8 +48,17 @@ func _rebuild() -> void:
 		bar.add_theme_stylebox_override("background", bg)
 		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(bar)
+		var st := Label.new()
+		st.add_theme_font_size_override("font_size", 11)
+		st.add_theme_color_override("font_color", UITheme.TEXT_GOLD)
+		st.add_theme_color_override("font_outline_color", Color.BLACK)
+		st.add_theme_constant_override("outline_size", 3)
+		st.custom_minimum_size.x = W
+		st.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		st.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(st)
 		add_child(box)
-		_items[id] = {"portrait": p, "bar": bar}
+		_items[id] = {"portrait": p, "bar": bar, "status": st}
 	_refresh()
 
 
@@ -64,6 +73,19 @@ func _refresh() -> void:
 		bar.max_value = sh.max_hp
 		bar.value = sh.hp
 		bar.tooltip_text = TextDB.ui("hud_hp") % [sh.hp, sh.max_hp]
+
+
+func _process(_dt: float) -> void:
+	# 状态（战斗中才有）：每个状态取前两个字，悬停看全名
+	for id in _items:
+		var lab: Label = _items[id]["status"]
+		var names: Array = []
+		if Combat.active:
+			for c in Combat.combatants:
+				if c.id() == id:
+					names = c.status_names()
+		lab.text = " ".join(names.map(func(n): return n.substr(0, 2)))
+		lab.tooltip_text = "\n".join(names)
 
 
 func _on_input(e: InputEvent, id: StringName) -> void:

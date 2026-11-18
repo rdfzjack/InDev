@@ -53,3 +53,15 @@ menu_no_saves	没有存档。	No saves.
 menu_language	语言	Language	
 lang_zh_CN	中文	中文	
 lang_en	English	English	
+# ---- 骰子 ----
+dice_dc	难度等级	DIFFICULTY CLASS	
+dice_ability_check	%s检定	%s Check	
+dice_click	点击骰子投掷	Click dice to roll	
+dice_continue	点击继续	Click to continue	
+dice_total	总加值 %+d	Total Bonus %+d	
+dice_success	成功	Success	
+dice_fail	失败	Failure	
+dice_crit_success	大成功	Critical Success	
+dice_crit_fail	大失败	Critical Failure	
+dice_proficiency	熟练	Proficiency	
+dice_expertise	专精	Expertise	

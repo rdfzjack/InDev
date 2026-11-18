@@ -1,0 +1,43 @@
+# 低低（诗人）。点他就是这里。
+# 他对自己的毛病有态度，但从没人问过为什么。语气无所谓。
+
+~ talk
+poet: 嗯？  #poet.talk.01
+- 你刚才去哪了？ -> where  #poet.talk.02
+- [poet_fell_seen] 下面是什么样的？ -> below  #poet.talk.03
+- [class:bard] 你会弹什么曲子？ -> song  #poet.talk.04
+- [check:persuasion:12] 给我们唱一首吧。 -> sing_ok | sing_no  #poet.talk.05
+- [insight:11] 你好像有心事。 -> mood  #poet.talk.06
+- 没事。 -> END  #poet.talk.07
+
+~ where
+poet: 地图外面。  #poet.where.01
+@ cam reverse
+protagonist: 哦。  #poet.where.02
+@ cam auto
+-> END
+
+~ below
+poet: 挺安静的。  #poet.below.01
+poet: 没什么。  #poet.below.02
+-> END
+
+~ song
+poet: 都会一点。  #poet.song.01
+poet: 那首店里放的我也会。  #poet.song.02
+-> END
+
+~ sing_ok
+@ cam wide
+poet: 好吧。  #poet.sing_ok.01
+narrator: 他唱了一段。音调是对的。歌词的字符串键值没有被解析，他唱的是一串编号。  #poet.sing_ok.02
+-> END
+
+~ sing_no
+poet: 下次吧。  #poet.sing_no.01
+-> END
+
+~ mood
+[insight:11] narrator: 他的视线时不时往地面看。不是在找什么。是在确认它还在。  #poet.mood.01
+poet: 没有啊。  #poet.mood.02
+-> END

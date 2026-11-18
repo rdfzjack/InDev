@@ -7,6 +7,8 @@ const POET := &"poet"
 const SL := &"sl"
 
 signal party_changed
+## 头顶提示（被动察觉等），OverheadText 显示
+signal notice(char_id: StringName, text: String)
 signal flag_changed(flag: StringName, value: Variant)
 signal selected_changed(id: StringName)
 signal hp_changed(id: StringName)

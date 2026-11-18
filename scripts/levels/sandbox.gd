@@ -12,6 +12,8 @@ const NAV_BAKE_LAYER := 1
 
 
 func _ready() -> void:
+	set_meta("music", "field")
+	add_child(Placeholders.environment())
 	for id in [Game.HUSBAND, Game.POET, Game.SL]:
 		Game.join(id)
 	var nav := NavigationRegion3D.new()
@@ -47,6 +49,7 @@ func _ready() -> void:
 
 	var trap := Trap.new()
 	trap.name = "Trap"
+	trap.hidden_dc = 10
 	add_child(trap)
 	trap.position = Vector3(-4, 0, 0)
 
