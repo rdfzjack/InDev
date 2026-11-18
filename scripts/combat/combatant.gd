@@ -17,6 +17,8 @@ var reaction := 1
 var move_left := 0.0
 var sneak_used := false
 var cooldowns := {}               # action id -> 剩余回合
+var recharge := {}                # 怪物充能技能 id -> 可用
+var phase := 1                    # boss 阶段
 
 ## 状态：id -> {turns, source (Combatant), data}
 var statuses := {}
@@ -126,6 +128,12 @@ func start_turn() -> void:
 		# 站起来花一半移动力
 		move_left = move_left / 2.0
 		remove_status(&"prone")
+	# 充能（5-6）：回合开始掷 d6
+	for k in recharge.keys():
+		if not recharge[k]:
+			for sp in Rules.monsters.get(sheet.monster_kind, {}).get("specials", []):
+				if sp["id"] == k and Dice.rng.randi_range(1, 6) >= int(sp.get("recharge", 6)):
+					recharge[k] = true
 	for k in cooldowns.keys():
 		cooldowns[k] -= 1
 		if cooldowns[k] <= 0:
@@ -152,6 +160,7 @@ func snapshot() -> Dictionary:
 		"slots": sheet.slots_used.duplicate(), "pact": sheet.pact_used,
 		"res": sheet.resources.duplicate(), "statuses": statuses.duplicate(true),
 		"conc": concentration.duplicate(), "cd": cooldowns.duplicate(),
+		"recharge": recharge.duplicate(), "phase": phase,
 	}
 
 
@@ -168,5 +177,7 @@ func restore(s: Dictionary) -> void:
 	statuses = s["statuses"].duplicate(true)
 	concentration = s["conc"].duplicate()
 	cooldowns = s["cd"].duplicate()
+	recharge = s["recharge"].duplicate()
+	phase = s["phase"]
 	sheet.hp_changed.emit()
 	status_changed.emit()

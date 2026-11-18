@@ -13,7 +13,26 @@ static func take_turn(c: Combatant) -> void:
 	if target == null:
 		return
 	var acts := Combat.actions_for(c)
-	var melee := acts.filter(func(a): return a["kind"] == "monster" and c.sheet.monster_attacks[a["attack_index"]]["kind"] == "melee")
+	# 充能技能（龙息）：锥形里能罩住至少两个敌人，或者只剩一个敌人
+	for a in acts:
+		if a["kind"] != "special" or Combat.why_not(c, a) != "":
+			continue
+		var best_pt := Vector3.ZERO
+		var best_n := 0
+		for o in Combat.combatants:
+			if not o.hostile_to(c) or not o.is_alive() or c.dist_to(o) > float(a["range"]):
+				continue
+			var n := Combat.in_area(c, a["area"], o.pos()).filter(func(x): return x.hostile_to(c)).size()
+			if n > best_n:
+				best_n = n
+				best_pt = o.pos()
+		var foes := Combat.combatants.filter(func(o): return o.hostile_to(c) and o.can_act()).size()
+		if best_n >= 2 or (best_n >= 1 and foes == 1):
+			await _wait(tree, PAUSE)
+			Combat.perform(c, a, best_pt)
+			return
+	var melee := acts.filter(func(a): return a["kind"] == "multiattack")
+	melee.append_array(acts.filter(func(a): return a["kind"] == "monster" and c.sheet.monster_attacks[a["attack_index"]]["kind"] == "melee"))
 	var ranged := acts.filter(func(a): return a["kind"] == "monster" and c.sheet.monster_attacks[a["attack_index"]]["kind"] == "ranged")
 	var in_melee := Combat.combatants.any(func(o): return o.hostile_to(c) and o.can_act() and o.dist_to(c) <= Combat.REACH)
 	# 远程优先：有弓、不在近战里、目标不在走一步就能砍到的地方
@@ -27,15 +46,16 @@ static func take_turn(c: Combatant) -> void:
 		return
 	if melee.is_empty():
 		return
-	if c.dist_to(target) > Combat.REACH:
-		await approach(c, target, Combat.REACH - 0.4)
+	var reach := float(melee[0]["range"])
+	if c.dist_to(target) > reach:
+		await approach(c, target, reach - 0.4)
 	if not Combat.active or not c.can_act():
 		return
-	if c.dist_to(target) > Combat.REACH:
+	if c.dist_to(target) > reach:
 		# 够不着：冲刺
 		var dash := Combat.find_action(c, "dash")
 		if not dash.is_empty() and Combat.perform(c, dash, c):
-			await approach(c, target, Combat.REACH - 0.4)
+			await approach(c, target, reach - 0.4)
 		return
 	await _wait(tree, PAUSE)
 	if Combat.active and target.is_alive():

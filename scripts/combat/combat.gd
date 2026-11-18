@@ -24,6 +24,9 @@ signal logged(text: String)
 signal floated(c: Combatant, text: String, kind: StringName)
 signal moved(c: Combatant, path: PackedVector3Array)
 signal acted(c: Combatant, action: Dictionary, targets: Array)
+## boss 进入新阶段（phase 从 2 开始）
+signal boss_phase(c: Combatant, phase: int)
+signal monster_killed(c: Combatant)
 
 const REACH := 2.0          # 近战触及（中心距离，含胶囊体半径）
 const TOUCH := 2.0
@@ -130,6 +133,15 @@ func _finish(party_won: bool) -> void:
 		if c.team == &"party" and c.is_down() and not c.sheet.dead:
 			c.sheet.heal(1)
 	log_text("log_victory" if party_won else "log_defeat", [])
+	if party_won:
+		var xp := 0
+		for c in combatants:
+			if c.sheet.is_monster and not c.is_alive():
+				xp += int(Rules.monsters.get(c.sheet.monster_kind, {}).get("xp", 0))
+		var n := combatants.filter(func(c): return c.team == &"party").size()
+		if xp > 0 and n > 0:
+			log_text("log_xp", [xp / n])
+			Game.award_xp(xp / n)
 	combat_ended.emit(party_won)
 
 
@@ -145,10 +157,22 @@ func actions_for(c: Combatant) -> Array:
 	var out: Array = []
 	var s := c.sheet
 	if s.is_monster:
+		var md: Dictionary = Rules.monsters.get(s.monster_kind, {})
+		if md.has("multiattack"):
+			var reach := 0.0
+			for i in md["multiattack"]:
+				reach = maxf(reach, float(s.monster_attacks[int(i)]["range"]))
+			out.append({"id": "multiattack", "kind": "multiattack", "cost": "action", "range": reach + REACH - 1.5, "target": "enemy"})
+		for sp in md.get("specials", []):
+			out.append({"id": "special:" + sp["id"], "kind": "special", "cost": "action", "special": sp,
+				"range": float(sp["area"]["size"]), "target": "point", "area": sp["area"]})
 		for i in s.monster_attacks.size():
 			var a: Dictionary = s.monster_attacks[i]
+			var rng := float(a.get("long", a["range"]))
+			if a["kind"] == "melee":
+				rng = float(a["range"]) + REACH - 1.5
 			out.append({"id": "mattack:%d" % i, "kind": "monster", "cost": "action", "attack_index": i,
-				"range": float(a.get("long", a["range"])), "target": "enemy"})
+				"range": rng, "target": "enemy"})
 		out.append({"id": "dash", "kind": "common", "cost": "action", "range": 0, "target": "self"})
 		if "nimble_escape" in s.traits:
 			out.append({"id": "disengage", "kind": "common", "cost": "bonus", "range": 0, "target": "self"})
@@ -226,6 +250,8 @@ func why_not(c: Combatant, a: Dictionary) -> String:
 		"smite":
 			if s.lowest_slot_for(1) == 0:
 				return "why_no_slot"
+	if a["kind"] == "special" and not c.recharge.get(a["special"]["id"], true):
+		return "why_recharging"
 	if a["kind"] == "spell":
 		var lvl := int(Rules.spell(a["spell"]).get("level", 0))
 		if lvl > 0 and not s.is_bug_spell(a["spell"]) and s.lowest_slot_for(lvl) == 0:
@@ -352,6 +378,11 @@ func perform(c: Combatant, a: Dictionary, target = null) -> bool:
 		"monster":
 			targets = [t]
 			_monster_attack(c, a, t)
+		"multiattack":
+			targets = [t]
+			_multiattack(c, t)
+		"special":
+			targets = _special(c, a["special"], point)
 		"spell":
 			targets = _cast(c, a["spell"], t, point)
 		"feature":
@@ -375,7 +406,7 @@ func _attack_info(c: Combatant, a: Dictionary, t: Combatant) -> Dictionary:
 		var m: Dictionary = c.sheet.monster_attacks[a["attack_index"]]
 		ranged = m["kind"] == "ranged"
 		bonus = int(m["to_hit"])
-		normal_range = float(m["range"])
+		normal_range = float(m["range"]) if ranged else float(m["range"]) + REACH - 1.5
 	else:
 		var w := Rules.weapon(a["weapon"])
 		ranged = a.get("ranged", false)
@@ -493,7 +524,7 @@ func _weapon_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 		var lvl := c.sheet.lowest_slot_for(1)
 		if lvl > 0 and c.sheet.spend_slot(lvl):
 			var n := 2 + (lvl - 1)
-			if t.sheet.is_monster and t.sheet.monster_kind in ["skeleton", "zombie"]:
+			if t.sheet.is_monster and Rules.monsters.get(t.sheet.monster_kind, {}).get("undead", false):
 				n += 1
 			parts.append(["%dd8" % mini(n, 5), "radiant", "divine_smite"])
 	_add_hex(c, t, parts)
@@ -506,11 +537,68 @@ func _monster_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 	var res := _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "weapon_" + m["id"]))
 	if not res["hit"]:
 		return
-	_deal(c, t, [[m["dice"], m["type"]]], res["crit"])
+	var parts: Array = [[m["dice"], m["type"]]]
+	if m.has("extra"):
+		parts.append([m["extra"][0], m["extra"][1]])
+	# 群体优势（大地精）：每回合一次，目标身边有它的同伴时 +2d6
+	if "martial_advantage" in c.sheet.traits and not c.sneak_used:
+		if combatants.any(func(o): return o != c and not o.hostile_to(c) and o.can_act() and o.dist_to(t) <= REACH):
+			c.sneak_used = true
+			parts.append(["2d6", m["type"], "martial_advantage"])
+	_deal(c, t, parts, res["crit"])
 	if m.has("on_hit_save") and t.is_alive() and not t.is_down():
 		var sv: Dictionary = m["on_hit_save"]
 		if not _save(t, sv["ability"], int(sv["dc"])):
 			t.add_status(StringName(sv["status"]), 99)
+
+
+## 多重攻击：按 stat block 的顺序打；目标死了就换身边另一个
+func _multiattack(c: Combatant, t: Combatant) -> void:
+	var md: Dictionary = Rules.monsters.get(c.sheet.monster_kind, {})
+	for i in md.get("multiattack", []):
+		var m: Dictionary = c.sheet.monster_attacks[int(i)]
+		var reach := float(m["range"]) + REACH - 1.5
+		if t == null or not t.is_alive() or t.is_down() or c.dist_to(t) > reach:
+			t = null
+			for o in combatants:
+				if o.hostile_to(c) and o.can_act() and c.dist_to(o) <= reach:
+					t = o
+					break
+		if t == null:
+			continue
+		_monster_attack(c, {"kind": "monster", "attack_index": int(i)}, t)
+		if not active:
+			return
+
+
+## 充能技能（龙息）：锥形范围豁免
+func _special(c: Combatant, sp: Dictionary, point: Vector3) -> Array:
+	c.recharge[sp["id"]] = false
+	log_text("log_special", [c.display_name(), TextDB.line("rules", "special_" + sp["id"])])
+	var targets := in_area(c, sp["area"], point)
+	for t in targets:
+		var ok := _save(t, sp["save"]["ability"], int(sp["save"]["dc"]))
+		var r := Dice.roll(sp["damage"]["dice"])
+		var amount: int = r.total
+		if ok:
+			amount = amount / 2 if sp["save"].get("half", false) else 0
+		if amount > 0:
+			var dealt := _apply_typed(t, amount, sp["damage"]["type"])
+			log_text("log_damage", [t.display_name(), dealt, "%s %s" % [r, TextDB.line("rules", "dmg_" + sp["damage"]["type"])]])
+			floated.emit(t, str(dealt), &"damage")
+			_after_damage(c, t, dealt, false, sp["damage"]["type"])
+	return targets
+
+
+func _check_phase(t: Combatant) -> void:
+	var md: Dictionary = Rules.monsters.get(t.sheet.monster_kind, {})
+	var phases: Array = md.get("phases", [])
+	for i in phases.size():
+		var ph := i + 2
+		if t.phase < ph and t.sheet.hp > 0 and float(t.sheet.hp) / t.sheet.max_hp <= float(phases[i]):
+			t.phase = ph
+			log_text("log_phase", [t.display_name()])
+			boss_phase.emit(t, ph)
 
 
 func _add_hex(c: Combatant, t: Combatant, parts: Array) -> void:
@@ -543,6 +631,8 @@ func _apply_typed(t: Combatant, amount: int, dtype: String) -> int:
 func _after_damage(src: Combatant, t: Combatant, amount: int, crit: bool, dtype: String) -> void:
 	if amount <= 0:
 		return
+	if t.sheet.is_monster:
+		_check_phase(t)
 	# 专注检定
 	if not t.concentration.is_empty():
 		if not _save(t, "con", maxi(10, amount / 2)):
@@ -575,6 +665,7 @@ func _go_down(t: Combatant) -> void:
 
 func _monster_dies(src: Combatant, t: Combatant) -> void:
 	log_text("log_killed", [t.display_name()])
+	monster_killed.emit(t)
 	floated.emit(t, TextDB.line("rules", "float_dead"), &"dead")
 	# 邪魔之赐（邪术师·邪魔宗主）：击杀敌人获得临时生命
 	if src and src.sheet.choices.get("patron", "") == "fiend" and src.sheet.class_level("warlock") > 0:

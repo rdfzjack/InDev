@@ -25,6 +25,11 @@ var selected: StringName = PROTAGONIST
 
 ## 全队等级（大家一起从 1 升到 3）
 var party_level := 1
+## 每人经验（5e：遭遇战经验按人头平分）。达到门槛后可以升级（升级界面里确认）。
+var xp := 0
+const XP_THRESHOLDS := {2: 300, 3: 900}
+const MAX_LEVEL := 3
+signal xp_changed
 ## 角色卡，跨关卡保留
 var sheets: Dictionary = {}
 signal leveled_up(level: int)
@@ -38,7 +43,22 @@ func sheet(id: StringName) -> CharacterSheet:
 	return sheets[id]
 
 
-## 全队升一级，按 data/rules/party.json 的路线
+func award_xp(amount: int) -> void:
+	xp += amount
+	Meta.bump("xp_total", amount)
+	xp_changed.emit()
+
+
+## 经验够了、还没升的级数
+func pending_levels() -> int:
+	var n := 0
+	for l in range(party_level + 1, MAX_LEVEL + 1):
+		if xp >= int(XP_THRESHOLDS.get(l, 1 << 30)):
+			n += 1
+	return n
+
+
+## 全队升一级，按 data/rules/party.json 的推荐路线（调试 / 测试用；正式流程走升级界面）
 func level_up_party() -> bool:
 	if party_level >= 3:
 		return false

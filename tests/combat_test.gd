@@ -15,6 +15,7 @@ func _ready() -> void:
 	await _opportunity_attack()
 	await _lie_down()
 	await _death_saves()
+	await _monsters()
 	await _full_fight(true)
 	await _full_fight(false)
 	print("\nRESULT: %s (%d failures)" % ["PASS" if fails == 0 else "FAIL", fails])
@@ -104,14 +105,14 @@ func _load_save() -> void:
 func _sneak_attack() -> void:
 	print("== sneak attack with ally adjacent")
 	var p := _party(2)
-	var z := _mob("zombie", 1, Vector3(0, 0, 1.2))
+	var z := _mob("skeleton", 1, Vector3(0, 0, 1.2))
 	await _start(p.values() + z)
 	var sl: Combatant = p[&"sl"]
 	sl.set_pos(Vector3(0, 0, 2.4))
 	var found := false
 	for i in 30:
 		_force_turn(sl)
-		z[0].sheet.hp = 22
+		z[0].sheet.hp = 200
 		z[0].statuses.clear()
 		log_lines.clear()
 		Combat.perform(sl, Combat.find_action(sl, "attack"), z[0])
@@ -182,6 +183,48 @@ func _death_saves() -> void:
 	_ok(Combat.perform(pr, Combat.find_action(pr, "help"), poet), "help")
 	_ok(poet.sheet.hp == 1 and not poet.has_status(&"downed"), "poet back at 1 hp")
 	await _stop()
+
+
+func _monsters() -> void:
+	print("== monsters: dragon multiattack + breath, hobgoblin martial advantage, boss phase, xp")
+	for k in ["goblin", "hobgoblin", "bugbear", "wolf", "skeleton", "young_red_dragon", "demon_lord"]:
+		_ok(Rules.monsters.has(k), "monster %s" % k)
+	_ok(Rules.monsters["demon_lord"]["hp"] == 118, "demon lord hp doubled ogre (118)")
+	var p := _party(3)
+	var d := _mob("young_red_dragon", 1, Vector3(1.5, 0, 1.6))
+	await _start(p.values() + d)
+	var dr: Combatant = d[0]
+	_force_turn(dr)
+	var ma := Combat.find_action(dr, "multiattack")
+	_ok(not ma.is_empty(), "dragon has multiattack")
+	log_lines.clear()
+	Combat.perform(dr, ma, p[&"husband"])
+	var atk_lines := log_lines.filter(func(l): return l.contains("AC")).size()
+	_ok(atk_lines == 3, "multiattack = 3 attack rolls (got %d)" % atk_lines)
+	_force_turn(dr)
+	var br := Combat.find_action(dr, "special:fire_breath")
+	_ok(Combat.why_not(dr, br) == "", "breath available")
+	Combat.perform(dr, br, Vector3(1.5, 0, 0))
+	_ok(not dr.recharge["fire_breath"], "breath spent, needs recharge")
+	_force_turn(dr)
+	_ok(Combat.why_not(dr, br) in ["", "why_recharging"], "recharge rolled at turn start")
+	await _stop()
+	# boss phase + xp
+	var p2 := _party(1)
+	var boss := _mob("demon_lord", 1, Vector3(0, 0, 1.2))
+	await _start(p2.values() + boss)
+	var phases: Array = []
+	var cb := func(c, ph): phases.append(ph)
+	Combat.boss_phase.connect(cb)
+	Combat._deal(p2[&"protagonist"], boss[0], [["60", "slashing"]], false)
+	_ok(phases == [2], "boss enters phase 2 at half hp")
+	Combat.boss_phase.disconnect(cb)
+	var xp0 := Game.xp
+	Combat._deal(p2[&"protagonist"], boss[0], [["200", "slashing"]], false)
+	Combat._check_end()
+	await get_tree().process_frame
+	_ok(Game.xp - xp0 == 900 / 4, "xp split among 4 (got %d)" % (Game.xp - xp0))
+	_ok(not Combat.active, "combat over after boss dies")
 
 
 var use_fireball := true

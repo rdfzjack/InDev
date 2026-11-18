@@ -4,8 +4,6 @@ key	zh_CN	en
 monster_goblin	地精	Goblin
 monster_wolf	狼	Wolf
 monster_skeleton	骷髅	Skeleton
-monster_zombie	僵尸	Zombie
-monster_bandit	强盗	Bandit
 monster_bugbear	熊地精	Bugbear
 # ---- 武器 / 攻击 ----
 weapon_unarmed	徒手	Unarmed
@@ -23,7 +21,6 @@ weapon_scimitar	弯刀	Scimitar
 weapon_morningstar	钉头锤	Morningstar
 weapon_longbow	长弓	Longbow
 weapon_bite	啃咬	Bite
-weapon_slam	猛击	Slam
 # ---- 法术 ----
 spell_fire_bolt	火焰箭	Fire Bolt
 spell_fire_bolt_desc	向目标射出一团火焰。1d10 火焰伤害。	Hurl a mote of fire. 1d10 fire damage.
@@ -191,3 +188,15 @@ cost_action	动作	Action
 cost_bonus	附赠动作	Bonus Action
 cost_reaction	反应	Reaction
 cost_none	免费	Free
+# ---- 新怪物 ----
+monster_hobgoblin	大地精	Hobgoblin
+monster_young_red_dragon	红龙	Young Red Dragon
+monster_demon_lord	魔王	Demon Lord
+weapon_claw	爪击	Claw
+weapon_greatclub	巨棒	Greatclub
+special_fire_breath	火焰吐息	Fire Breath
+act_multiattack	多重攻击	Multiattack
+why_recharging	充能中	Recharging
+log_special	%s 使用了%s	%s uses %s
+log_phase	%s 进入了下一阶段	%s enters the next phase
+log_xp	每人获得 %d 点经验	Each party member gains %d XP
