@@ -5,13 +5,17 @@ const PS2 := preload("res://shaders/ps2.gdshader")
 const CHECKER := preload("res://assets/textures/placeholder_checker.svg")
 
 
-static func material(color: Color, tex: Texture2D = null, uv_scale := Vector2.ONE) -> ShaderMaterial:
+## snap = false：不做顶点抖动。地面和贴在地面上的层（路、陷阱板、出口）必须关：
+## 两层各自抖到不同的屏幕格子，掠射角下深度差远大于几厘米，就会互相穿插闪烁。
+static func material(color: Color, tex: Texture2D = null, uv_scale := Vector2.ONE, snap := true) -> ShaderMaterial:
 	var m := ShaderMaterial.new()
 	m.shader = PS2
 	m.set_shader_parameter("albedo_tex", tex if tex else CHECKER)
 	m.set_shader_parameter("tint", color)
 	m.set_shader_parameter("uv_scale", uv_scale)
 	m.set_shader_parameter("use_vertex_color", false)
+	if not snap:
+		m.set_shader_parameter("snap_grid", 0.0)
 	return m
 
 
@@ -36,7 +40,9 @@ static func capsule(color: Color, height := 1.8) -> MeshInstance3D:
 	return mi
 
 
-static func box(size: Vector3, color: Color, uv_scale := Vector2.ONE) -> MeshInstance3D:
+## 很薄的方块（贴地层）自动关顶点抖动，见 material()
+## 贴图按米投影：uv_per_meter = 每米几个棋盘周期（一个周期两格）
+static func box(size: Vector3, color: Color, uv_per_meter := 0.5, snap := true) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
 	var bm := BoxMesh.new()
 	bm.size = size
@@ -45,12 +51,14 @@ static func box(size: Vector3, color: Color, uv_scale := Vector2.ONE) -> MeshIns
 	bm.subdivide_height = int(size.y / 2.0)
 	bm.subdivide_depth = int(size.z / 2.0)
 	mi.mesh = bm
-	mi.material_override = material(color, null, uv_scale)
+	var m := material(color, null, Vector2.ONE * uv_per_meter, snap and size.y > 0.1)
+	m.set_shader_parameter("box_uv", true)
+	mi.material_override = m
 	return mi
 
 
 ## 带碰撞的静态方块（地面、墙）
-static func static_box(size: Vector3, color: Color, uv_per_meter := 0.5) -> StaticBody3D:
+static func static_box(size: Vector3, color: Color, uv_per_meter := 0.5, snap := true) -> StaticBody3D:
 	var sb := StaticBody3D.new()
 	sb.collision_layer = 1
 	var cs := CollisionShape3D.new()
@@ -58,7 +66,7 @@ static func static_box(size: Vector3, color: Color, uv_per_meter := 0.5) -> Stat
 	shape.size = size
 	cs.shape = shape
 	sb.add_child(cs)
-	sb.add_child(box(size, color, Vector2(maxf(size.x, size.z), maxf(size.y, size.z)) * uv_per_meter))
+	sb.add_child(box(size, color, uv_per_meter, snap))
 	return sb
 
 

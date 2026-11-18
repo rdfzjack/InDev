@@ -3,9 +3,13 @@
 shader_type spatial;
 render_mode unshaded, cull_back, depth_draw_opaque, specular_disabled;
 
-uniform sampler2D albedo_tex : source_color, filter_nearest, repeat_enable;
+// 最近邻 + mipmap：近处像素锐利（PS2 手感），远处不会闪成摩尔纹。PS2 本身也有 mipmap。
+uniform sampler2D albedo_tex : source_color, filter_nearest_mipmap, repeat_enable;
 uniform vec4 tint : source_color = vec4(1.0);
 uniform vec2 uv_scale = vec2(1.0);
+// 白模用：不用网格自带 UV，按物体空间的米数投影（每个面贴图密度一致，长条路不会压成条纹）。
+// uv_scale 此时是“每米多少个贴图周期”。
+uniform bool box_uv = false;
 uniform bool use_vertex_color = true;
 
 // 顶点量化网格（屏幕纵向格数）。越小抖得越厉害。0 = 关。
@@ -29,6 +33,11 @@ void vertex() {
 	}
 	POSITION = clip;
 	vec2 uv = UV * uv_scale;
+	if (box_uv) {
+		vec3 n = abs(NORMAL);
+		vec2 p = n.y >= max(n.x, n.z) ? VERTEX.xz : (n.x >= n.z ? VERTEX.zy : VERTEX.xy);
+		uv = p * uv_scale;
+	}
 	v_uv = uv;
 	// 传 uv*w 和 w，片元里相除 → 屏幕空间线性插值（无透视矫正）
 	v_uv_w = uv * clip.w;

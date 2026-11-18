@@ -86,7 +86,7 @@ func _ready() -> void:
 
 
 func _build_geometry(parent: Node3D) -> void:
-	var floor := Placeholders.static_box(Vector3(60, 1, 60), Color(0.55, 0.62, 0.45), 0.25)
+	var floor := Placeholders.static_box(Vector3(60, 1, 60), Color(0.55, 0.62, 0.45), 0.25, false)
 	floor.position.y = -0.5
 	parent.add_child(floor)
 	# 一面带门洞的墙（酒馆门）
@@ -100,7 +100,7 @@ func _build_geometry(parent: Node3D) -> void:
 		p.position = Vector3(-12 + i * 3.0, 2, -4)
 		parent.add_child(p)
 	# 白模区：纯白、没贴图色
-	var white := Placeholders.static_box(Vector3(10, 0.2, 10), Color(1, 1, 1))
+	var white := Placeholders.static_box(Vector3(10, 0.2, 10), Color(1, 1, 1), 0.5, false)
 	white.position = Vector3(-14, 0.1, 12)
 	parent.add_child(white)
 

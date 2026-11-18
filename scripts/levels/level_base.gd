@@ -67,7 +67,7 @@ func member(id: StringName) -> PartyMember:
 # ------------------------------------------------------------------ 白模工具
 
 func floor_box(center: Vector3, size: Vector2, color := Color(0.55, 0.6, 0.45)) -> StaticBody3D:
-	var b := Placeholders.static_box(Vector3(size.x, 1, size.y), color, 0.25)
+	var b := Placeholders.static_box(Vector3(size.x, 1, size.y), color, 0.25, false)
 	b.position = center - Vector3(0, 0.5, 0)
 	nav.add_child(b)
 	return b
@@ -76,7 +76,7 @@ func floor_box(center: Vector3, size: Vector2, color := Color(0.55, 0.6, 0.45)) 
 ## 只有画面、没有碰撞的地面层（路、广场、地毯）。放在走路的地面上方几厘米：
 ## 几乎共面的两层在 PS2 顶点抖动下会 z-fighting；做成台阶又会挡路。
 func ground_decal(center: Vector3, size: Vector2, color: Color, lift := 0.04) -> MeshInstance3D:
-	var m := Placeholders.box(Vector3(size.x, 0.02, size.y), color, Vector2(maxf(size.x, size.y), maxf(size.x, size.y)) * 0.25)
+	var m := Placeholders.box(Vector3(size.x, 0.02, size.y), color, 0.25)
 	m.position = center + Vector3(0, lift, 0)
 	add_child(m)
 	return m
