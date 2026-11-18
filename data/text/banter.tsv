@@ -50,3 +50,5 @@ sl	trap_detected		3	20		我应该能解的。
 poet	shared_item		3	30	1	我们戴的是同一个。	
 poet	shared_item_sold		3	30	1	没了。	
 sl	corpse_in_wall		3	20	1	读档重打一遍，换个地方打。	
+# ---- 白模区
+sl	dragon_slides		4	20	1	它在跟着我们。读个档吧。	

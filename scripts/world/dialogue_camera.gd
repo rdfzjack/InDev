@@ -47,11 +47,18 @@ func _process(dt: float) -> void:
 		global_position += _drift * dt
 
 
+## 大个子（龙）自己告诉镜头头在哪、有多大：camera_head() / camera_scale
 static func head_of(n: Node3D) -> Vector3:
+	if n.has_method("camera_head"):
+		return n.camera_head()
 	var h := 1.8
 	if n.get("height") != null:
 		h = float(n.get("height"))
 	return n.global_position + Vector3.UP * h * HEAD_RATIO
+
+
+static func scale_of(n: Node3D) -> float:
+	return float(n.get("camera_scale")) if n and n.get("camera_scale") != null else 1.0
 
 
 static func _flat(v: Vector3) -> Vector3:
@@ -91,7 +98,7 @@ func _ots(subject: Node3D, over: Node3D) -> void:
 	var right := d.cross(Vector3.UP).normalized()
 	var lateral := 0.75
 	for i in 4:
-		var pos := ho - d * 1.25 + right * lateral - Vector3.UP * 0.05
+		var pos := ho - d * 1.25 + right * lateral * sqrt(scale_of(subject)) - Vector3.UP * 0.05
 		_place(pos, hs, Vector2(OTS_FRAME_X, FACE_Y), subject)
 		if is_position_behind(ho) or frac_of(hs).x - frac_of(ho).x >= MIN_SEPARATION:
 			break
@@ -106,7 +113,7 @@ func _close(subject: Node3D, toward: Node3D) -> void:
 	var face := _flat((toward.global_position if toward else hs + Vector3.FORWARD) - subject.global_position)
 	var side := face.cross(Vector3.UP).normalized()
 	var dir := (face * cos(deg_to_rad(25)) + side * sin(deg_to_rad(25))).normalized()
-	var pos := hs + dir * 1.7 + Vector3.UP * 0.05
+	var pos := hs + dir * 1.7 * scale_of(subject) + Vector3.UP * 0.05
 	_place(pos, hs, Vector2(0.5, FACE_Y + 0.02), subject)
 	_drift = -dir * 0.03
 

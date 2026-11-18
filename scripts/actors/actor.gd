@@ -146,7 +146,7 @@ func _on_velocity(v: Vector3) -> void:
 	velocity.z = v.z
 	if Vector2(v.x, v.z).length() > 0.1:
 		var look := global_position + Vector3(v.x, 0, v.z)
-		model.look_at(look, Vector3.UP, true)
+		model.look_at(look, Vector3.UP)
 	move_and_slide()
 
 
@@ -166,7 +166,7 @@ func _follow(dt: float) -> void:
 	else:
 		var v := to.normalized() * step
 		global_position += v
-		model.look_at(global_position + v, Vector3.UP, true)
+		model.look_at(global_position + v, Vector3.UP)
 
 
 ## 子类钩子

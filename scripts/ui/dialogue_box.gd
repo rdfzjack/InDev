@@ -182,7 +182,7 @@ func _face(a: Node3D, b: Node3D) -> void:
 	var t := b.global_position
 	t.y = m.global_position.y
 	if m.global_position.distance_to(t) > 0.01:
-		m.look_at(t, Vector3.UP, true)
+		m.look_at(t, Vector3.UP)
 
 
 ## 对话对象被换掉了（NPC 入队变成队员节点），重新找

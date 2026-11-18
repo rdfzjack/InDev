@@ -67,6 +67,18 @@ func replace(tag: StringName, id: StringName) -> void:
 func play(id: StringName) -> void:
 	if id == _current or id == &"":
 		return
+	# "none"：安静（白模区没有底音乐，只有龙那首歌，从龙身上放）
+	if id == &"none":
+		var tw0 := create_tween().set_parallel(true)
+		tw0.tween_interval(FADE)
+		for p in [_a, _b]:
+			if p.playing:
+				tw0.tween_property(p, "volume_db", -80.0, FADE)
+		tw0.chain().tween_callback(func():
+			_a.stop()
+			_b.stop())
+		_current = id
+		return
 	var path := DIR % String(id)
 	if not ResourceLoader.exists(path):
 		push_warning("Music: missing %s" % path)

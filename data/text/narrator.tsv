@@ -92,3 +92,6 @@ corpse_in_wall	他的尸体飞进了墙里。
 d2_corpse_loot	尸体在墙的另一边。上面有 150 金币、一把 +1 长剑和一封没有署名的信。你够不到。	
 d2_corpse_loot_ok	尸体上有 150 金币、一把 +1 长剑和一封没有署名的信。	
 d2_done	墓园安静了。	
+whitebox_enter	地面是白色的网格。这一片区域只完成了白模阶段。	
+dragon_seen	一条龙。	
+dragon_slides	它的尸体开始移动。它的移动逻辑没有被关闭。	

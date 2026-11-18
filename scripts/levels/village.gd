@@ -217,7 +217,7 @@ func _play_murder() -> void:
 func _face(n: Node3D, dir: Vector3) -> void:
 	var m: Node3D = n.get("model")
 	if m:
-		m.look_at(m.global_position + dir, Vector3.UP, true)
+		m.look_at(m.global_position + dir, Vector3.UP)
 
 
 func _slide(n: Node3D, to: Vector3, sec: float) -> void:

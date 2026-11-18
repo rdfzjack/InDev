@@ -1,0 +1,55 @@
+# 白模区的龙。可打可对话。它不先动手。
+# 开打：你老公说"这边还没做。"然后就开打了。
+
+~ start
+@ cam close dragon
+dragon: 你们走了很远。  #dragon.start.01
+dragon: 这里没有路。你们是怎么找到这里的？  #dragon.start.02
+- 你在这里做什么？ -> what  #dragon.start.03
+- 这里是什么地方？ -> where  #dragon.start.04
+- 你会攻击我们吗？ -> attack  #dragon.start.05
+- [check:persuasion:15] 你愿意跟我们走吗？ -> come_ok | come_no  #dragon.start.06
+- 拔出武器。 -> fight  #dragon.start.07
+- 离开。 -> END  #dragon.start.08
+
+~ what
+dragon: 等。  #dragon.what.01
+dragon: 等这里被做完。  #dragon.what.02
+-> more
+
+~ where
+dragon: 这里还没有名字。  #dragon.where.01
+dragon: 地是白的，天也是。我喜欢这样。  #dragon.where.02
+-> more
+
+~ attack
+dragon: 不会。  #dragon.attack.01
+dragon: 没有人告诉过我要那样做。  #dragon.attack.02
+-> more
+
+~ come_ok
+dragon: 我不能离开这里。  #dragon.come_ok.01
+dragon: 我是放在这里的。  #dragon.come_ok.02
+-> more
+
+~ come_no
+dragon: 不。  #dragon.come_no.01
+-> more
+
+~ more
+@ no_idk
+- 再问一件事。 -> start_short  #dragon.more.01
+- 拔出武器。 -> fight  #dragon.more.02
+- 离开。 -> END  #dragon.more.03
+
+~ start_short
+@ no_idk
+- 你在这里做什么？ -> what  #dragon.start_short.01
+- 这里是什么地方？ -> where  #dragon.start_short.02
+- 你会攻击我们吗？ -> attack  #dragon.start_short.03
+- 离开。 -> END  #dragon.start_short.04
+
+~ fight
+husband: 这边还没做。  #dragon.fight.01
+$ fight
+-> END
