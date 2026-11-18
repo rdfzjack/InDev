@@ -110,6 +110,11 @@ func _begin_turn() -> void:
 	c.start_turn()
 	turn_started.emit(c)
 	if not c.is_alive():
+		# 死了的敌人还轮到他（node 上 meta "dead_turn"）：全队等他行动，等一会儿，跳过
+		if c.node and is_instance_valid(c.node) and c.node.get_meta("dead_turn", false) and not c.get_meta("dead_turn_done", false):
+			c.set_meta("dead_turn_done", true)
+			_wait_for_dead(c)
+			return
 		end_turn.call_deferred()
 		return
 	if c.is_down() and not c.sheet.is_monster:
@@ -142,6 +147,16 @@ func _begin_turn() -> void:
 	_rebukes.clear()
 	if c.team == &"enemy":
 		_run_ai.call_deferred(c)
+
+
+func _wait_for_dead(c: Combatant) -> void:
+	log_text("log_waiting_for", [c.display_name()])
+	Bus.report(&"dead_turn", c.id(), c.pos())
+	Meta.bump("waited_for_dead")
+	if not instant:
+		await get_tree().create_timer(3.5).timeout
+	if active and current() == c:
+		end_turn()
 
 
 func end_turn() -> void:

@@ -129,10 +129,15 @@ func _refresh() -> void:
 ## 商人的货：有货的按顺序排，第三格永远插一个空格
 func _display_stock() -> Array:
 	var list: Array = []
+	var third = null
 	for e in _shop.get("stock", []):
 		if e != null and int(e["qty"]) > 0:
+			# 卖给他的传说装备：想买回来——它在第三格
+			if Inventory.def(e["id"]).get("shared", false) and third == null:
+				third = e
+				continue
 			list.append(e)
-	list.insert(mini(EMPTY_SLOT_INDEX, list.size()), null)
+	list.insert(mini(EMPTY_SLOT_INDEX, list.size()), third)
 	return list
 
 
@@ -145,9 +150,11 @@ func sell_price(id: String) -> int:
 
 
 func _on_buy(index: int, e) -> void:
+	# 第三格：不管里面是什么，点了就卡死
+	if index == EMPTY_SLOT_INDEX:
+		_freeze()
+		return
 	if e == null:
-		if index == EMPTY_SLOT_INDEX:
-			_freeze()
 		return
 	var id: String = e["id"]
 	var price := buy_price(id)

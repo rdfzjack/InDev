@@ -38,3 +38,9 @@ husband_fireball	stat	funny	husband_fireball	0.7	你老公施放火球术	瞬时
 trap_detected	gameplay	gameplay	trap_detected	0.6	队员被动察觉 >= 陷阱 DC	永久	-	发现后可以点它（解除功能没做）
 item_in_crack	position	gameplay	item_in_crack	0.4	扔过来的任务道具滚进地缝	永久	读档，或者让 SL 开锁	铁匠的钥匙
 murder_skip_broken	interact	gameplay		1	被害村民过场跳过只转到一半	每次	绕开触发半径	旁白在过场里自己说了
+encounter_too_big	gameplay	gameplay	encounter_too_big	0.3	战斗触发盒比房间大	一场	-	第一轮谁都够不着谁
+dead_turn	gameplay	funny	dead_turn	0.4	死了的敌人还轮到他的回合	一回合	等一会儿，跳过	全队等他
+chest_fake_open	interact	funny	d2_chest_fake	0.3	宝箱动画播了但没开	一次	再开一次	-
+shared_item	stat	gameplay	shared_item	0.3	传说装备全队共享同一个实例	永久	-	装上之后背包里还有一个
+shared_item_sold	stat	gameplay	shared_item_sold	0.2	卖掉共享实例，四个人同时掉光	永久	买回来（它在第三格）	引用计数的正常行为
+corpse_in_wall	position	gameplay	corpse_in_wall	0.3	boss 尸体沿固定方向飞进墙里	永久	换个位置打	读档重打还是往同一个方向飞

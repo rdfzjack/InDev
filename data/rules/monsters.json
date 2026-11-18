@@ -326,5 +326,87 @@
 		"passive_perception": 8,
 		"stealth": -1,
 		"athletics": 4
+	},
+	"zombie": {
+		"_note": "SRD Zombie (CR 1/4)。慢。不死坚韧。",
+		"cr": "1/4",
+		"xp": 50,
+		"ac": 8,
+		"hp": 22,
+		"speed": 6,
+		"size": "medium",
+		"abilities": {
+			"str": 13,
+			"dex": 6,
+			"con": 16,
+			"int": 3,
+			"wis": 6,
+			"cha": 5
+		},
+		"attacks": [
+			{
+				"id": "slam",
+				"kind": "melee",
+				"to_hit": 3,
+				"dice": "1d6+1",
+				"type": "bludgeoning",
+				"range": 1.5
+			}
+		],
+		"traits": [
+			"undead_fortitude"
+		],
+		"undead": true,
+		"passive_perception": 8,
+		"stealth": -2,
+		"athletics": 1
+	},
+	"hooded_figure": {
+		"_note": "Dungeon 2 boss（村里那个凶手）。数值取 Bugbear Chief（CR 3），生命值 65。尸体死后往北飞 13 米。",
+		"cr": "3",
+		"xp": 700,
+		"ac": 17,
+		"hp": 65,
+		"speed": 9,
+		"size": "medium",
+		"abilities": {
+			"str": 17,
+			"dex": 14,
+			"con": 14,
+			"int": 11,
+			"wis": 12,
+			"cha": 11
+		},
+		"attacks": [
+			{
+				"id": "morningstar",
+				"kind": "melee",
+				"to_hit": 5,
+				"dice": "2d8+3",
+				"type": "piercing",
+				"range": 1.5
+			},
+			{
+				"id": "javelin",
+				"kind": "ranged",
+				"to_hit": 5,
+				"dice": "2d6+3",
+				"type": "piercing",
+				"range": 9,
+				"long": 36
+			}
+		],
+		"multiattack": [
+			0,
+			0
+		],
+		"traits": [
+			"surprise_attack"
+		],
+		"humanoid": true,
+		"boss": true,
+		"passive_perception": 11,
+		"stealth": 6,
+		"athletics": 5
 	}
 }

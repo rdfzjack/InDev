@@ -483,6 +483,17 @@
 			"price": 0,
 			"rarity": "common",
 			"icon": "crypt_key"
+		},
+		"oath_ring": {
+			"kind": "ring",
+			"slot": "ring",
+			"price": 2000,
+			"rarity": "legendary",
+			"ac": 2,
+			"saves": 2,
+			"shared": true,
+			"icon": "oath_ring",
+			"_note": "传说装备。全队共享同一个实例：装上以后背包里还有一个，四个人都戴着。卖掉以后四个人同时掉光。商店里它在第三格。"
 		}
 	}
 }

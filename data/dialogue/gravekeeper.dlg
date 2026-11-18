@@ -1,0 +1,48 @@
+# 墓园地穴入口的守墓人（鬼魂）。检定全是坏的：
+#   DC 是负的（必然成功，还是要你掷）、DC 45（3 级团永远过不去）、DC {难度}（没替换）、说服用力量当调整值。
+
+~ start
+gravekeeper: 活人。很久没见过活人了。  #gravekeeper.start.01
+- [check:persuasion:-3] 我们只是路过。 -> pass  #gravekeeper.start.02
+- [check:intimidation:45] 让开，不然把你再杀一遍。 -> scare | scare_no  #gravekeeper.start.03
+- [check:insight:{难度}] 你在害怕什么？ -> fear | fear_no  #gravekeeper.start.04
+- [check:persuasion:12,ability=str] 告诉我们地穴里有什么。 -> tell | tell_no  #gravekeeper.start.05
+- 再见。 -> END  #gravekeeper.start.06
+
+~ pass
+gravekeeper: 路过就路过吧。  #gravekeeper.pass.01
+gravekeeper: 每个人都是路过的。  #gravekeeper.pass.02
+-> start_again
+
+~ scare
+gravekeeper: ……  #gravekeeper.scare.01
+-> END
+
+~ scare_no
+gravekeeper: 我已经死了。  #gravekeeper.scare_no.01
+-> start_again
+
+~ fear
+gravekeeper: 他。穿斗篷的那个。  #gravekeeper.fear.01
+gravekeeper: 他每天黄昏出去，回来的时候身上有血。  #gravekeeper.fear.02
+$ set d2_knows_boss
+-> start_again
+
+~ fear_no
+gravekeeper: 我不害怕。  #gravekeeper.fear_no.01
+-> start_again
+
+~ tell
+gravekeeper: 走廊尽头有人等着你们。  #gravekeeper.tell.01
+gravekeeper: 你们还没走到，他们就会知道你们来了。  #gravekeeper.tell.02
+-> start_again
+
+~ tell_no
+gravekeeper: 你的胳膊很粗。这不能说服我。  #gravekeeper.tell_no.01
+-> start_again
+
+~ start_again
+@ no_idk
+gravekeeper: 还有事吗？  #gravekeeper.start_again.01
+- 没有了。 -> END  #gravekeeper.start_again.02
+- 再问一件事。 -> start  #gravekeeper.start_again.03

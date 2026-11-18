@@ -109,3 +109,5 @@ area_dungeon_2	墓园地穴
 area_whitebox	小路		
 cutscene_skip_hint	按住 空格 跳过		
 picked_up	捡起了 %s。		
+obj_crypt_gate	墓园铁门		
+obj_corpse	尸体		

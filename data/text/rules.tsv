@@ -5,6 +5,8 @@ monster_goblin	地精	Goblin
 monster_wolf	狼	Wolf
 monster_skeleton	骷髅	Skeleton
 monster_bugbear	熊地精	Bugbear
+monster_zombie	僵尸	Zombie
+monster_hooded_figure	神秘人	Hooded Figure
 # ---- 武器 / 攻击 ----
 weapon_unarmed	徒手	Unarmed
 weapon_dagger	匕首	Dagger
@@ -19,6 +21,7 @@ weapon_rapier	刺剑	Rapier
 weapon_shortsword	短剑	Shortsword
 weapon_scimitar	弯刀	Scimitar
 weapon_morningstar	钉头锤	Morningstar
+weapon_slam	猛击	Slam
 weapon_longbow	长弓	Longbow
 weapon_bite	啃咬	Bite
 # ---- 法术 ----
@@ -413,3 +416,4 @@ race_drow	卓尔	Drow
 race_tiefling	提夫林	Tiefling
 dice_expertise	专精	Expertise
 dice_proficiency	熟练	Proficiency
+log_waiting_for	等待 %s 行动……	Waiting for %s...

@@ -97,6 +97,8 @@ func equip(s: CharacterSheet, id: String, slot := "") -> bool:
 			unequip(s, "shield")
 	if slot == "shield" and s.equipment.get("off_hand", "") != "":
 		unequip(s, "off_hand")
+	if d.get("shared", false):
+		return _equip_shared(id, slot)
 	unequip(s, slot)
 	remove(id)
 	match slot:
@@ -113,8 +115,39 @@ func equip(s: CharacterSheet, id: String, slot := "") -> bool:
 	return true
 
 
+## 传说装备（shared）：全队共享同一个实例。装上 = 所有人都戴上，背包里那个不动（还有一个）。
+func _equip_shared(id: String, slot: String) -> bool:
+	for sid in Game.sheets:
+		var sh: CharacterSheet = Game.sheets[sid]
+		if sh.equipment.get(slot, "") != id:
+			unequip(sh, slot)
+			sh.equipment[slot] = id
+			sh.hp_changed.emit()
+	Meta.bump("equips")
+	Bus.report(&"shared_item", &"", Vector3.ZERO)
+	changed.emit()
+	return true
+
+
+## 谁身上戴着这个共享实例
+static func shared_holders(id: String) -> Array:
+	var out: Array = []
+	for sid in Game.sheets:
+		if Game.sheets[sid].equipment.values().has(id):
+			out.append(sid)
+	return out
+
+
 func unequip(s: CharacterSheet, slot: String) -> void:
 	var cur = s.equipment.get(slot, "")
+	# 共享实例：摘下来就是所有人一起摘（背包里本来就还有那一个，不用放回去）
+	if cur is String and cur != "" and def(cur).get("shared", false):
+		for sid in Game.sheets:
+			var sh: CharacterSheet = Game.sheets[sid]
+			if sh.equipment.get(slot, "") == cur:
+				sh.equipment[slot] = ""
+				sh.hp_changed.emit()
+		return
 	if slot == "shield":
 		if cur:
 			add("shield")
@@ -137,6 +170,18 @@ func buy(id: String, price: int) -> bool:
 func sell(id: String, price: int) -> bool:
 	if not remove(id):
 		return false
+	# 引用计数归零：四个人身上的同时消失
+	if def(id).get("shared", false) and count(id) == 0:
+		var lost := shared_holders(id)
+		for sid in lost:
+			var sh: CharacterSheet = Game.sheets[sid]
+			for k in sh.equipment:
+				if sh.equipment[k] is String and sh.equipment[k] == id:
+					sh.equipment[k] = ""
+			sh.hp_changed.emit()
+		if lost.size() > 0:
+			Meta.bump("shared_item_sold")
+			Bus.report(&"shared_item_sold", &"", Vector3.ZERO)
 	gold += price
 	Meta.bump("sold")
 	changed.emit()

@@ -48,7 +48,7 @@ func spawn_point() -> Vector3:
 
 
 func _sync_party() -> void:
-	var base := spawn_point() if members.is_empty() else (leader.global_position if leader else global_position)
+	var base := spawn_point() if members.is_empty() else (leader.global_position if leader and leader.is_inside_tree() else spawn_point())
 	for i in Game.party.size():
 		var id: StringName = Game.party[i]
 		if members.has(id):
