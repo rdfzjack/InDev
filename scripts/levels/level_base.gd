@@ -143,7 +143,19 @@ func exit_to(at: Vector3, level: String, spawn_name: String, label_key: String, 
 	e.size = size
 	add_child(e)
 	e.position = at
+	_mark(e, MARK_EXIT)
 	return e
+
+
+## 小地图标记颜色（村口那种特殊标记关卡自己加）
+const MARK_EXIT := Color(1.0, 0.85, 0.35)
+const MARK_NPC := Color(0.85, 0.85, 0.85)
+
+
+func _mark(n: Node3D, col: Color, blink := false) -> void:
+	n.add_to_group("map_marker")
+	n.set_meta("color", col)
+	n.set_meta("blink", blink)
 
 
 func npc(id: StringName, at: Vector3, dialogue: String, node := "start", color := Color(0.7, 0.6, 0.4)) -> Npc:
@@ -155,6 +167,11 @@ func npc(id: StringName, at: Vector3, dialogue: String, node := "start", color :
 	n.dialogue_node = node
 	add_child(n)
 	n.position = at
+	# 还没入队的队友：用队伍色闪烁，好找
+	if PartyController.COLORS.has(id):
+		_mark(n, PartyController.COLORS[id], true)
+	else:
+		_mark(n, MARK_NPC)
 	return n
 
 
