@@ -13,6 +13,7 @@ extends Node
 ##           ├─ Hotbar                      底部技能栏
 ##           ├─ DialogueBox                 对话
 ##           ├─ MessageLog                  右下日志
+##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
 ##           └─ LoadingScreen
 ##
 ## 节点在代码里搭，tscn 只挂这个脚本，避免手改场景文件。
@@ -54,6 +55,11 @@ func _build_world_view() -> void:
 	world_view.add_child(viewport)
 	_sync_post_res.call_deferred()
 	world_view.resized.connect(_sync_post_res)
+
+
+func _unhandled_input(e: InputEvent) -> void:
+	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_L and not Combat.active:
+		LevelUpScreen.open_for(Game.selected)
 
 
 func _sync_post_res() -> void:
@@ -101,6 +107,9 @@ func _build_ui() -> void:
 	var log := MessageLog.new()
 	log.name = "MessageLog"
 	root.add_child(log)
+	var lvl := LevelUpScreen.new()
+	lvl.name = "LevelUpScreen"
+	root.add_child(lvl)
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
 	root.add_child(loading)

@@ -1,52 +1,189 @@
 {
-	"_doc": "Pre-made party. abilities already include racial bonuses. levels[i] = what happens at character level i+1 (class taken + choices). Everyone starts at level 1 and ends at 3. bug_spells: always known, never cost a slot, no level requirement.",
-
+	"_doc": "Pre-made party. abilities already include racial bonuses. levels[i] = RECOMMENDED choices at character level i+1 (pre-filled in the level-up screen; the player can change them). bug_spells: always known, never cost a slot, no level requirement.",
 	"protagonist": {
 		"race": "human",
-		"abilities": {"str": 16, "dex": 10, "con": 14, "int": 9, "wis": 11, "cha": 15},
-		"equipment": {"armor": "chain_mail", "shield": true, "main_hand": "longsword", "ranged": "javelin"},
-		"skills": ["athletics", "persuasion"],
+		"abilities": {
+			"str": 16,
+			"dex": 10,
+			"con": 14,
+			"int": 9,
+			"wis": 11,
+			"cha": 15
+		},
+		"equipment": {
+			"armor": "chain_mail",
+			"shield": true,
+			"main_hand": "longsword",
+			"ranged": "javelin"
+		},
+		"skills": [
+			"athletics",
+			"persuasion"
+		],
 		"levels": [
-			{"class": "paladin"},
-			{"class": "paladin", "fighting_style": "dueling", "spells": ["bless", "cure_wounds", "shield_of_faith"]},
-			{"class": "paladin", "sacred_oath": ""}
+			{
+				"class": "paladin"
+			},
+			{
+				"class": "paladin",
+				"fighting_style": "dueling",
+				"spells": [
+					"bless",
+					"cure_wounds",
+					"shield_of_faith"
+				]
+			},
+			{
+				"class": "paladin",
+				"sacred_oath": ""
+			}
 		]
 	},
-
 	"husband": {
 		"race": "drow",
-		"abilities": {"str": 15, "dex": 14, "con": 14, "int": 13, "wis": 8, "cha": 11},
-		"equipment": {"armor": "plate", "shield": true, "main_hand": "longsword", "ranged": "light_crossbow"},
-		"skills": ["athletics", "perception"],
-		"levels": [
-			{"class": "fighter", "fighting_style": "defense"},
-			{"class": "wizard", "cantrips": ["fire_bolt", "ray_of_frost", "shocking_grasp"], "spells": ["magic_missile", "shield", "burning_hands"]},
-			{"class": "fighter"}
+		"abilities": {
+			"str": 15,
+			"dex": 14,
+			"con": 14,
+			"int": 13,
+			"wis": 8,
+			"cha": 11
+		},
+		"equipment": {
+			"armor": "plate",
+			"shield": true,
+			"main_hand": "longsword",
+			"ranged": "light_crossbow"
+		},
+		"skills": [
+			"athletics",
+			"perception"
 		],
-		"bug_spells": ["fireball"]
-	},
-
-	"poet": {
-		"race": "human",
-		"abilities": {"str": 9, "dex": 15, "con": 13, "int": 11, "wis": 11, "cha": 16},
-		"equipment": {"armor": "leather", "shield": false, "main_hand": "rapier", "ranged": "shortbow"},
-		"skills": ["performance", "persuasion", "insight"],
 		"levels": [
-			{"class": "bard", "cantrips": ["vicious_mockery"], "spells": ["healing_word", "dissonant_whispers", "thunderwave", "cure_wounds"]},
-			{"class": "bard"},
-			{"class": "bard", "bard_college": "lore", "spells": ["shatter"], "expertise": ["performance", "persuasion"]}
+			{
+				"class": "fighter",
+				"fighting_style": "defense"
+			},
+			{
+				"class": "wizard",
+				"cantrips": [
+					"fire_bolt",
+					"ray_of_frost",
+					"shocking_grasp"
+				],
+				"spells": [
+					"magic_missile",
+					"shield"
+				]
+			},
+			{
+				"class": "fighter"
+			}
+		],
+		"bug_spells": [
+			"fireball"
 		]
 	},
-
+	"poet": {
+		"race": "human",
+		"abilities": {
+			"str": 9,
+			"dex": 15,
+			"con": 13,
+			"int": 11,
+			"wis": 11,
+			"cha": 16
+		},
+		"equipment": {
+			"armor": "leather",
+			"shield": false,
+			"main_hand": "rapier",
+			"ranged": "shortbow"
+		},
+		"skills": [
+			"performance",
+			"persuasion",
+			"insight"
+		],
+		"levels": [
+			{
+				"class": "bard",
+				"cantrips": [
+					"vicious_mockery",
+					"true_strike"
+				],
+				"spells": [
+					"healing_word",
+					"dissonant_whispers",
+					"thunderwave",
+					"cure_wounds"
+				]
+			},
+			{
+				"class": "bard",
+				"spells": [
+					"faerie_fire"
+				]
+			},
+			{
+				"class": "bard",
+				"bard_college": "lore",
+				"spells": [
+					"shatter"
+				],
+				"expertise": [
+					"performance",
+					"persuasion"
+				]
+			}
+		]
+	},
 	"sl": {
 		"race": "tiefling",
-		"abilities": {"str": 8, "dex": 15, "con": 14, "int": 11, "wis": 10, "cha": 15},
-		"equipment": {"armor": "leather", "shield": false, "main_hand": "shortsword", "off_hand": "dagger", "ranged": "shortbow"},
-		"skills": ["stealth", "sleight_of_hand", "acrobatics", "deception"],
+		"abilities": {
+			"str": 8,
+			"dex": 15,
+			"con": 14,
+			"int": 11,
+			"wis": 10,
+			"cha": 15
+		},
+		"equipment": {
+			"armor": "leather",
+			"shield": false,
+			"main_hand": "shortsword",
+			"off_hand": "dagger",
+			"ranged": "shortbow"
+		},
+		"skills": [
+			"stealth",
+			"sleight_of_hand",
+			"acrobatics",
+			"deception"
+		],
 		"levels": [
-			{"class": "rogue", "expertise": ["stealth", "sleight_of_hand"]},
-			{"class": "rogue"},
-			{"class": "warlock", "patron": "fiend", "cantrips": ["eldritch_blast"], "spells": ["hex", "hellish_rebuke"]}
+			{
+				"class": "rogue",
+				"expertise": [
+					"stealth",
+					"sleight_of_hand"
+				]
+			},
+			{
+				"class": "rogue"
+			},
+			{
+				"class": "warlock",
+				"patron": "fiend",
+				"cantrips": [
+					"eldritch_blast",
+					"poison_spray"
+				],
+				"spells": [
+					"hex",
+					"hellish_rebuke"
+				]
+			}
 		]
 	}
 }

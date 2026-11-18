@@ -37,6 +37,7 @@ signal leveled_up(level: int)
 
 func sheet(id: StringName) -> CharacterSheet:
 	if not sheets.has(id):
+		# 中途入队的人按推荐路线直接到当前等级
 		var s := CharacterSheet.from_party(id, party_level)
 		s.hp_changed.connect(func(): hp_changed.emit(id))
 		sheets[id] = s
@@ -49,13 +50,30 @@ func award_xp(amount: int) -> void:
 	xp_changed.emit()
 
 
-## 经验够了、还没升的级数
-func pending_levels() -> int:
-	var n := 0
-	for l in range(party_level + 1, MAX_LEVEL + 1):
+## 经验允许的最高等级
+func level_allowed() -> int:
+	var lv := 1
+	for l in range(2, MAX_LEVEL + 1):
 		if xp >= int(XP_THRESHOLDS.get(l, 1 << 30)):
-			n += 1
-	return n
+			lv = l
+	return lv
+
+
+func can_level(id: StringName) -> bool:
+	return in_party(id) and sheet(id).level() < level_allowed()
+
+
+## 升级界面确认之后调用
+func on_sheet_leveled(s: CharacterSheet) -> void:
+	party_level = maxi(party_level, s.level())
+	leveled_up.emit(s.level())
+
+
+## 调试：经验直接加到下一级门槛
+func debug_xp_to_next_level() -> void:
+	var nxt := level_allowed() + 1
+	if XP_THRESHOLDS.has(nxt):
+		award_xp(int(XP_THRESHOLDS[nxt]) - xp)
 
 
 ## 全队升一级，按 data/rules/party.json 的推荐路线（调试 / 测试用；正式流程走升级界面）

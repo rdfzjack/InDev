@@ -200,3 +200,164 @@ why_recharging	充能中	Recharging
 log_special	%s 使用了%s	%s uses %s
 log_phase	%s 进入了下一阶段	%s enters the next phase
 log_xp	每人获得 %d 点经验	Each party member gains %d XP
+# ---- 新法术 ----
+spell_acid_splash	酸液飞溅	Acid Splash
+spell_acid_splash_desc	敏捷豁免，失败受到 1d6 强酸伤害。	Dexterity save or take 1d6 acid damage.
+spell_poison_spray	毒气喷溅	Poison Spray
+spell_poison_spray_desc	3 米内，体质豁免，失败受到 1d12 毒素伤害。	Within 3 m. Constitution save or take 1d12 poison damage.
+spell_true_strike	克敌机先	True Strike
+spell_true_strike_desc	专注。你的下一次攻击有优势。	Concentration. Your next attack has advantage.
+spell_mage_armor	法师护甲	Mage Armour
+spell_mage_armor_desc	未着甲的目标 AC 变为 13 + 敏捷调整值。	An unarmoured target's AC becomes 13 + Dexterity modifier.
+spell_faerie_fire	妖火	Faerie Fire
+spell_faerie_fire_desc	专注。3 米半径，敏捷豁免，失败的目标被照亮，对其攻击有优势。	Concentration. 3 m radius; creatures that fail a Dexterity save are outlined and attacks against them have advantage.
+spell_divine_favor	神恩	Divine Favour
+spell_divine_favor_desc	专注，附赠动作。你的武器攻击额外造成 1d4 光耀伤害。	Concentration, bonus action. Your weapon attacks deal an extra 1d4 radiant damage.
+spell_armor_of_agathys	阿加西斯之铠	Armour of Agathys
+spell_armor_of_agathys_desc	获得 5 点临时生命值（每高一环 +5）。带着临时生命被近战击中时，攻击者受到等量冷冻伤害。	Gain 5 temporary hit points (+5 per slot level above 1st). While they last, melee attackers take that much cold damage.
+spell_hold_person	人类定身术	Hold Person
+spell_hold_person_desc	专注。人形生物进行感知豁免，失败则被麻痹，每回合重新豁免。	Concentration. A humanoid makes a Wisdom save or is paralysed, repeating the save each turn.
+status_true_strike	克敌机先	True Strike
+status_mage_armor	法师护甲	Mage Armour
+status_outlined	被妖火照亮	Outlined
+status_divine_favor	神恩	Divine Favour
+status_paralyzed	麻痹	Paralysed
+status_agathys	阿加西斯之铠	Armour of Agathys
+adv_true_strike	克敌机先	True Strike
+adv_outlined	目标被妖火照亮	Target is outlined
+adv_paralyzed	目标被麻痹	Target is paralysed
+dmg_acid	强酸	acid
+# ---- 职业 ----
+class_paladin	圣武士	Paladin
+class_fighter	战士	Fighter
+class_wizard	法师	Wizard
+class_bard	吟游诗人	Bard
+class_rogue	游荡者	Rogue
+class_warlock	邪术师	Warlock
+# ---- 特性 ----
+feat_divine_sense	神圣感知	Divine Sense
+feat_divine_sense_desc	感知附近的天界、邪魔与亡灵。	Sense celestials, fiends and undead nearby.
+feat_lay_on_hands	圣疗	Lay on Hands
+feat_lay_on_hands_desc	治疗池 = 圣武士等级 × 5。	A healing pool equal to 5 × paladin level.
+feat_fighting_style	战斗风格	Fighting Style
+feat_fighting_style_desc	选择一种战斗风格。	Choose a fighting style.
+feat_spellcasting	施法	Spellcasting
+feat_spellcasting_desc	你可以施展法术。	You can cast spells.
+feat_divine_smite	至圣斩	Divine Smite
+feat_divine_smite_desc	近战命中时可消耗法术位造成额外光耀伤害。	Spend a spell slot on a melee hit for extra radiant damage.
+feat_divine_health	神圣健康	Divine Health
+feat_divine_health_desc	免疫疾病。	Immune to disease.
+feat_sacred_oath	神圣誓言	Sacred Oath
+feat_sacred_oath_desc	立下誓言。	Swear an oath.
+feat_second_wind	回气	Second Wind
+feat_second_wind_desc	附赠动作恢复生命值，短休恢复。	Regain hit points as a bonus action; recharges on a short rest.
+feat_action_surge_desc	获得一个额外动作，短休恢复。	Gain an extra action; recharges on a short rest.
+feat_martial_archetype	武术范型	Martial Archetype
+feat_martial_archetype_desc	选择你的战士之道。	Choose your path as a fighter.
+feat_arcane_recovery	奥术回复	Arcane Recovery
+feat_arcane_recovery_desc	短休时恢复部分法术位。	Recover some spell slots on a short rest.
+feat_arcane_tradition	奥术传承	Arcane Tradition
+feat_arcane_tradition_desc	选择你的魔法学派。	Choose your school of magic.
+feat_bardic_inspiration	诗人激励	Bardic Inspiration
+feat_bardic_inspiration_desc	附赠动作给队友 1d6 激励骰，次数 = 魅力调整值。	Give an ally a 1d6 inspiration die as a bonus action; uses = Charisma modifier.
+feat_jack_of_all_trades	万事通	Jack of All Trades
+feat_jack_of_all_trades_desc	没有熟练的检定（包括先攻）加一半熟练加值。	Add half your proficiency bonus to checks you aren't proficient in, including initiative.
+feat_song_of_rest	休憩曲	Song of Rest
+feat_song_of_rest_desc	短休时队友额外恢复生命值。	Allies regain extra hit points on a short rest.
+feat_bard_college	诗人学院	Bard College
+feat_bard_college_desc	选择你的学院。	Choose your college.
+feat_expertise	专精	Expertise
+feat_expertise_desc	两项熟练技能的熟练加值翻倍。	Double your proficiency bonus for two proficient skills.
+feat_sneak_attack	偷袭	Sneak Attack
+feat_sneak_attack_desc	每回合一次，有优势或目标身边有队友时，灵巧或远程武器额外造成伤害。	Once per turn, deal extra damage with a finesse or ranged weapon when you have advantage or an ally is next to the target.
+feat_thieves_cant	盗贼黑话	Thieves' Cant
+feat_thieves_cant_desc	一种秘密语言。	A secret language.
+feat_cunning_action	灵巧动作	Cunning Action
+feat_cunning_action_desc	附赠动作疾走、撤离或躲藏。	Dash, Disengage or Hide as a bonus action.
+feat_roguish_archetype	游荡者范型	Roguish Archetype
+feat_roguish_archetype_desc	选择你的游荡者之道。	Choose your roguish path.
+feat_otherworldly_patron	异界宗主	Otherworldly Patron
+feat_otherworldly_patron_desc	与异界存在立下契约。	Strike a pact with an otherworldly being.
+feat_pact_magic	契约魔法	Pact Magic
+feat_pact_magic_desc	契约法术位，短休恢复。	Pact spell slots that recharge on a short rest.
+feat_eldritch_invocations	魔能祈唤	Eldritch Invocations
+feat_eldritch_invocations_desc	选择两种祈唤。	Choose two invocations.
+feat_pact_boon	契约恩赐	Pact Boon
+feat_pact_boon_desc	宗主赐予你一件礼物。	Your patron grants you a gift.
+# ---- 选择项 ----
+choice_fighting_style	战斗风格	Fighting Style
+choice_cantrips	戏法	Cantrips
+choice_spells	法术	Spells
+choice_expertise	专精	Expertise
+choice_skills	技能熟练	Skill Proficiency
+choice_invocations	魔能祈唤	Eldritch Invocations
+choice_sacred_oath	誓言	Oath
+choice_martial_archetype	武术范型	Martial Archetype
+choice_arcane_tradition	奥术传承	Arcane Tradition
+choice_bard_college	诗人学院	Bard College
+choice_roguish_archetype	游荡者范型	Roguish Archetype
+choice_patron	宗主	Patron
+choice_pact_boon	契约恩赐	Pact Boon
+style_archery	箭术	Archery
+style_archery_desc	远程武器攻击检定 +2。	+2 to ranged weapon attack rolls.
+style_defense	防御	Defence
+style_defense_desc	穿着护甲时 AC +1。	+1 AC while wearing armour.
+style_dueling	对决	Dueling
+style_dueling_desc	单手持一把近战武器、另一只手不持武器时，伤害 +2。	+2 damage with a one-handed melee weapon and no other weapon.
+style_great_weapon_fighting	巨武器战斗	Great Weapon Fighting
+style_great_weapon_fighting_desc	双手或可双手持用的武器，伤害骰掷出 1 或 2 时重掷。	Reroll 1s and 2s on damage dice with two-handed or versatile weapons.
+style_two_weapon_fighting	双武器战斗	Two-Weapon Fighting
+style_two_weapon_fighting_desc	副手攻击的伤害加上属性调整值。	Add your ability modifier to off-hand attack damage.
+sub_champion	勇士	Champion
+sub_champion_desc	掷出 19 或 20 都算重击。	Score a critical hit on a 19 or 20.
+sub_evocation	塑能学派	School of Evocation
+sub_evocation_desc	塑能法术的专家。	A specialist in evocation magic.
+sub_lore	逸闻学院	College of Lore
+sub_lore_desc	语出惊人：反应，用激励骰减少敌人的攻击骰。	Cutting Words: use a reaction and an inspiration die to reduce an enemy's attack roll.
+sub_thief	窃贼	Thief
+sub_thief_desc	快手：灵巧动作也能使用物品。	Fast Hands: Cunning Action can also use an object.
+sub_fiend	邪魔	The Fiend
+sub_fiend_desc	邪魔之赐：击倒敌人时获得临时生命值。	Dark One's Blessing: gain temporary hit points when you drop a foe.
+sub_pact_of_the_blade	锋刃契约	Pact of the Blade
+sub_pact_of_the_blade_desc	召唤一把契约武器。	Summon a pact weapon.
+sub_pact_of_the_chain	锁链契约	Pact of the Chain
+sub_pact_of_the_chain_desc	获得一只魔宠。	Gain a familiar.
+sub_pact_of_the_tome	书卷契约	Pact of the Tome
+sub_pact_of_the_tome_desc	获得一本影之书。	Gain a Book of Shadows.
+inv_agonizing_blast	苦痛魔能	Agonising Blast
+inv_agonizing_blast_desc	魔能爆的伤害加上魅力调整值。	Add your Charisma modifier to Eldritch Blast damage.
+inv_repelling_blast	斥退魔能	Repelling Blast
+inv_repelling_blast_desc	魔能爆命中时把目标推开 3 米。	Eldritch Blast pushes the target 3 m on a hit.
+skill_athletics	运动	Athletics
+skill_acrobatics	特技	Acrobatics
+skill_sleight_of_hand	巧手	Sleight of Hand
+skill_stealth	隐匿	Stealth
+skill_arcana	奥秘	Arcana
+skill_history	历史	History
+skill_investigation	调查	Investigation
+skill_nature	自然	Nature
+skill_religion	宗教	Religion
+skill_animal_handling	驯兽	Animal Handling
+skill_insight	洞悉	Insight
+skill_medicine	医疗	Medicine
+skill_perception	察觉	Perception
+skill_survival	求生	Survival
+skill_deception	欺瞒	Deception
+skill_intimidation	威吓	Intimidation
+skill_performance	表演	Performance
+skill_persuasion	游说	Persuasion
+# ---- 升级界面 ----
+lu_title	升级	Level Up
+lu_level_line	等级 %d → %d	Level %d → %d
+lu_hp	生命值 +%d	Hit points +%d
+lu_new_features	新特性	New features
+lu_proficiencies	兼职获得的熟练	Multiclass proficiencies
+lu_choose	选择 %d / %d	Chosen %d / %d
+lu_confirm	确认	Confirm
+lu_cancel	取消	Cancel
+lu_req_multiclass	属性不满足兼职要求	Ability scores don't meet the multiclass requirement
+lu_choose_more	还有选择没做完	Some choices are incomplete
+lu_invalid	选择无效	Invalid choice
+lu_no_options	（没有可选项）	(no options)
+lu_class_level	%s %d	%s %d
+lu_ready	可以升级	Level up available

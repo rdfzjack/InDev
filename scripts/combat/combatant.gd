@@ -75,6 +75,10 @@ func can_act() -> bool:
 	return is_alive() and not is_down()
 
 
+func is_humanoid() -> bool:
+	return not sheet.is_monster or Rules.monsters.get(sheet.monster_kind, {}).get("humanoid", false)
+
+
 func hostile_to(o: Combatant) -> bool:
 	return team != o.team
 
@@ -92,6 +96,8 @@ func speed() -> float:
 
 func ac() -> int:
 	var a := sheet.ac()
+	if has_status(&"mage_armor") and sheet.equipment.get("armor", "") == "" and not sheet.is_monster:
+		a = 13 + sheet.mod("dex") + (2 if sheet.equipment.get("shield", false) else 0)
 	if has_status(&"shield_of_faith"):
 		a += 2
 	if has_status(&"shield_spell"):

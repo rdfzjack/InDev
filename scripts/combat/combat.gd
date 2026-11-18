@@ -91,6 +91,14 @@ func _begin_turn() -> void:
 		_death_save(c)
 		end_turn.call_deferred()
 		return
+	if c.has_status(&"paralyzed"):
+		# 定身：每回合尝试感知豁免，失败就跳过这个回合
+		var dc := int(c.statuses[&"paralyzed"]["data"].get("dc", 10))
+		if _save(c, "wis", dc):
+			c.remove_status(&"paralyzed")
+		else:
+			end_turn.call_deferred()
+			return
 	if c.team == &"enemy":
 		_run_ai.call_deferred(c)
 
@@ -293,6 +301,8 @@ func valid_target(c: Combatant, a: Dictionary, t: Combatant) -> bool:
 				return false
 		"self":
 			return t == c
+	if a.get("kind", "") == "spell" and Rules.spell(a["spell"]).get("humanoid_only", false) and not t.is_humanoid():
+		return false
 	return c.dist_to(t) <= float(a.get("range", 0)) + 0.01
 
 
@@ -441,6 +451,12 @@ func _adv(c: Combatant, t: Combatant, ranged: bool, normal_range: float) -> Dict
 		r.append("adv_hidden")
 	if c.has_status(&"mocked"):
 		r.append("dis_mocked")
+	if c.has_status(&"true_strike"):
+		r.append("adv_true_strike")
+	if t.has_status(&"outlined"):
+		r.append("adv_outlined")
+	if t.has_status(&"paralyzed"):
+		r.append("adv_paralyzed")
 	if ranged:
 		if d > normal_range:
 			r.append("dis_long_range")
@@ -478,8 +494,12 @@ func _roll_attack(c: Combatant, t: Combatant, bonus: int, mode: int, label: Stri
 		c.remove_status(&"inspired")
 	if c.has_status(&"mocked"):
 		c.remove_status(&"mocked")
+	if c.has_status(&"true_strike"):
+		c.remove_status(&"true_strike")
+		if c.concentration.get("spell", "") == "true_strike":
+			c.concentration = {}
 	var total := r.total + extra
-	var crit := r.is_nat20()
+	var crit := r.natural >= c.sheet.crit_range()
 	var hit := crit or (not r.is_nat1() and total >= t.ac())
 	# 反应：护盾术（被打的一方）
 	if hit and not crit:
@@ -491,7 +511,7 @@ func _roll_attack(c: Combatant, t: Combatant, bonus: int, mode: int, label: Stri
 			total -= cw
 			extra_txt += "-%d" % cw
 			hit = total >= t.ac()
-	if t.is_down() and c.dist_to(t) <= REACH and hit:
+	if (t.is_down() or t.has_status(&"paralyzed")) and c.dist_to(t) <= REACH and hit:
 		crit = true
 	var res_key := "log_crit" if crit else ("log_hit" if hit else "log_miss")
 	log_text("log_attack_roll", [c.display_name(), label, t.display_name(), _d20_str(r) + extra_txt, total, t.ac(), TextDB.line("rules", res_key)])
@@ -509,10 +529,14 @@ func _weapon_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 		return
 	var w := Rules.weapon(a["weapon"])
 	var expr := c.sheet.weapon_damage_expr(a["weapon"])
-	if a.get("offhand", false):
-		# 双武器战斗：副手不加正的属性调整值
+	if a.get("offhand", false) and not ("two_weapon_fighting" in c.sheet.fighting_styles):
+		# 双武器战斗：副手不加正的属性调整值（有双武器战斗风格才加）
 		expr = w.get("dice", "1")
-	var parts: Array = [[expr, w.get("type", "bludgeoning")]]
+	var gwf: bool = "great_weapon_fighting" in c.sheet.fighting_styles and not info["ranged"] \
+		and ("two_handed" in w.get("props", []) or "versatile" in w.get("props", []))
+	var parts: Array = [[expr, w.get("type", "bludgeoning"), "weapon", gwf]]
+	if c.has_status(&"divine_favor"):
+		parts.append(["1d4", "radiant", "divine_favor"])
 	# 偷袭：每回合一次，灵巧或远程武器，有优势或目标身边有我方
 	if c.sheet.has_feature("sneak_attack") and not c.sneak_used and ("finesse" in w.get("props", []) or info["ranged"]):
 		var ally_near := combatants.any(func(o): return o != c and not o.hostile_to(c) and o.can_act() and o.dist_to(t) <= REACH)
@@ -529,6 +553,8 @@ func _weapon_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 			parts.append(["%dd8" % mini(n, 5), "radiant", "divine_smite"])
 	_add_hex(c, t, parts)
 	_deal(c, t, parts, res["crit"])
+	if not info["ranged"]:
+		_agathys(t, c)
 
 
 func _monster_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
@@ -546,6 +572,8 @@ func _monster_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 			c.sneak_used = true
 			parts.append(["2d6", m["type"], "martial_advantage"])
 	_deal(c, t, parts, res["crit"])
+	if m["kind"] == "melee":
+		_agathys(t, c)
 	if m.has("on_hit_save") and t.is_alive() and not t.is_down():
 		var sv: Dictionary = m["on_hit_save"]
 		if not _save(t, sv["ability"], int(sv["dc"])):
@@ -601,6 +629,20 @@ func _check_phase(t: Combatant) -> void:
 			boss_phase.emit(t, ph)
 
 
+## 阿加西斯之铠：带着临时生命被近战打中，攻击者受冷冻伤害
+func _agathys(t: Combatant, attacker: Combatant) -> void:
+	if not t.has_status(&"agathys") or attacker == null or not attacker.is_alive():
+		return
+	if t.sheet.temp_hp <= 0:
+		t.remove_status(&"agathys")
+		return
+	var dmg := int(t.statuses[&"agathys"]["data"].get("dmg", 5))
+	var dealt := _apply_typed(attacker, dmg, "cold")
+	log_text("log_damage", [attacker.display_name(), dealt, "%d %s" % [dmg, TextDB.line("rules", "dmg_cold")]])
+	floated.emit(attacker, str(dealt), &"damage")
+	_after_damage(t, attacker, dealt, false, "cold")
+
+
 func _add_hex(c: Combatant, t: Combatant, parts: Array) -> void:
 	if t.has_status(&"hexed") and t.statuses[&"hexed"]["source"] == c:
 		parts.append(["1d6", "necrotic", "hex"])
@@ -613,6 +655,14 @@ func _deal(c: Combatant, t: Combatant, parts: Array, crit: bool) -> int:
 	var main_type := ""
 	for p in parts:
 		var r := Dice.roll(p[0], crit)
+		if p.size() > 3 and p[3]:
+			# 巨武器战斗：伤害骰的 1 和 2 重掷一次
+			var sum := r.bonus
+			for i in r.dice.size():
+				if r.dice[i] <= 2:
+					r.dice[i] = Dice.rng.randi_range(1, r.sides)
+				sum += r.dice[i]
+			r.total = sum
 		total += _apply_typed(t, r.total, p[1])
 		txt.append("%s %s" % [r, TextDB.line("rules", "dmg_" + p[1])])
 		if main_type == "":
@@ -704,6 +754,9 @@ func _check_death(c: Combatant) -> void:
 
 
 func _save(t: Combatant, ab: String, dc: int) -> bool:
+	if t.has_status(&"paralyzed") and ab in ["str", "dex"]:
+		log_text("log_save", [t.display_name(), TextDB.line("rules", "ab_" + ab), "-", 0, dc, TextDB.line("rules", "log_save_fail")])
+		return false
 	var bonus := t.sheet.save_bonus(ab)
 	var r := Dice.d20(bonus, _save_mode(t, ab))
 	var extra := 0
@@ -777,9 +830,13 @@ func _spell_effect(c: Combatant, sp: String, d: Dictionary, t: Combatant, up: in
 		var info := _spell_attack_info(c, sp, t)
 		var res := _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "spell_" + sp))
 		if res["hit"]:
+			if sp == "eldritch_blast" and "agonizing_blast" in c.sheet.invocations():
+				dmg_expr += "+%d" % c.sheet.mod("cha")
 			var parts: Array = [[dmg_expr, dmg["type"]]]
 			_add_hex(c, t, parts)
 			_deal(c, t, parts, res["crit"])
+			if sp == "eldritch_blast" and "repelling_blast" in c.sheet.invocations() and t.is_alive():
+				_push(c, t, 3.0)
 			if d.has("on_hit_status") and t.is_alive():
 				t.add_status(StringName(d["on_hit_status"]["id"]), int(d["on_hit_status"]["turns"]), c)
 		return
@@ -799,7 +856,8 @@ func _spell_effect(c: Combatant, sp: String, d: Dictionary, t: Combatant, up: in
 				floated.emit(t, TextDB.line("rules", "float_saved"), &"miss")
 		if not ok:
 			if d.has("on_fail_status") and t.is_alive():
-				t.add_status(StringName(d["on_fail_status"]["id"]), int(d["on_fail_status"]["turns"]), c)
+				t.add_status(StringName(d["on_fail_status"]["id"]), int(d["on_fail_status"]["turns"]), c, {"dc": c.sheet.spell_dc(sp)})
+				log_text("log_status", [t.display_name(), TextDB.line("rules", "status_" + d["on_fail_status"]["id"])])
 			if d.has("on_fail_push"):
 				_push(c, t, float(d["on_fail_push"]))
 		return
@@ -811,6 +869,12 @@ func _spell_effect(c: Combatant, sp: String, d: Dictionary, t: Combatant, up: in
 		var r := Dice.roll(expr)
 		var amount := r.total + (c.sheet.mod(c.sheet.spell_ability(sp)) if h.get("add_mod", false) else 0)
 		_heal(c, t, amount, str(r))
+		return
+	if d.get("special", "") == "armor_of_agathys":
+		var amount := 5 * (up + 1)
+		t.sheet.temp_hp = maxi(t.sheet.temp_hp, amount)
+		t.add_status(&"agathys", 999, c, {"dmg": amount})
+		log_text("log_status", [t.display_name(), TextDB.line("rules", "status_agathys")])
 		return
 	if d.has("status"):
 		t.add_status(StringName(d["status"]["id"]), int(d["status"]["turns"]), c)
@@ -848,7 +912,7 @@ func _break_concentration(c: Combatant) -> void:
 	if c.concentration.is_empty():
 		return
 	var sp: String = c.concentration["spell"]
-	var st: Dictionary = Rules.spell(sp).get("status", {})
+	var st: Dictionary = Rules.spell(sp).get("status", Rules.spell(sp).get("on_fail_status", {}))
 	if st.has("id"):
 		for t in c.concentration.get("targets", []):
 			t.remove_status(StringName(st["id"]))

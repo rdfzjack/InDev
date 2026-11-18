@@ -80,9 +80,9 @@ static func from_party(char_id: StringName, level := 1) -> CharacterSheet:
 	s.resist = r.get("resist", []).duplicate()
 	s.traits = r.get("traits", []).duplicate()
 	s.speed = float(r.get("speed", 9))
-	var path: Array = d.get("levels", [])
-	for i in mini(level, path.size()):
-		s.level_up(path[i])
+	for i in level:
+		if not s.level_up_next():
+			break
 	s.hp = s.max_hp
 	return s
 
@@ -121,12 +121,13 @@ func primary_class() -> String:
 	return class_path[0]["class"] if class_path.size() > 0 else ""
 
 
-## 下一级按 party.json 的升级路线走
+## 下一级按 party.json 的推荐路线走（经过 LevelUp 校验，配额以规则为准）
 func level_up_next() -> bool:
 	var path: Array = Rules.party.get(String(id), {}).get("levels", [])
 	if level() >= path.size():
 		return false
-	return level_up(path[level()])
+	var c: String = path[level()].get("class", "")
+	return LevelUp.apply(self, LevelUp.recommended(self, c))
 
 
 func meets_multiclass_req(c: String) -> bool:
@@ -189,13 +190,19 @@ func level_up(step: Dictionary) -> bool:
 	for f in cd["features"].get(str(cl), []):
 		_gain_feature(c, f, step)
 	# 选择
-	for k in ["sacred_oath", "bard_college", "patron"]:
+	for k in ["sacred_oath", "bard_college", "patron", "martial_archetype", "arcane_tradition", "roguish_archetype", "pact_boon"]:
 		if step.has(k):
 			choices[k] = step[k]
 	if step.has("fighting_style"):
 		_add_unique(fighting_styles, [step["fighting_style"]])
 	if step.has("expertise"):
 		_add_unique(expertise, step["expertise"])
+	if step.has("skills"):
+		_add_unique(skills, step["skills"])
+	if step.has("invocations"):
+		var inv: Array = choices.get("invocations", [])
+		_add_unique(inv, step["invocations"])
+		choices["invocations"] = inv
 	for sp in step.get("cantrips", []):
 		_learn(sp, c, true)
 	for sp in step.get("spells", []):
@@ -271,6 +278,48 @@ func _recompute_slots() -> void:
 		resources[k] = int(resources.get(k, 0)) + int(resources_max[k]) - int(old_max.get(k, 0))
 
 
+# ------------------------------------------------------------------ 法术配额
+
+## 这个职业在某个职业等级能施放的最高环（按该职业自己的表）
+static func class_max_spell_level(c: String, cl: int) -> int:
+	var cd: Dictionary = Rules.classes.get(c, {})
+	if cd.get("caster", "none") == "pact":
+		return int(cd["pact_slots"].get(str(cl), [0, 0])[1])
+	return cd.get("slots", {}).get(str(cl), []).size()
+
+
+## 某职业在某职业等级的戏法数
+func cantrip_quota(c: String, cl := -1) -> int:
+	cl = class_level(c) if cl < 0 else cl
+	return int(Rules.classes.get(c, {}).get("cantrips_known", {}).get(str(cl), 0))
+
+
+## 某职业在某职业等级的法术数（已知或准备）
+func spell_quota(c: String, cl := -1) -> int:
+	cl = class_level(c) if cl < 0 else cl
+	var cd: Dictionary = Rules.classes.get(c, {})
+	if class_max_spell_level(c, cl) == 0:
+		return 0
+	if cd.has("spells_known"):
+		return int(cd["spells_known"].get(str(cl), 0))
+	if cd.has("prepared"):
+		var lv := cl if cd.get("caster", "") == "full" else cl / 2
+		return maxi(1, mod(cd["prepared"]) + lv)
+	return 0
+
+
+func known_from(c: String, cantrip: bool) -> Array:
+	var out: Array = []
+	for sp in (cantrips if cantrip else spells_known):
+		if spell_source.get(sp, "") == c:
+			out.append(sp)
+	return out
+
+
+func invocations() -> Array:
+	return choices.get("invocations", [])
+
+
 # ------------------------------------------------------------------ 数值
 
 func mod(ab: String) -> int:
@@ -296,6 +345,11 @@ func ac() -> int:
 	if equipment.get("shield", false):
 		base += int(Rules.armor["shield"]["bonus"])
 	return base
+
+
+## 重击门槛：勇士 19
+func crit_range() -> int:
+	return 19 if choices.get("martial_archetype", "") == "champion" else 20
 
 
 func wears_metal_armor() -> bool:
@@ -346,7 +400,10 @@ func weapon_ability(weapon_id: String) -> String:
 
 
 func weapon_attack_bonus(weapon_id: String) -> int:
-	return mod(weapon_ability(weapon_id)) + (proficiency() if proficient_with(weapon_id) else 0)
+	var b := mod(weapon_ability(weapon_id)) + (proficiency() if proficient_with(weapon_id) else 0)
+	if "archery" in fighting_styles and Rules.weapon(weapon_id).get("kind", "") == "ranged":
+		b += 2
+	return b
 
 
 ## 武器伤害表达式（含属性加值、对决风格）

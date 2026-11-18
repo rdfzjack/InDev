@@ -20,6 +20,8 @@ func _ready() -> void:
 	Game.party_changed.connect(_rebuild)
 	Game.selected_changed.connect(func(_id): _refresh())
 	Game.hp_changed.connect(func(_id): _refresh())
+	Game.xp_changed.connect(_refresh)
+	Game.leveled_up.connect(func(_l): _refresh())
 	_rebuild()
 
 
@@ -55,6 +57,8 @@ func _refresh() -> void:
 	for id in _items:
 		var it: Dictionary = _items[id]
 		it["portrait"].selected = id == Game.selected
+		it["portrait"].can_level = Game.can_level(id)
+		it["portrait"].tooltip_text = TextDB.char_name(id) + ("\n" + TextDB.line("rules", "lu_ready") if Game.can_level(id) else "")
 		var bar: ProgressBar = it["bar"]
 		var sh := Game.sheet(id)
 		bar.max_value = sh.max_hp
@@ -69,3 +73,7 @@ func _on_input(e: InputEvent, id: StringName) -> void:
 			if Game.flag(&"husband_summons_pending"):
 				return
 		Game.select(id)
+		# 点角标（右上角）打开升级界面
+		var p: Portrait = _items[id]["portrait"]
+		if p.can_level and e.position.x > p.size.x - 20 and e.position.y < 20:
+			LevelUpScreen.open_for(id)

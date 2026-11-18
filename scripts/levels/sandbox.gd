@@ -4,7 +4,7 @@ extends Node3D
 ##   F1 诗人掉出地图      F2 随机报一个故障     F3 主角躺着
 ##   F4 主角说一句"我不知道"（测试 banter）    F5 重载关卡（诗人回来）
 ##   F6 开关老公约谈（约谈中他点不动）        T  直接和老公对话
-##   F7 全队升一级（1 → 3）                    F8 立刻开战（遭遇战触发器）
+##   F7 经验加到下一级门槛（然后按 L 或点头像角标升级）                    F8 立刻开战（遭遇战触发器）
 ## 往北走（-Z）进入遭遇战范围也会开战。
 
 const NAV_BAKE_LAYER := 1
@@ -116,7 +116,7 @@ func _unhandled_input(e: InputEvent) -> void:
 			Game.set_flag(&"husband_summons_pending", not Game.flag(&"husband_summons_pending"))
 			print("husband_summons_pending: ", Game.flag(&"husband_summons_pending"))
 		KEY_F7:
-			print("party level -> ", Game.party_level + 1 if Game.level_up_party() else Game.party_level)
+			Game.debug_xp_to_next_level()
 		KEY_F8:
 			var enc: Encounter = get_node_or_null("Encounter")
 			if enc:

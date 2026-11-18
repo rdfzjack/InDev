@@ -9,6 +9,7 @@ func _ready() -> void:
 	_party_levels()
 	_multiclass()
 	_slots()
+	_level_up_rules()
 	print("\nRESULT: %s (%d failures)" % ["PASS" if fails == 0 else "FAIL", fails])
 	get_tree().quit(1 if fails else 0)
 
@@ -55,6 +56,7 @@ func _party_levels() -> void:
 	_eq(h3.class_levels, {"fighter": 2, "wizard": 1}, "husband F2/W1")
 	_eq(h3.max_hp, 12 + 6 + 8, "hp 12 + (3+1+2) + (5+1+2)")
 	_eq(h3.slots_max, [2], "wizard 1 slots")
+	_eq(h3.spells_known, ["magic_missile", "shield"], "wizard 1 prepared spells within quota")
 	_eq(h3.save_profs, ["str", "con"], "saves from first class only")
 	_ok(not ("int" in h3.save_profs), "no wizard saves")
 	_ok(h3.has_resource("action_surge"), "action surge at fighter 2")
@@ -119,3 +121,44 @@ func _ok(c: bool, what: String) -> void:
 	print("  ", "OK  " if c else "FAIL", " ", what)
 	if not c:
 		fails += 1
+
+
+func _level_up_rules() -> void:
+	print("== level-up rules")
+	var h := CharacterSheet.from_party(&"husband", 1)
+	var p := LevelUp.plan(h, "wizard")
+	var kinds: Array = p["choices"].map(func(c): return c["type"])
+	_ok("cantrips" in kinds and "spells" in kinds, "wizard multiclass asks for cantrips and spells")
+	for ch in p["choices"]:
+		if ch["type"] == "cantrips":
+			_eq(ch["count"], 3, "3 cantrips")
+		if ch["type"] == "spells":
+			_eq(ch["count"], 2, "int 13 (+1) + wizard 1 = 2 prepared")
+			_ok(not ("shatter" in ch["options"]), "no 2nd-level spells at wizard 1")
+	var step := LevelUp.recommended(h, "wizard")
+	_eq(LevelUp.validate(h, step), "", "recommended step is valid")
+	var bad := step.duplicate(true)
+	bad["spells"] = ["magic_missile", "shield", "burning_hands"]
+	_eq(LevelUp.validate(h, bad), "lu_invalid" if false else "lu_choose_more", "too many spells rejected")
+	_ok(LevelUp.apply(h, step), "apply")
+	_eq(h.spells_known.size(), 2, "husband knows exactly 2 wizard spells")
+	_ok("fireball" in h.all_spells(), "fireball still there (bug)")
+	var p3 := CharacterSheet.from_party(&"poet", 3)
+	_eq(p3.spells_known.size(), 6, "bard 3 knows 6 spells")
+	_eq(p3.cantrips.size(), 2, "bard 3 knows 2 cantrips")
+	var s3 := CharacterSheet.from_party(&"sl", 3)
+	_eq(s3.spells_known.size(), 2, "warlock 1 knows 2 spells")
+	var pal := CharacterSheet.from_party(&"protagonist", 2)
+	_eq(pal.spells_known.size(), 3, "paladin 2: cha +2 + 1 = 3")
+	var pp := LevelUp.plan(pal, "paladin")
+	var oath: Array = pp["choices"].filter(func(c): return c["type"] == "subclass")
+	_ok(oath.size() == 1 and oath[0]["options"].is_empty() and oath[0]["count"] == 0, "oath choice is empty")
+	_eq(LevelUp.validate(pal, LevelUp.recommended(pal, "paladin")), "", "paladin 3 valid with no oath")
+	# 多职业门槛
+	var opts := LevelUp.class_options(CharacterSheet.from_party(&"protagonist", 1))
+	var wiz: Array = opts.filter(func(o): return o["class"] == "wizard")
+	_ok(not wiz[0]["ok"], "paladin cannot pick wizard (INT 9)")
+	# 游荡者兼职给一个技能
+	var b := CharacterSheet.from_party(&"poet", 1)
+	var rp := LevelUp.plan(b, "rogue")
+	_ok(rp["choices"].any(func(c): return c["type"] == "skills"), "multiclass into rogue grants a skill choice")

@@ -12,6 +12,11 @@ const ICON_PATH := "res://assets/portraits/%s_icon.png"
 		selected = v
 		queue_redraw()
 
+## 显示"可以升级"的角标
+var can_level := false:
+	set(v):
+		can_level = v
+		queue_redraw()
 ## 不为空时代替角色名（怪物用）
 var name_text := ""
 var _tex: Texture2D
@@ -50,6 +55,12 @@ func _draw() -> void:
 		draw_rect(r.grow(-2), col.darkened(0.35))
 		_draw_initial(size * 0.5, minf(size.x, size.y) * 0.5)
 	draw_rect(r, border, false, 2.0 if selected else 1.0)
+	if can_level:
+		# 右上角金色加号
+		var c := Vector2(size.x - 9, 9)
+		draw_circle(c, 8, UITheme.TEXT_GOLD)
+		draw_rect(Rect2(c - Vector2(5, 1.5), Vector2(10, 3)), UITheme.BG_DEEP)
+		draw_rect(Rect2(c - Vector2(1.5, 5), Vector2(3, 10)), UITheme.BG_DEEP)
 
 
 func _draw_initial(c: Vector2, rad: float) -> void:
