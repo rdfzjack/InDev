@@ -477,6 +477,12 @@
 					"turns": 100
 				}
 			}
+		},
+		"crypt_key": {
+			"kind": "quest",
+			"price": 0,
+			"rarity": "common",
+			"icon": "crypt_key"
 		}
 	}
 }

@@ -76,3 +76,6 @@ d1_done	地窖安静了。
 chicken	一只鸡卡在墙里。只有头露在外面。它在正常地叫。	
 short_rest_done	你们坐下来休息了一会儿。	
 long_rest_no_supplies	营地补给不够。	
+quest_murder_start	任务已更新：调查墓园。凶手逃进了村子南边的墓园。	
+item_stuck_in_crack	它卡在地缝里。你能看见它。你的手指够不到。	
+item_in_crack	它滚进了地缝。物理体在那里停住了。	

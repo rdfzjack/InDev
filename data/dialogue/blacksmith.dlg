@@ -1,0 +1,31 @@
+# 铁匠。碰撞体太大，谁都走不到他跟前，对话只能隔着喊（字变大）。
+# 任务道具只能扔过来，在地上滚。有时候滚进地缝里就拿不到了（SL 可以开锁，不会卡关）。
+
+~ start
+blacksmith: 什么事？  #blacksmith.start.01
+- [quest_murder][!key_thrown] 墓园的门，你有钥匙吗？ -> key  #blacksmith.start.02
+- [key_thrown][key_in_crack] 钥匙掉进地缝里了。 -> lost  #blacksmith.start.03
+- 你为什么站那么远？ -> far  #blacksmith.start.04
+- 能不能走近一点说话？ -> closer  #blacksmith.start.05
+- 再见。 -> END  #blacksmith.start.06
+
+~ key
+blacksmith: 墓园那扇门是我打的。钥匙在我这儿。  #blacksmith.key.01
+blacksmith: 接着！  #blacksmith.key.02
+$ set key_thrown
+$ throw crypt_key
+-> END
+
+~ lost
+blacksmith: 哦。  #blacksmith.lost.01
+blacksmith: 就那一把。  #blacksmith.lost.02
+-> END
+
+~ far
+blacksmith: 我没站远。  #blacksmith.far.01
+blacksmith: 是你们站得远。  #blacksmith.far.02
+-> END
+
+~ closer
+blacksmith: 你过来啊。  #blacksmith.closer.01
+-> END

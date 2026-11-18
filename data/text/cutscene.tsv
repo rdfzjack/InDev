@@ -1,0 +1,11 @@
+key	zh_CN	en	speaker
+# 过场字幕（Cutscene.line(key)）。speaker 为空或 narrator = 旁白。同一个 key 多行 = 随机取一条。
+# ---- 被害村民（村庄南路）。每次走进他的触发半径都会播。跳过是坏的。
+murder_01	今天天气真好。		murdered_villager
+murder_02	你是谁？		murdered_villager
+murder_03	……		hooded_figure
+murder_04	他倒在路中间。凶手向南边的墓园逃去。		narrator
+# 再次触发（随机一条）
+murder_04_again	他倒在路中间。凶手向南边的墓园逃去。和上次一样。		narrator
+murder_04_again	他倒在路中间。凶手向南边的墓园逃去。		narrator
+murder_04_again	他倒在路中间。这段过场的跳过功能没有接上。		narrator

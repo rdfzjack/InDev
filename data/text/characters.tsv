@@ -1,10 +1,16 @@
-id	zh_CN	en	note
+id	zh_CN	en	voice	note
 # name 是头顶名牌和对话框说话人显示的文字
-protagonist	圣骑士		【待定】主角的默认名。建卡界面输入的名字不生效
-husband	你老公		关系字段显示成了名字。全游戏不出现别的称呼
-poet	低低		【待定】诗人的游戏内名字
-sl	小扬		【待定】SL 的游戏内名字
-narrator			旁白不显示说话人
-NPC_Villager_04	NPC_Villager_04		大家就这么叫他
-shopkeeper	商店老板		老板。永远不修第三格
-chief	村长		
+protagonist	圣骑士		none	【待定】主角的默认名。建卡界面输入的名字不生效
+husband	你老公		low	关系字段显示成了名字。全游戏不出现别的称呼
+poet	低低		high	【待定】诗人的游戏内名字
+sl	小扬		mid	【待定】SL 的游戏内名字
+narrator				旁白不显示说话人
+NPC_Villager_04	NPC_Villager_04		mid	大家就这么叫他
+shopkeeper	商店老板		mid	老板。永远不修第三格
+chief	村长		low	
+# voice: 占位嘟嘟声的音高（low / mid / high / girl / none）。有正式录音（assets/audio/voice/<台词id>.ogg）时播录音
+murdered_villager	被害村民		mid	名牌一开始就写着这个。他每次都会被害
+hooded_figure	神秘人		low	过场里的凶手
+blacksmith	铁匠		low	碰撞体太大，对话要喊
+priestess	大祭司		high	神殿的大祭司。字幕全是错别字，她越庄严越好
+burly_man	壮汉		girl	配的是少女音

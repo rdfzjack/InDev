@@ -1,0 +1,37 @@
+# 神殿大祭司。正经 NPC，正经任务（墓园 / Dungeon 2）。
+# 她的字幕全是错别字（同音字、形近字，校对失败的那种）。语音是对的，只有字幕错。她越庄严越好。
+# 选项（玩家说的话）是对的。没有人对错别字有反应。
+
+~ start
+@ cam close priestess
+priestess: 旅人，愿光明痹佑你们。  #priestess.start.01
+[!quest_murder] priestess: 近来村中不太平。每到黄昏，南边的路上便有人遇骇。  #priestess.start.02
+[quest_murder][!d2_done] priestess: 你们也看见了。凶手藏身于墓圆之下的地穴。  #priestess.start.03
+- [!quest_murder] 是谁干的？ -> who  #priestess.start.04
+- [quest_murder][!d2_done] 我们会去墓园。 -> go  #priestess.start.05
+- [d2_done][!quest_murder_done] 地穴里的东西已经解决了。 -> done  #priestess.start.06
+- 你是谁？ -> me  #priestess.start.07
+- 告辞。 -> END  #priestess.start.08
+
+~ who
+priestess: 无人之道。凶手每次都往墓圆的方向逃窜。  #priestess.who.01
+priestess: 若你们愿意前往，请将其株灭，以尉亡魂。  #priestess.who.02
+$ set quest_murder
+-> END
+
+~ go
+priestess: 神明在上，见正此誓。  #priestess.go.01
+priestess: 墓圆的铁门上了锁。铁匠那里有要匙。  #priestess.go.02
+-> END
+
+~ done
+$ set quest_murder_done
+$ xp 200
+priestess: 你们做到了。光明会计住你们的功积。  #priestess.done.01
+priestess: 愿你们前路袒荡。  #priestess.done.02
+-> END
+
+~ me
+priestess: 我是此地神殿的大济司。  #priestess.me.01
+priestess: 侍奉光明，已有四十余栽。  #priestess.me.02
+-> END

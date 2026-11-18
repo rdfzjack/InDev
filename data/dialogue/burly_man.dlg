@@ -1,0 +1,19 @@
+# 酒馆里的壮汉。配的是少女音（Voice：characters.tsv 的 voice = girl；正式录音也请找少女配）。
+# 台词本身很正常，很粗犷。没有人对声音有反应。
+
+~ start
+burly_man: 哈！又来了几个小个子。  #burly_man.start.01
+- 你是谁？ -> who  #burly_man.start.02
+- 你在这儿干什么？ -> what  #burly_man.start.03
+- 再见。 -> END  #burly_man.start.04
+
+~ who
+burly_man: 我？我是这一带最能打的人。  #burly_man.who.01
+burly_man: 我一拳能打穿一面墙。  #burly_man.who.02
+-> END
+
+~ what
+burly_man: 喝酒。  #burly_man.what.01
+burly_man: 等魔王出来，我就去把他的脑袋拧下来。  #burly_man.what.02
+burly_man: 不过他一直不出来。  #burly_man.what.03
+-> END

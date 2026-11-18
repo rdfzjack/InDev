@@ -1,0 +1,17 @@
+# 被害村民。名牌一开始就写着"被害村民"。每次走进他的触发半径，过场都会再播一遍（跳过是坏的）。
+# 能点到他的人，是绕开了触发半径从侧面过来的。
+
+~ start
+murdered_villager: 今天天气真好。  #murdered_villager.start.01
+- 你没事吧？ -> ok  #murdered_villager.start.02
+- [quest_murder] 你刚才被杀了。 -> killed  #murdered_villager.start.03
+- 再见。 -> END  #murdered_villager.start.04
+
+~ ok
+murdered_villager: 没事啊。  #murdered_villager.ok.01
+-> END
+
+~ killed
+murdered_villager: 是吗。  #murdered_villager.killed.01
+murdered_villager: 每天这个时候都会这样。  #murdered_villager.killed.02
+-> END

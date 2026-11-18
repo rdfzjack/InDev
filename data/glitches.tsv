@@ -36,3 +36,5 @@ puzzle_hint_raw	text	gameplay	puzzle_hint_raw	0	谜题石碑上写的就是答�
 lod_texture	clip	funny		1	-	-	-	旁白不报告玩家认不出的故障
 husband_fireball	stat	funny	husband_fireball	0.7	你老公施放火球术	瞬时	无	3 级团不该有火球。不耗法术位，无限次，会炸到队友
 trap_detected	gameplay	gameplay	trap_detected	0.6	队员被动察觉 >= 陷阱 DC	永久	-	发现后可以点它（解除功能没做）
+item_in_crack	position	gameplay	item_in_crack	0.4	扔过来的任务道具滚进地缝	永久	读档，或者让 SL 开锁	铁匠的钥匙
+murder_skip_broken	interact	gameplay		1	被害村民过场跳过只转到一半	每次	绕开触发半径	旁白在过场里自己说了

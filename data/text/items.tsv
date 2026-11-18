@@ -64,3 +64,5 @@ trade_party	你的物品	Your items
 trade_not_enough	金币不够	Not enough gold
 trade_keeper_out	他的金币不够	The trader can't afford it
 status_burning	燃烧	Burning
+item_crypt_key	墓园铁门钥匙	
+item_crypt_key_desc	铁匠打的。墓园地穴那扇铁门的钥匙。	

@@ -72,7 +72,7 @@ func _sync_party() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if DialogueBox.is_open() or Router.is_busy() or Combat.active:
+	if DialogueBox.is_open() or Router.is_busy() or Combat.active or CutscenePlayer.is_playing():
 		return
 	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
 		_click(e.position)
@@ -113,10 +113,12 @@ func _interactable_of(o: Object) -> Node3D:
 
 
 func _physics_process(_dt: float) -> void:
-	if leader == null or Combat.active or DialogueBox.is_open():
+	if leader == null or Combat.active or DialogueBox.is_open() or CutscenePlayer.is_playing():
 		return
 	if _pending_interact and is_instance_valid(_pending_interact):
-		if leader.global_position.distance_to(_pending_interact.global_position) < INTERACT_RANGE:
+		# 目标可以自己定交互距离（铁匠碰撞体太大，走不到跟前，只能隔着喊）
+		var rng: float = _pending_interact.get("interact_range") if _pending_interact.get("interact_range") != null else INTERACT_RANGE
+		if leader.global_position.distance_to(_pending_interact.global_position) < rng:
 			leader.stop()
 			var t := _pending_interact
 			_pending_interact = null

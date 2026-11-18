@@ -25,6 +25,7 @@ Router="*res://scripts/core/scene_router.gd"
 Combat="*res://scripts/combat/combat.gd"
 Saves="*res://scripts/core/save_system.gd"
 Music="*res://scripts/core/music.gd"
+Voice="*res://scripts/core/voice.gd"
 
 [display]
 

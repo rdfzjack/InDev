@@ -274,9 +274,15 @@ func _show_line(op: Dictionary) -> void:
 		_text.text = "[center][i][color=#%s]%s%s[/color][/i][/center]" % [UITheme.NARRATOR.to_html(false), tag, body]
 	else:
 		_speaker.text = TextDB.char_name(StringName(who))
-		_text.text = "[center][color=#%s]%s[/color]%s%s%s[/center]" % [UITheme.TEXT_GOLD.to_html(false), _speaker.text, TextDB.ui("speaker_sep"), tag, body]
+		var shown := tag + body
+		# 喊话的 NPC（铁匠隔着一个太大的碰撞体说话）：字变大
+		var sp := actor_of(who)
+		if sp and sp.get("shout"):
+			shown = "[font_size=34]%s[/font_size]" % shown
+		_text.text = "[center][color=#%s]%s[/color]%s%s[/center]" % [UITheme.TEXT_GOLD.to_html(false), _speaker.text, TextDB.ui("speaker_sep"), shown]
 	_frame_for(who)
 	_waiting_click = true
+	Voice.speak(StringName(who), body, op.get("id", ""))
 	line_shown.emit(who, body)
 
 

@@ -4,6 +4,10 @@ extends Actor
 
 @export_file("*.dlg") var dialogue := ""
 @export var dialogue_node := "start"
+## 对话时字变大（喊话）
+@export var shout := false
+## 走到多远就能对话（默认队伍的 2.2 米）
+var interact_range = null
 
 
 func _join_groups() -> void:

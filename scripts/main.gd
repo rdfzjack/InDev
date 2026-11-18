@@ -17,6 +17,7 @@ extends Node
 ##           ├─ InventoryScreen             背包（I 键）
 ##           ├─ TradeScreen                 交易
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
+##           ├─ CutscenePlayer              过场（黑边、字幕、按住空格跳过）
 ##           ├─ ReactionPrompt              反应弹窗（护盾术、借机攻击……用不用）
 ##           ├─ PauseMenu                   Esc 菜单，F5 快存，F9 快读
 ##           └─ LoadingScreen
@@ -129,6 +130,9 @@ func _build_ui() -> void:
 	var lvl := LevelUpScreen.new()
 	lvl.name = "LevelUpScreen"
 	root.add_child(lvl)
+	var cut := CutscenePlayer.new()
+	cut.name = "CutscenePlayer"
+	root.add_child(cut)
 	var react := ReactionPrompt.new()
 	react.name = "ReactionPrompt"
 	root.add_child(react)
@@ -140,7 +144,9 @@ func _build_ui() -> void:
 	root.add_child(loading)
 	# 对话时隐藏 HUD（BG3 电影模式）
 	var hide_in_dialogue: Array = [hotbar, portraits, minimap, log, plates, overhead, narr, combat_hud]
-	dlg.cinematic_changed.connect(func(on):
+	var hide_hud := func(on: bool):
 		for n in hide_in_dialogue:
-			n.visible = not on)
+			n.visible = not on
+	dlg.cinematic_changed.connect(hide_hud)
+	cut.playing_changed.connect(hide_hud)
 	Router.register_host(viewport, loading)
