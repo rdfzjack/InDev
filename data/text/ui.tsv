@@ -113,3 +113,5 @@ obj_crypt_gate	墓园铁门
 obj_corpse	尸体		
 area_boss_road	通往魔王的路		
 exit_to_bossroad	LockedDoorPrompt_Default		
+title_name	正在开发中	
+title_new_game	新游戏	

@@ -1,0 +1,37 @@
+{
+	"_doc": "Character creation choices (display only: the game always starts as the default paladin). point_buy: 27 points, scores 8-15. Racial bonus: +2 / +1 on any two abilities (BG3 style).",
+	"races": ["human", "elf", "drow", "half_elf", "half_orc", "dwarf", "halfling", "gnome", "tiefling", "dragonborn"],
+	"classes": {
+		"barbarian": {"hit_die": 12, "primary": "str"},
+		"bard": {"hit_die": 8, "primary": "cha"},
+		"cleric": {"hit_die": 8, "primary": "wis"},
+		"druid": {"hit_die": 8, "primary": "wis"},
+		"fighter": {"hit_die": 10, "primary": "str"},
+		"monk": {"hit_die": 8, "primary": "dex"},
+		"paladin": {"hit_die": 10, "primary": "str"},
+		"ranger": {"hit_die": 10, "primary": "dex"},
+		"rogue": {"hit_die": 8, "primary": "dex"},
+		"sorcerer": {"hit_die": 6, "primary": "cha"},
+		"warlock": {"hit_die": 8, "primary": "cha"},
+		"wizard": {"hit_die": 6, "primary": "int"}
+	},
+	"backgrounds": {
+		"acolyte": ["insight", "religion"],
+		"charlatan": ["deception", "sleight_of_hand"],
+		"criminal": ["deception", "stealth"],
+		"entertainer": ["acrobatics", "performance"],
+		"folk_hero": ["animal_handling", "survival"],
+		"noble": ["history", "persuasion"],
+		"sage": ["arcana", "history"],
+		"soldier": ["athletics", "intimidation"]
+	},
+	"point_buy": {"budget": 27, "cost": {"8": 0, "9": 1, "10": 2, "11": 3, "12": 4, "13": 5, "14": 7, "15": 9}},
+	"recommended": {
+		"barbarian": [15, 13, 14, 8, 10, 8], "bard": [8, 14, 13, 10, 12, 15], "cleric": [13, 8, 14, 8, 15, 12],
+		"druid": [8, 13, 14, 12, 15, 10], "fighter": [15, 13, 14, 8, 12, 8], "monk": [8, 15, 13, 8, 14, 12],
+		"paladin": [15, 8, 13, 8, 12, 15], "ranger": [12, 15, 13, 8, 14, 8], "rogue": [8, 15, 13, 12, 12, 10],
+		"sorcerer": [8, 13, 14, 12, 10, 15], "warlock": [8, 13, 14, 12, 10, 15], "wizard": [8, 13, 14, 15, 12, 10]
+	},
+	"skin": ["#f1d1b5", "#e0ac83", "#c68a5e", "#8d5a3b", "#5b3a29", "#3b2a2f", "#7d6b8f", "#b85a4a"],
+	"hair_color": ["#1d1a19", "#4a3021", "#8a5a2b", "#c9a25e", "#e9dfc8", "#8c1f1f", "#3b4f8a", "#6a6a6a"]
+}

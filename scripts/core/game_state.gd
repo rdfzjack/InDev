@@ -200,6 +200,23 @@ func flag(f: StringName, default: Variant = false) -> Variant:
 	return flags.get(f, default)
 
 
+## 新游戏：清掉所有运行时状态（Meta 不清：它记的是你这个人，不是这一局）
+func new_game() -> void:
+	party.assign([PROTAGONIST])
+	flags = {}
+	selected = PROTAGONIST
+	shops = {}
+	sheets = {}
+	party_level = 1
+	xp = 0
+	day = 1
+	short_rests_left = SHORT_RESTS_PER_DAY
+	poet_outside_map = false
+	Inv.reset()
+	party_changed.emit()
+	selected_changed.emit(selected)
+
+
 ## Router 在每次关卡加载完之后调用
 func on_level_loaded() -> void:
 	poet_outside_map = false

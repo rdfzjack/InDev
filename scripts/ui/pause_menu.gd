@@ -50,6 +50,17 @@ func toggle() -> void:
 		_show_main()
 
 
+## 标题画面的"设置"：直接打开设置页
+func open_settings() -> void:
+	visible = true
+	_show_main()
+	_show_settings()
+
+
+func slot_label(slot: String) -> String:
+	return _slot_label(slot)
+
+
 func _btn(parent: Control, text: String, cb: Callable, disabled := false) -> Button:
 	var b := Button.new()
 	b.text = text
@@ -137,6 +148,8 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventKey and e.pressed and not e.echo:
 		match e.keycode:
 			KEY_ESCAPE:
+				if TitleScreen.instance and TitleScreen.instance.visible and not visible:
+					return
 				if LevelUpScreen.instance and LevelUpScreen.instance.visible:
 					return
 				if TradeScreen.instance and TradeScreen.instance.visible:
@@ -146,6 +159,8 @@ func _unhandled_input(e: InputEvent) -> void:
 				toggle()
 				get_viewport().set_input_as_handled()
 			KEY_F5:
+				if TitleScreen.instance and TitleScreen.instance.visible:
+					return
 				if Saves.save("quicksave"):
 					Narrator.show_text(TextDB.ui("menu_saved"))
 				get_viewport().set_input_as_handled()

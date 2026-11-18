@@ -20,6 +20,7 @@ extends Node
 ##           ├─ CutscenePlayer              过场（黑边、字幕、按住空格跳过）
 ##           ├─ ReactionPrompt              反应弹窗（护盾术、借机攻击……用不用）
 ##           ├─ EndingScreen                结局幻灯片、统计、制作人员
+##           ├─ TitleScreen                 标题画面 + 角色创建（只在正式启动时出现）
 ##           ├─ PauseMenu                   Esc 菜单，F5 快存，F9 快读
 ##           └─ LoadingScreen
 ##
@@ -36,10 +37,29 @@ var viewport: SubViewport
 var ui: CanvasLayer
 
 
+## 正式启动（main 是场景根）先进标题画面；测试把 main 挂在自己下面，直接进关卡
+var show_title := false
+var title: TitleScreen
+
+
 func _ready() -> void:
+	show_title = get_parent() == get_tree().root
 	_build_world_view()
 	_build_ui()
+	if show_title:
+		title.open()
+	else:
+		title.visible = false
+		Router.goto(first_level)
+
+
+func _start_new_game() -> void:
+	Game.new_game()
 	Router.goto(first_level)
+
+
+func _back_to_title() -> void:
+	title.open()
 
 
 func _build_world_view() -> void:
@@ -143,6 +163,12 @@ func _build_ui() -> void:
 	var ending := EndingScreen.new()
 	ending.name = "EndingScreen"
 	root.add_child(ending)
+	ending.finished.connect(_back_to_title)
+	title = TitleScreen.new()
+	title.name = "TitleScreen"
+	root.add_child(title)
+	title.new_game_confirmed.connect(_start_new_game)
+	pause.move_to_front()
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
 	root.add_child(loading)

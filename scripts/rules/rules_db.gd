@@ -10,6 +10,7 @@ var party: Dictionary
 var races: Dictionary
 var items: Dictionary
 var shops: Dictionary
+var chargen: Dictionary
 
 
 func _ready() -> void:
@@ -23,6 +24,7 @@ func _ready() -> void:
 	monsters = _load("res://data/rules/monsters.json")
 	party = _load("res://data/rules/party.json")
 	races = _load("res://data/rules/races.json")
+	chargen = _load("res://data/rules/chargen.json")
 
 
 func _load(path: String) -> Dictionary:

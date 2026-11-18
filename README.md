@@ -62,6 +62,11 @@ godot --path . res://tests/dialogue_test.tscn
 godot --path . res://tests/playthrough_test.tscn   # 村庄 → 地窖 → 营地完整流程
 godot --path . res://tests/move_test.tscn          # 战斗外点击地面移动
 godot --path . res://tests/reaction_test.tscn      # 反应弹窗（借机攻击、护盾术）
+godot --path . res://tests/village_test.tscn       # 被害村民、铁匠、大祭司、壮汉
+godot --path . res://tests/dungeon2_test.tscn      # 墓园地穴
+godot --path . res://tests/whitebox_test.tscn      # 白模区和龙
+godot --path . res://tests/boss_test.tscn          # 通往魔王的路、魔王战、结局
+godot --path . res://tests/title_test.tscn         # 标题画面 + 角色创建
 ```
 
 对话台本语法（条件、检定、镜头）见 `scripts/core/dialogue_script.gd` 顶部。
