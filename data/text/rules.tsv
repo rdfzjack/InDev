@@ -1,0 +1,188 @@
+key	zh_CN	en
+# 规则相关的文字：法术、武器、状态、日志格式。日志格式里的 %s %d 是参数，顺序不能变。
+# ---- 怪物 ----
+monster_goblin	地精	Goblin
+monster_wolf	狼	Wolf
+monster_skeleton	骷髅	Skeleton
+monster_zombie	僵尸	Zombie
+monster_bandit	强盗	Bandit
+monster_bugbear	熊地精	Bugbear
+# ---- 武器 / 攻击 ----
+weapon_unarmed	徒手	Unarmed
+weapon_dagger	匕首	Dagger
+weapon_quarterstaff	长棍	Quarterstaff
+weapon_mace	硬头锤	Mace
+weapon_javelin	标枪	Javelin
+weapon_light_crossbow	轻弩	Light Crossbow
+weapon_shortbow	短弓	Shortbow
+weapon_longsword	长剑	Longsword
+weapon_greatsword	巨剑	Greatsword
+weapon_rapier	刺剑	Rapier
+weapon_shortsword	短剑	Shortsword
+weapon_scimitar	弯刀	Scimitar
+weapon_morningstar	钉头锤	Morningstar
+weapon_longbow	长弓	Longbow
+weapon_bite	啃咬	Bite
+weapon_slam	猛击	Slam
+# ---- 法术 ----
+spell_fire_bolt	火焰箭	Fire Bolt
+spell_fire_bolt_desc	向目标射出一团火焰。1d10 火焰伤害。	Hurl a mote of fire. 1d10 fire damage.
+spell_ray_of_frost	冷冻射线	Ray of Frost
+spell_ray_of_frost_desc	1d8 冷冻伤害，目标速度降低 3 米直到你的下个回合。	1d8 cold damage and the target's speed drops by 3 m until your next turn.
+spell_shocking_grasp	电爪	Shocking Grasp
+spell_shocking_grasp_desc	1d8 闪电伤害，目标无法使用反应。对穿金属甲的目标有优势。	1d8 lightning damage; the target can't take reactions. Advantage against metal armour.
+spell_vicious_mockery	恶意嘲笑	Vicious Mockery
+spell_vicious_mockery_desc	感知豁免。失败受到 1d4 心灵伤害，下一次攻击有劣势。	Wisdom save. On a failure: 1d4 psychic damage and disadvantage on its next attack.
+spell_eldritch_blast	魔能爆	Eldritch Blast
+spell_eldritch_blast_desc	1d10 力场伤害。	1d10 force damage.
+spell_magic_missile	魔法飞弹	Magic Missile
+spell_magic_missile_desc	三枚飞弹必定命中，每枚 1d4+1 力场伤害。	Three darts that always hit, 1d4+1 force damage each.
+spell_shield	护盾术	Shield
+spell_shield_desc	反应：被击中时 AC +5，直到你的下个回合。	Reaction: +5 AC when hit, until your next turn.
+spell_burning_hands	燃烧之手	Burning Hands
+spell_burning_hands_desc	4.5 米锥形，敏捷豁免，3d6 火焰伤害，成功减半。	4.5 m cone. Dexterity save, 3d6 fire damage, half on success.
+spell_healing_word	治愈真言	Healing Word
+spell_healing_word_desc	附赠动作。治疗 1d4 + 施法属性调整值。	Bonus action. Heal 1d4 + spellcasting modifier.
+spell_cure_wounds	疗伤术	Cure Wounds
+spell_cure_wounds_desc	触碰。治疗 1d8 + 施法属性调整值。	Touch. Heal 1d8 + spellcasting modifier.
+spell_dissonant_whispers	不谐低语	Dissonant Whispers
+spell_dissonant_whispers_desc	感知豁免，3d6 心灵伤害，成功减半。	Wisdom save, 3d6 psychic damage, half on success.
+spell_thunderwave	雷鸣波	Thunderwave
+spell_thunderwave_desc	身边 4.5 米，体质豁免，2d8 雷鸣伤害并击退 3 米，成功减半且不击退。	4.5 m around you. Constitution save, 2d8 thunder damage and pushed 3 m; half and no push on success.
+spell_bless	祝福术	Bless
+spell_bless_desc	专注。最多三名队友的攻击检定和豁免加 1d4。	Concentration. Up to three allies add 1d4 to attack rolls and saving throws.
+spell_shield_of_faith	虔诚护盾	Shield of Faith
+spell_shield_of_faith_desc	专注，附赠动作。目标 AC +2。	Concentration, bonus action. Target gains +2 AC.
+spell_hex	脆弱诅咒	Hex
+spell_hex_desc	专注，附赠动作。你每次命中目标额外造成 1d6 黯蚀伤害。	Concentration, bonus action. Your hits on the target deal an extra 1d6 necrotic damage.
+spell_hellish_rebuke	炼狱叱喝	Hellish Rebuke
+spell_hellish_rebuke_desc	反应：受到伤害后，攻击者进行敏捷豁免，2d10 火焰伤害，成功减半。	Reaction when damaged: the attacker makes a Dexterity save, 2d10 fire damage, half on success.
+spell_shatter	粉碎音波	Shatter
+spell_shatter_desc	3 米半径，体质豁免，3d8 雷鸣伤害，成功减半。	3 m radius. Constitution save, 3d8 thunder damage, half on success.
+spell_fireball	火球术	Fireball
+spell_fireball_desc	6 米半径，敏捷豁免，8d6 火焰伤害，成功减半。	6 m radius. Dexterity save, 8d6 fire damage, half on success.
+# ---- 行动 / 特性 ----
+act_attack	攻击	Attack
+act_attack_desc	用主手武器攻击。	Attack with your main-hand weapon.
+act_attack_ranged	远程攻击	Ranged Attack
+act_attack_ranged_desc	用远程武器攻击。超出常规射程有劣势，身边有敌人也有劣势。	Attack with your ranged weapon. Disadvantage beyond normal range or with an enemy next to you.
+act_offhand	副手攻击	Off-hand Attack
+act_offhand_desc	附赠动作。用副手轻型武器攻击，伤害不加属性调整值。	Bonus action. Attack with your light off-hand weapon, no ability modifier to damage.
+act_smite	至圣斩	Divine Smite
+act_smite_desc	近战攻击。命中时消耗一个法术位，额外 2d8 光耀伤害（每高一环 +1d8，对亡灵 +1d8）。未命中不消耗。	Melee attack. On a hit, spend a spell slot for an extra 2d8 radiant damage (+1d8 per slot level above 1st, +1d8 against undead). No slot spent on a miss.
+act_second_wind	回气	Second Wind
+act_second_wind_desc	附赠动作。恢复 1d10 + 战士等级的生命值。短休恢复。	Bonus action. Regain 1d10 + fighter level hit points. Recharges on a short rest.
+act_action_surge	动作如潮	Action Surge
+act_action_surge_desc	获得一个额外动作。短休恢复。	Gain an additional action. Recharges on a short rest.
+act_lay_on_hands	圣疗术	Lay on Hands
+act_lay_on_hands_desc	触碰。从治疗池中恢复目标的生命值。	Touch. Restore hit points from your healing pool.
+act_bardic_inspiration	诗人激励	Bardic Inspiration
+act_bardic_inspiration_desc	附赠动作。队友下一次攻击检定或豁免加 1d6。	Bonus action. An ally adds 1d6 to their next attack roll or saving throw.
+act_cunning_dash	灵巧动作：疾走	Cunning Action: Dash
+act_cunning_dash_desc	附赠动作。本回合移动距离翻倍。	Bonus action. Double your movement this turn.
+act_cunning_disengage	灵巧动作：撤离	Cunning Action: Disengage
+act_cunning_disengage_desc	附赠动作。本回合移动不会引发借机攻击。	Bonus action. Your movement doesn't provoke opportunity attacks this turn.
+act_dash	疾走	Dash
+act_dash_desc	本回合移动距离翻倍。	Double your movement this turn.
+act_disengage	撤离	Disengage
+act_disengage_desc	本回合移动不会引发借机攻击。	Your movement doesn't provoke opportunity attacks this turn.
+act_dodge	闪避	Dodge
+act_dodge_desc	直到你的下个回合，对你的攻击有劣势，敏捷豁免有优势。	Until your next turn, attacks against you have disadvantage and you have advantage on Dexterity saves.
+act_help	救助	Help
+act_help_desc	扶起一名倒地的队友，恢复 1 点生命值。	Help a downed ally up with 1 hit point.
+act_lie_down	躺着	Lie Down
+act_lie_down_desc	你躺着。	You lie down.
+act_load_save	读取存档	Load Save
+act_load_save_desc	战斗回到开始时的状态。	Combat returns to how it was when it began.
+feat_action_surge	动作如潮	Action Surge
+# ---- 伤害类型 ----
+dmg_slashing	挥砍	slashing
+dmg_piercing	穿刺	piercing
+dmg_bludgeoning	钝击	bludgeoning
+dmg_fire	火焰	fire
+dmg_cold	冷冻	cold
+dmg_lightning	闪电	lightning
+dmg_thunder	雷鸣	thunder
+dmg_psychic	心灵	psychic
+dmg_force	力场	force
+dmg_radiant	光耀	radiant
+dmg_necrotic	黯蚀	necrotic
+dmg_poison	毒素	poison
+# ---- 属性 ----
+ab_str	力量	Strength
+ab_dex	敏捷	Dexterity
+ab_con	体质	Constitution
+ab_int	智力	Intelligence
+ab_wis	感知	Wisdom
+ab_cha	魅力	Charisma
+# ---- 状态 ----
+status_blessed	受祝福	Blessed
+status_hexed	被诅咒	Hexed
+status_inspired	受激励	Inspired
+status_shield_of_faith	虔诚护盾	Shield of Faith
+status_shield_spell	护盾术	Shield
+status_mocked	被嘲笑	Mocked
+status_slowed	减速	Slowed
+status_no_reactions	无法反应	No Reactions
+status_prone	倒伏	Prone
+status_downed	倒地	Downed
+status_stable	伤势稳定	Stable
+status_dodging	闪避中	Dodging
+status_disengaged	撤离	Disengaged
+status_hidden	隐匿	Hidden
+status_lying_down	躺着	Lying Down
+# ---- 优势/劣势原因 ----
+adv	优势	advantage
+dis	劣势	disadvantage
+adv_target_prone	目标倒伏	Target is prone
+dis_target_prone	远程攻击倒伏目标	Ranged attack against a prone target
+dis_prone	你倒伏着	You are prone
+dis_dodging	目标在闪避	Target is dodging
+adv_hidden	你处于隐匿	You are hidden
+dis_mocked	你被嘲笑了	You were mocked
+dis_long_range	超出常规射程	Beyond normal range
+dis_ranged_in_melee	身边有敌人	Enemy within reach
+adv_pack_tactics	群体战术	Pack Tactics
+adv_metal	目标穿着金属甲	Target wears metal armour
+# ---- 不能用的原因 ----
+why_not_your_turn	不是你的回合	Not your turn
+why_down	倒地了	Downed
+why_no_action	动作已用完	No action left
+why_no_bonus	附赠动作已用完	No bonus action left
+why_reaction_only	只能作为反应使用	Reaction only
+why_cooldown	冷却中	On cooldown
+why_no_uses	次数已用完	No uses left
+why_no_slot	没有法术位	No spell slot
+why_out_of_range	超出范围	Out of range
+# ---- 飘字 ----
+float_miss	未命中	Miss
+float_saved	豁免成功	Saved
+float_dead	死亡	Dead
+# ---- 日志 ----
+log_initiative	%s 掷先攻：%s = %d	%s rolls initiative: %s = %d
+log_attack_roll	%s 用%s攻击 %s：%s = %d 对 AC %d，%s	%s (%s) attacks %s: %s = %d vs AC %d, %s
+log_hit	命中	hit
+log_miss	未命中	miss
+log_crit	重击	critical hit
+log_damage	%s 受到 %d 点伤害（%s）	%s takes %d damage (%s)
+log_save	%s 进行%s豁免：%s = %d 对 DC %d，%s	%s makes a %s save: %s = %d vs DC %d, %s
+log_save_ok	成功	success
+log_save_fail	失败	failure
+log_cast	%s 施放了%s（%d 环）	%s casts %s (level %d)
+log_heal	%s 恢复了 %d 点生命值（%s）	%s regains %d hit points (%s)
+log_status	%s 获得状态：%s	%s gains %s
+log_feature	%s 使用了%s	%s uses %s
+log_downed	%s 倒地了	%s is downed
+log_killed	%s 死了	%s dies
+log_died	%s 死了	%s has died
+log_stable	%s 的伤势稳定了	%s is stable
+log_death_save	%s 进行死亡豁免：%d（成功 %d / 失败 %d）	%s makes a death saving throw: %d (successes %d / failures %d)
+log_death_save_nat20	%s 掷出了 20，站了起来	%s rolls a natural 20 and gets up
+log_undead_fortitude	%s 没有倒下	%s refuses to fall
+log_concentration_lost	%s 失去了对%s的专注	%s loses concentration on %s
+log_reaction	%s 用反应施放了%s	%s uses a reaction to cast %s
+log_reaction_shield	%s 用反应施放了护盾术	%s casts Shield as a reaction
+log_reaction_cutting_words	%s 语出惊人，%s 的攻击骰 -%d	%s uses Cutting Words: %s's attack roll -%d
+log_opportunity	%s 对 %s 发动借机攻击	%s makes an opportunity attack against %s
+log_victory	战斗结束。	Combat is over.
+log_defeat	全队倒下了。	The party has fallen.

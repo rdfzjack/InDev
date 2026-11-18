@@ -1,0 +1,24 @@
+{
+	"_doc": "Distances in meters (5 ft = 1.5 m). cost: action/bonus/reaction. target: enemy/ally/creature/self/point. area: {shape: sphere|cone|cube, size}. attack: ranged_spell|melee_spell. save: {ability, half}. damage: {dice, type, upcast(per slot level above base)}. cantrip damage scales at character level 5 (not reachable here). special: handled in code by id.",
+
+	"fire_bolt":       {"level": 0, "cost": "action", "range": 18, "target": "creature", "attack": "ranged_spell", "damage": {"dice": "1d10", "type": "fire"}},
+	"ray_of_frost":    {"level": 0, "cost": "action", "range": 18, "target": "creature", "attack": "ranged_spell", "damage": {"dice": "1d8", "type": "cold"}, "on_hit_status": {"id": "slowed", "turns": 1}},
+	"shocking_grasp":  {"level": 0, "cost": "action", "range": 1.5, "target": "creature", "attack": "melee_spell", "damage": {"dice": "1d8", "type": "lightning"}, "on_hit_status": {"id": "no_reactions", "turns": 1}, "special": "adv_vs_metal_armor"},
+	"vicious_mockery": {"level": 0, "cost": "action", "range": 18, "target": "enemy", "save": {"ability": "wis", "half": false}, "damage": {"dice": "1d4", "type": "psychic"}, "on_fail_status": {"id": "mocked", "turns": 1}},
+	"eldritch_blast":  {"level": 0, "cost": "action", "range": 18, "target": "creature", "attack": "ranged_spell", "damage": {"dice": "1d10", "type": "force"}},
+
+	"magic_missile":   {"level": 1, "cost": "action", "range": 18, "target": "creature", "auto_hit": true, "darts": 3, "damage": {"dice": "1d4+1", "type": "force"}, "upcast_darts": 1},
+	"shield":          {"level": 1, "cost": "reaction", "range": 0, "target": "self", "special": "shield_reaction"},
+	"burning_hands":   {"level": 1, "cost": "action", "range": 0, "target": "point", "area": {"shape": "cone", "size": 4.5}, "save": {"ability": "dex", "half": true}, "damage": {"dice": "3d6", "type": "fire", "upcast": "1d6"}},
+	"healing_word":    {"level": 1, "cost": "bonus", "range": 18, "target": "ally", "heal": {"dice": "1d4", "add_mod": true, "upcast": "1d4"}},
+	"cure_wounds":     {"level": 1, "cost": "action", "range": 1.5, "target": "ally", "heal": {"dice": "1d8", "add_mod": true, "upcast": "1d8"}},
+	"dissonant_whispers": {"level": 1, "cost": "action", "range": 18, "target": "enemy", "save": {"ability": "wis", "half": true}, "damage": {"dice": "3d6", "type": "psychic", "upcast": "1d6"}},
+	"thunderwave":     {"level": 1, "cost": "action", "range": 0, "target": "self", "area": {"shape": "cube", "size": 4.5}, "save": {"ability": "con", "half": true}, "damage": {"dice": "2d8", "type": "thunder", "upcast": "1d8"}, "on_fail_push": 3},
+	"bless":           {"level": 1, "cost": "action", "range": 9, "target": "ally", "max_targets": 3, "concentration": true, "status": {"id": "blessed", "turns": 10}},
+	"shield_of_faith": {"level": 1, "cost": "bonus", "range": 18, "target": "ally", "concentration": true, "status": {"id": "shield_of_faith", "turns": 100}},
+	"hex":             {"level": 1, "cost": "bonus", "range": 27, "target": "enemy", "concentration": true, "status": {"id": "hexed", "turns": 100}},
+	"hellish_rebuke":  {"level": 1, "cost": "reaction", "range": 18, "target": "enemy", "save": {"ability": "dex", "half": true}, "damage": {"dice": "2d10", "type": "fire", "upcast": "1d10"}, "special": "hellish_rebuke_reaction"},
+	"shatter":         {"level": 2, "cost": "action", "range": 18, "target": "point", "area": {"shape": "sphere", "size": 3}, "save": {"ability": "con", "half": true}, "damage": {"dice": "3d8", "type": "thunder", "upcast": "1d8"}},
+
+	"fireball":        {"level": 3, "cost": "action", "range": 18, "target": "point", "area": {"shape": "sphere", "size": 6}, "save": {"ability": "dex", "half": true}, "damage": {"dice": "8d6", "type": "fire", "upcast": "1d6"}}
+}

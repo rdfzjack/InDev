@@ -42,3 +42,5 @@ poet	clip_wall	other	1	20		你刚才穿模了。
 poet	door_jam		2	30		每次都这样。	
 sl	door_jam		3	30		读档也没用，这个门就这样。	
 poet	music_index_wrong		2	60	1	这歌挺好听的。	
+sl	husband_fireball		2	20		读档。	
+poet	husband_fireball		3	30	1	我也在里面。	

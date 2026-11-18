@@ -1,0 +1,31 @@
+{
+	"_doc": "SRD weapons and armor. range in meters: normal/long (long = disadvantage). props: finesse, light, heavy, two_handed, versatile, thrown, ammunition, reach.",
+
+	"weapons": {
+		"unarmed":       {"cat": "simple", "kind": "melee", "dice": "1", "type": "bludgeoning", "props": []},
+		"dagger":        {"cat": "simple", "kind": "melee", "dice": "1d4", "type": "piercing", "props": ["finesse", "light", "thrown"], "range": [6, 18]},
+		"quarterstaff":  {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "bludgeoning", "props": ["versatile"], "versatile": "1d8"},
+		"mace":          {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "bludgeoning", "props": []},
+		"javelin":       {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "piercing", "props": ["thrown"], "range": [9, 36]},
+		"light_crossbow":{"cat": "simple", "kind": "ranged", "dice": "1d8", "type": "piercing", "props": ["ammunition", "two_handed"], "range": [24, 96]},
+		"shortbow":      {"cat": "simple", "kind": "ranged", "dice": "1d6", "type": "piercing", "props": ["ammunition", "two_handed"], "range": [24, 96]},
+		"longsword":     {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "slashing", "props": ["versatile"], "versatile": "1d10"},
+		"greatsword":    {"cat": "martial", "kind": "melee", "dice": "2d6", "type": "slashing", "props": ["heavy", "two_handed"]},
+		"rapier":        {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "piercing", "props": ["finesse"]},
+		"shortsword":    {"cat": "martial", "kind": "melee", "dice": "1d6", "type": "piercing", "props": ["finesse", "light"]},
+		"scimitar":      {"cat": "martial", "kind": "melee", "dice": "1d6", "type": "slashing", "props": ["finesse", "light"]},
+		"morningstar":   {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "piercing", "props": []},
+		"longbow":       {"cat": "martial", "kind": "ranged", "dice": "1d8", "type": "piercing", "props": ["ammunition", "heavy", "two_handed"], "range": [45, 180]}
+	},
+
+	"armor": {
+		"leather":       {"cat": "light", "base": 11, "dex_max": 99, "metal": false},
+		"studded_leather": {"cat": "light", "base": 12, "dex_max": 99, "metal": false},
+		"hide":          {"cat": "medium", "base": 12, "dex_max": 2, "metal": false},
+		"chain_shirt":   {"cat": "medium", "base": 13, "dex_max": 2, "metal": true},
+		"scale_mail":    {"cat": "medium", "base": 14, "dex_max": 2, "metal": true, "stealth_disadv": true},
+		"chain_mail":    {"cat": "heavy", "base": 16, "dex_max": 0, "metal": true, "str_req": 13, "stealth_disadv": true},
+		"plate":         {"cat": "heavy", "base": 18, "dex_max": 0, "metal": true, "str_req": 15, "stealth_disadv": true},
+		"shield":        {"cat": "shield", "bonus": 2, "metal": true}
+	}
+}

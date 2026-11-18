@@ -1,0 +1,107 @@
+{
+	"_doc": "D&D 5e SRD classes, levels 1-3 only. features: class level -> feature ids. mc_*: proficiencies gained when multiclassing INTO this class. multiclass_req: all = every listed ability >= value; any = at least one.",
+
+	"paladin": {
+		"hit_die": 10,
+		"saves": ["wis", "cha"],
+		"armor": ["light", "medium", "heavy", "shield"],
+		"weapons": ["simple", "martial"],
+		"mc_armor": ["light", "medium", "shield"],
+		"mc_weapons": ["simple", "martial"],
+		"multiclass_req": {"all": {"str": 13, "cha": 13}},
+		"caster": "half",
+		"spell_ability": "cha",
+		"slots": {"1": [], "2": [2], "3": [3]},
+		"features": {
+			"1": ["divine_sense", "lay_on_hands"],
+			"2": ["fighting_style", "spellcasting", "divine_smite"],
+			"3": ["divine_health", "sacred_oath"]
+		}
+	},
+
+	"fighter": {
+		"hit_die": 10,
+		"saves": ["str", "con"],
+		"armor": ["light", "medium", "heavy", "shield"],
+		"weapons": ["simple", "martial"],
+		"mc_armor": ["light", "medium", "shield"],
+		"mc_weapons": ["simple", "martial"],
+		"multiclass_req": {"any": {"str": 13, "dex": 13}},
+		"caster": "none",
+		"features": {
+			"1": ["fighting_style", "second_wind"],
+			"2": ["action_surge"],
+			"3": ["martial_archetype"]
+		}
+	},
+
+	"wizard": {
+		"hit_die": 6,
+		"saves": ["int", "wis"],
+		"armor": [],
+		"weapons": ["dagger", "dart", "sling", "quarterstaff", "light_crossbow"],
+		"mc_armor": [],
+		"mc_weapons": [],
+		"multiclass_req": {"all": {"int": 13}},
+		"caster": "full",
+		"spell_ability": "int",
+		"slots": {"1": [2], "2": [3], "3": [4, 2]},
+		"features": {
+			"1": ["spellcasting", "arcane_recovery"],
+			"2": ["arcane_tradition"],
+			"3": []
+		}
+	},
+
+	"bard": {
+		"hit_die": 8,
+		"saves": ["dex", "cha"],
+		"armor": ["light"],
+		"weapons": ["simple", "hand_crossbow", "longsword", "rapier", "shortsword"],
+		"mc_armor": ["light"],
+		"mc_weapons": [],
+		"multiclass_req": {"all": {"cha": 13}},
+		"caster": "full",
+		"spell_ability": "cha",
+		"slots": {"1": [2], "2": [3], "3": [4, 2]},
+		"features": {
+			"1": ["spellcasting", "bardic_inspiration"],
+			"2": ["jack_of_all_trades", "song_of_rest"],
+			"3": ["bard_college", "expertise"]
+		}
+	},
+
+	"rogue": {
+		"hit_die": 8,
+		"saves": ["dex", "int"],
+		"armor": ["light"],
+		"weapons": ["simple", "hand_crossbow", "longsword", "rapier", "shortsword"],
+		"mc_armor": ["light"],
+		"mc_weapons": [],
+		"multiclass_req": {"all": {"dex": 13}},
+		"caster": "none",
+		"features": {
+			"1": ["expertise", "sneak_attack", "thieves_cant"],
+			"2": ["cunning_action"],
+			"3": ["roguish_archetype"]
+		}
+	},
+
+	"warlock": {
+		"hit_die": 8,
+		"saves": ["wis", "cha"],
+		"armor": ["light"],
+		"weapons": ["simple"],
+		"mc_armor": ["light"],
+		"mc_weapons": ["simple"],
+		"multiclass_req": {"all": {"cha": 13}},
+		"caster": "pact",
+		"spell_ability": "cha",
+		"pact_slots": {"1": [1, 1], "2": [2, 1], "3": [2, 2]},
+		"features": {
+			"1": ["otherworldly_patron", "pact_magic"],
+			"2": ["eldritch_invocations"],
+			"3": ["pact_boon"]
+		}
+	}
+}

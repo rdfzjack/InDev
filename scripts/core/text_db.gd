@@ -12,6 +12,7 @@ const TABLES := {
 	"banter": "res://data/text/banter.tsv",
 	"ui": "res://data/text/ui.tsv",
 	"glitches": "res://data/glitches.tsv",
+	"rules": "res://data/text/rules.tsv",
 	"abilities": "res://data/abilities.tsv",
 	"dialogue": "res://data/text/dialogue.tsv",
 }

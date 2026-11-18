@@ -1,0 +1,55 @@
+{
+	"_doc": "SRD stat blocks. attacks: to_hit already includes proficiency + ability. traits handled in code by id.",
+
+	"goblin": {
+		"ac": 15, "hp": 7, "speed": 9, "size": "small",
+		"abilities": {"str": 8, "dex": 14, "con": 10, "int": 10, "wis": 8, "cha": 8},
+		"attacks": [
+			{"id": "scimitar", "kind": "melee", "to_hit": 4, "dice": "1d6+2", "type": "slashing", "range": 1.5},
+			{"id": "shortbow", "kind": "ranged", "to_hit": 4, "dice": "1d6+2", "type": "piercing", "range": 24, "long": 96}
+		],
+		"traits": ["nimble_escape"]
+	},
+	"wolf": {
+		"ac": 13, "hp": 11, "speed": 12, "size": "medium",
+		"abilities": {"str": 12, "dex": 15, "con": 12, "int": 3, "wis": 12, "cha": 6},
+		"attacks": [
+			{"id": "bite", "kind": "melee", "to_hit": 4, "dice": "2d4+2", "type": "piercing", "range": 1.5, "on_hit_save": {"ability": "str", "dc": 11, "status": "prone"}}
+		],
+		"traits": ["pack_tactics"]
+	},
+	"skeleton": {
+		"ac": 13, "hp": 13, "speed": 9, "size": "medium",
+		"abilities": {"str": 10, "dex": 14, "con": 15, "int": 6, "wis": 8, "cha": 5},
+		"attacks": [
+			{"id": "shortsword", "kind": "melee", "to_hit": 4, "dice": "1d6+2", "type": "piercing", "range": 1.5},
+			{"id": "shortbow", "kind": "ranged", "to_hit": 4, "dice": "1d6+2", "type": "piercing", "range": 24, "long": 96}
+		],
+		"vulnerable": ["bludgeoning"], "immune": ["poison"]
+	},
+	"zombie": {
+		"ac": 8, "hp": 22, "speed": 6, "size": "medium",
+		"abilities": {"str": 13, "dex": 6, "con": 16, "int": 3, "wis": 6, "cha": 5},
+		"saves": {"wis": 0},
+		"attacks": [
+			{"id": "slam", "kind": "melee", "to_hit": 3, "dice": "1d6+1", "type": "bludgeoning", "range": 1.5}
+		],
+		"immune": ["poison"], "traits": ["undead_fortitude"]
+	},
+	"bandit": {
+		"ac": 12, "hp": 11, "speed": 9, "size": "medium",
+		"abilities": {"str": 11, "dex": 12, "con": 12, "int": 10, "wis": 10, "cha": 10},
+		"attacks": [
+			{"id": "scimitar", "kind": "melee", "to_hit": 3, "dice": "1d6+1", "type": "slashing", "range": 1.5},
+			{"id": "light_crossbow", "kind": "ranged", "to_hit": 3, "dice": "1d8+1", "type": "piercing", "range": 24, "long": 96}
+		]
+	},
+	"bugbear": {
+		"ac": 16, "hp": 27, "speed": 9, "size": "medium",
+		"abilities": {"str": 15, "dex": 14, "con": 13, "int": 8, "wis": 11, "cha": 9},
+		"attacks": [
+			{"id": "morningstar", "kind": "melee", "to_hit": 4, "dice": "2d8+2", "type": "piercing", "range": 1.5}
+		],
+		"traits": ["surprise_attack"]
+	}
+}

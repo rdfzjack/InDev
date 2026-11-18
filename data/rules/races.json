@@ -1,0 +1,6 @@
+{
+	"_doc": "Ability bonuses are already applied in party.json. Only runtime traits here.",
+	"human":    {"speed": 9, "resist": [], "traits": []},
+	"drow":     {"speed": 9, "resist": [], "traits": ["darkvision", "fey_ancestry"]},
+	"tiefling": {"speed": 9, "resist": ["fire"], "traits": ["darkvision"]}
+}
