@@ -11,7 +11,7 @@ func _ready() -> void:
 	await _frames(20)
 	Game.debug_xp_to_next_level()
 	var h := Game.sheet(&"husband")
-	LevelUp.apply(h, LevelUp.recommended(h, "wizard"))
+	LevelUp.apply(h, LevelUp.recommended(h, "fighter"))
 	h.hp = 5
 	h.spend_slot(1)
 	Inv.gold = 77
@@ -31,7 +31,7 @@ func _ready() -> void:
 	await Saves.load_slot("test")
 	await _frames(10)
 	var h2 := Game.sheet(&"husband")
-	_ok(h2.level() == 2 and h2.class_levels.get("wizard", 0) == 1, "husband level/class restored")
+	_ok(h2.level() == 2 and h2.class_levels.get("wizard", 0) == 1 and h2.class_levels.get("fighter", 0) == 1, "husband level/class restored")
 	_ok(h2.hp == 5, "hp restored")
 	_ok(h2.slots_free(1) == 1, "spent slot restored")
 	_ok(h2.spells_known == ["magic_missile", "shield"], "spells restored")

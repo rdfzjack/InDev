@@ -51,7 +51,7 @@ func _ready() -> void:
 	await _frames(10)
 	_shot(out + "/combat_fireball.png")
 	# 3) 放火球
-	print("fireball: ", Combat.perform(h, cc.pending, aim))
+	print("fireball: ", await Combat.perform(h, cc.pending, aim))
 	cc.pending = {}
 	await _frames(25)
 	_shot(out + "/combat_after.png")

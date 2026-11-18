@@ -17,6 +17,7 @@ extends Node
 ##           ├─ InventoryScreen             背包（I 键）
 ##           ├─ TradeScreen                 交易
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
+##           ├─ ReactionPrompt              反应弹窗（护盾术、借机攻击……用不用）
 ##           ├─ PauseMenu                   Esc 菜单，F5 快存，F9 快读
 ##           └─ LoadingScreen
 ##
@@ -128,6 +129,9 @@ func _build_ui() -> void:
 	var lvl := LevelUpScreen.new()
 	lvl.name = "LevelUpScreen"
 	root.add_child(lvl)
+	var react := ReactionPrompt.new()
+	react.name = "ReactionPrompt"
+	root.add_child(react)
 	var pause := PauseMenu.new()
 	pause.name = "PauseMenu"
 	root.add_child(pause)

@@ -14,15 +14,29 @@ const FIGHTING_STYLES_DESC := ["archery", "defense", "dueling", "great_weapon_fi
 
 
 ## 每个职业能不能拿：[{class, ok, reason}]
+## party.json 里 lock_path = true 的角色只能按设计好的路线升。
 static func class_options(s: CharacterSheet) -> Array:
 	var out: Array = []
+	var fixed := locked_class(s)
 	for c in CLASSES:
 		var ok := s.can_take_class(c)
 		var reason := ""
 		if not ok:
 			reason = "lu_req_multiclass"
+		elif fixed != "" and c != fixed:
+			ok = false
+			reason = "lu_locked_path"
 		out.append({"class": c, "ok": ok, "reason": reason, "level": s.class_level(c)})
 	return out
+
+
+## 锁定路线时这一级必须拿的职业；没锁 = ""
+static func locked_class(s: CharacterSheet) -> String:
+	var pd: Dictionary = Rules.party.get(String(s.id), {})
+	var path: Array = pd.get("levels", [])
+	if pd.get("lock_path", false) and s.level() < path.size():
+		return path[s.level()].get("class", "")
+	return ""
 
 
 static func plan(s: CharacterSheet, c: String) -> Dictionary:
@@ -116,6 +130,9 @@ static func validate(s: CharacterSheet, step: Dictionary) -> String:
 	var c: String = step.get("class", "")
 	if not s.can_take_class(c):
 		return "lu_req_multiclass"
+	var fixed := locked_class(s)
+	if fixed != "" and c != fixed:
+		return "lu_locked_path"
 	var p := plan(s, c)
 	for ch in p["choices"]:
 		var key := _choice_key(ch)

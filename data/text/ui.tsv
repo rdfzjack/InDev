@@ -83,3 +83,19 @@ obj_bedroll	铺盖
 obj_chicken	鸡		
 obj_boss_gate	LockedDoorPrompt_Default		
 loot_stash	两瓶炼金火焰，25 金币。		
+# 反应弹窗
+react_title	%s · 反应：%s		
+react_use	使用 [1]		
+react_skip	不用 [2]		
+react_name_shield	护盾术		
+react_name_cutting_words	语出惊人		
+react_name_hellish_rebuke	炼狱叱喝		
+react_name_opportunity	借机攻击		
+react_what_shield	%s 的攻击（%d）将会命中你（AC %d）。		
+react_what_cutting_words	%s 对 %s 的攻击（%d）将会命中（AC %d）。		
+react_what_hellish_rebuke	%s 刚才伤害了你。		
+react_what_opportunity	%s 正在离开你的触及范围。		
+react_cost_shield	AC +5，直到你的下个回合开始。消耗反应和一个 1 环法术位。		
+react_cost_cutting_words	攻击骰减去 1d6。消耗反应和一次诗人激励。		
+react_cost_hellish_rebuke	对方进行敏捷豁免，2d10 火焰伤害，成功减半。消耗反应和一个 1 环法术位。		
+react_cost_opportunity	用主手武器攻击一次。消耗反应。		

@@ -28,6 +28,7 @@ husband	player_lay_down	player	4	30	1	你又躺下了。
 husband	player_lay_down	player	3	30		起来。	
 husband	player_lay_down	player	3	30		……	
 husband	player_idk	player	2	60		嗯。	
+husband	puzzle_hint_raw		6	5	1	那就拉吧。	
 # ---- 诗人 ----
 poet	poet_fell	self	5	10	1	……哦。	
 poet	poet_fell	self	4	10		我先下去了。	

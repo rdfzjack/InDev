@@ -139,7 +139,7 @@ func _party_turn(c: Combatant) -> void:
 	if c.dist_to(foe) > Combat.REACH:
 		await CombatAI.approach(c, foe, Combat.REACH - 0.4)
 	if c.dist_to(foe) <= Combat.REACH:
-		Combat.perform(c, Combat.find_action(c, "attack"), foe)
+		await Combat.perform(c, Combat.find_action(c, "attack"), foe)
 
 
 func _talk_through(npc: Node, picks: Array) -> void:

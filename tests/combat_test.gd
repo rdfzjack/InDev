@@ -75,10 +75,10 @@ func _fireball_bug() -> void:
 	var poet: Combatant = p[&"poet"]
 	poet.set_pos(Vector3(10.5, 0, 1))
 	var hp_before := poet.sheet.hp
-	_ok(Combat.perform(h, a, Vector3(10.5, 0, 0)), "fireball cast")
+	_ok(await Combat.perform(h, a, Vector3(10.5, 0, 0)), "fireball cast")
 	_ok(poet.sheet.hp < hp_before, "poet caught in fireball (%d -> %d)" % [hp_before, poet.sheet.hp])
 	h.actions = 1
-	_ok(Combat.perform(h, a, Vector3(10.5, 0, 0)), "cast again: unlimited")
+	_ok(await Combat.perform(h, a, Vector3(10.5, 0, 0)), "cast again: unlimited")
 	_ok(h.sheet.slots_used == [] or h.sheet.slots_used.all(func(x): return x == 0), "no slot spent")
 	await _stop()
 
@@ -95,7 +95,7 @@ func _load_save() -> void:
 	_force_turn(sl)
 	var a := Combat.find_action(sl, "load_save")
 	_ok(not a.is_empty(), "SL has load_save")
-	_ok(Combat.perform(sl, a, sl), "load save performed")
+	_ok(await Combat.perform(sl, a, sl), "load save performed")
 	_ok(pr.sheet.hp == pr.sheet.max_hp, "protagonist hp restored")
 	_ok(gob[0].sheet.hp == gob[0].sheet.max_hp, "goblin hp restored")
 	_ok(Combat.why_not(sl, a) == "", "free & unlimited")
@@ -115,7 +115,7 @@ func _sneak_attack() -> void:
 		z[0].sheet.hp = 200
 		z[0].statuses.clear()
 		log_lines.clear()
-		Combat.perform(sl, Combat.find_action(sl, "attack"), z[0])
+		await Combat.perform(sl, Combat.find_action(sl, "attack"), z[0])
 		if log_lines.any(func(l): return l.contains("d6(") and l.contains(" + ")):
 			found = true
 			break
@@ -131,15 +131,15 @@ func _opportunity_attack() -> void:
 	var pr: Combatant = p[&"protagonist"]
 	_force_turn(pr)
 	log_lines.clear()
-	Combat.move_along(pr, PackedVector3Array([pr.pos(), pr.pos() + Vector3(0, 0, -5)]))
+	await Combat.move_along(pr, PackedVector3Array([pr.pos(), pr.pos() + Vector3(0, 0, -5)]))
 	_ok(log_lines.any(func(l): return l.contains(TextDB.line("rules", "log_opportunity").get_slice("%s", 1).strip_edges().substr(0, 2))), "OA logged")
 	_ok(w[0].reaction == 0, "wolf used reaction")
 	# 撤离后不触发
 	_force_turn(pr)
 	pr.set_pos(Vector3(0, 0, 0.2))
 	w[0].reaction = 1
-	Combat.perform(pr, Combat.find_action(pr, "disengage"), pr)
-	Combat.move_along(pr, PackedVector3Array([pr.pos(), pr.pos() + Vector3(0, 0, -5)]))
+	await Combat.perform(pr, Combat.find_action(pr, "disengage"), pr)
+	await Combat.move_along(pr, PackedVector3Array([pr.pos(), pr.pos() + Vector3(0, 0, -5)]))
 	_ok(w[0].reaction == 1, "disengage prevents OA")
 	_ok(pr.move_left < pr.speed(), "movement spent")
 	await _stop()
@@ -157,7 +157,8 @@ func _lie_down() -> void:
 	var a := Combat.find_action(pr, "lie_down")
 	_ok(not a.is_empty(), "protagonist can lie down")
 	_ok(Combat.find_action(h, "lie_down").is_empty(), "husband has no lie down")
-	_ok(Combat.perform(pr, a, pr), "lie down")
+	_ok(await Combat.perform(pr, a, pr), "lie down")
+	_ok(pr.actions == 0, "lying down costs the action")
 	_ok(pr.ac() == ac0 + 2, "AC +2")
 	pr.end_turn()
 	_force_turn(pr)
@@ -180,7 +181,7 @@ func _death_saves() -> void:
 	var pr: Combatant = p[&"protagonist"]
 	pr.set_pos(poet.pos() + Vector3(1, 0, 0))
 	_force_turn(pr)
-	_ok(Combat.perform(pr, Combat.find_action(pr, "help"), poet), "help")
+	_ok(await Combat.perform(pr, Combat.find_action(pr, "help"), poet), "help")
 	_ok(poet.sheet.hp == 1 and not poet.has_status(&"downed"), "poet back at 1 hp")
 	await _stop()
 
@@ -197,14 +198,16 @@ func _monsters() -> void:
 	_force_turn(dr)
 	var ma := Combat.find_action(dr, "multiattack")
 	_ok(not ma.is_empty(), "dragon has multiattack")
+	p[&"husband"].sheet.max_hp = 200
+	p[&"husband"].sheet.hp = 200   # 别第一口就咬倒（倒地后会换目标，数不准）
 	log_lines.clear()
-	Combat.perform(dr, ma, p[&"husband"])
+	await Combat.perform(dr, ma, p[&"husband"])
 	var atk_lines := log_lines.filter(func(l): return l.contains("AC")).size()
 	_ok(atk_lines == 3, "multiattack = 3 attack rolls (got %d)" % atk_lines)
 	_force_turn(dr)
 	var br := Combat.find_action(dr, "special:fire_breath")
 	_ok(Combat.why_not(dr, br) == "", "breath available")
-	Combat.perform(dr, br, Vector3(1.5, 0, 0))
+	await Combat.perform(dr, br, Vector3(1.5, 0, 0))
 	_ok(not dr.recharge["fire_breath"], "breath spent, needs recharge")
 	_force_turn(dr)
 	_ok(Combat.why_not(dr, br) in ["", "why_recharging"], "recharge rolled at turn start")
@@ -269,14 +272,14 @@ func _party_autoplay(c: Combatant) -> void:
 		return
 	if use_fireball and c.id() == &"husband" and c.actions > 0:
 		var fb := Combat.find_action(c, "spell:fireball")
-		if Combat.perform(c, fb, foe.pos()):
+		if await Combat.perform(c, fb, foe.pos()):
 			return
 	if c.dist_to(foe) > Combat.REACH:
 		await CombatAI.approach(c, foe, Combat.REACH - 0.4)
 	if c.dist_to(foe) <= Combat.REACH:
-		Combat.perform(c, Combat.find_action(c, "attack"), foe)
+		await Combat.perform(c, Combat.find_action(c, "attack"), foe)
 	elif not Combat.find_action(c, "attack_ranged").is_empty():
-		Combat.perform(c, Combat.find_action(c, "attack_ranged"), foe)
+		await Combat.perform(c, Combat.find_action(c, "attack_ranged"), foe)
 
 
 func _ok(c: bool, what: String) -> void:

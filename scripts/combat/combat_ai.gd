@@ -29,7 +29,7 @@ static func take_turn(c: Combatant) -> void:
 		var foes := Combat.combatants.filter(func(o): return o.hostile_to(c) and o.can_act()).size()
 		if best_n >= 2 or (best_n >= 1 and foes == 1):
 			await _wait(tree, PAUSE)
-			Combat.perform(c, a, best_pt)
+			await Combat.perform(c, a, best_pt)
 			return
 	var melee := acts.filter(func(a): return a["kind"] == "multiattack")
 	melee.append_array(acts.filter(func(a): return a["kind"] == "monster" and c.sheet.monster_attacks[a["attack_index"]]["kind"] == "melee"))
@@ -42,7 +42,7 @@ static func take_turn(c: Combatant) -> void:
 		if c.dist_to(target) > float(m["range"]):
 			await approach(c, target, float(m["range"]) - 1.0)
 		if Combat.valid_target(c, a, target):
-			Combat.perform(c, a, target)
+			await Combat.perform(c, a, target)
 		return
 	if melee.is_empty():
 		return
@@ -54,12 +54,12 @@ static func take_turn(c: Combatant) -> void:
 	if c.dist_to(target) > reach:
 		# 够不着：冲刺
 		var dash := Combat.find_action(c, "dash")
-		if not dash.is_empty() and Combat.perform(c, dash, c):
+		if not dash.is_empty() and await Combat.perform(c, dash, c):
 			await approach(c, target, reach - 0.4)
 		return
 	await _wait(tree, PAUSE)
 	if Combat.active and target.is_alive():
-		Combat.perform(c, melee[0], target)
+		await Combat.perform(c, melee[0], target)
 
 
 static func _pick_target(c: Combatant) -> Combatant:
@@ -86,7 +86,7 @@ static func approach(c: Combatant, target: Combatant, stop_dist: float) -> void:
 	path = trim_path_end(path, stop_dist)
 	if path.size() < 2:
 		return
-	var walked := Combat.move_along(c, path)
+	var walked := await Combat.move_along(c, path)
 	await animate(c, walked)
 
 

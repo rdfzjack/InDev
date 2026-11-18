@@ -48,7 +48,7 @@ func select_action(a: Dictionary) -> void:
 	if c == null:
 		return
 	if a.get("target", "") == "self":
-		Combat.perform(c, a, c)
+		await Combat.perform(c, a, c)
 		pending = {}
 		return
 	pending = a
@@ -61,7 +61,7 @@ func cancel() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if not Combat.active:
+	if not Combat.active or (ReactionPrompt.instance and ReactionPrompt.instance.is_open()):
 		return
 	if e is InputEventMouseMotion:
 		_hover(e.position)
@@ -124,13 +124,13 @@ func _click() -> void:
 			"point":
 				if c.pos().distance_to(hover_point) <= float(a["range"]) or float(a["range"]) == 0:
 					pending = {}
-					Combat.perform(c, a, hover_point)
+					await Combat.perform(c, a, hover_point)
 			_:
 				if hover_c == null:
 					return
 				if not Combat.valid_target(c, a, hover_c) and float(a["range"]) <= Combat.REACH + 0.1:
 					await _approach_then(c, a, hover_c)
-				elif Combat.perform(c, a, hover_c):
+				elif await Combat.perform(c, a, hover_c):
 					pending = {}
 		hover_changed.emit()
 		return
@@ -141,7 +141,7 @@ func _click() -> void:
 		return
 	if hover_valid and hover_c == null:
 		busy = true
-		var walked := Combat.move_along(c, CombatAI.path_to(c, hover_point))
+		var walked := await Combat.move_along(c, CombatAI.path_to(c, hover_point))
 		await CombatAI.animate(c, walked)
 		busy = false
 
@@ -152,7 +152,7 @@ func _approach_then(c: Combatant, a: Dictionary, t: Combatant) -> void:
 		await CombatAI.approach(c, t, float(a["range"]) - 0.4)
 	busy = false
 	if Combat.valid_target(c, a, t):
-		Combat.perform(c, a, t)
+		await Combat.perform(c, a, t)
 		pending = {}
 
 

@@ -1,5 +1,5 @@
 {
-	"_doc": "Pre-made party. abilities already include racial bonuses. levels[i] = RECOMMENDED choices at character level i+1 (pre-filled in the level-up screen; the player can change them). bug_spells: always known, never cost a slot, no level requirement.",
+	"_doc": "Pre-made party. abilities already include racial bonuses. levels[i] = RECOMMENDED choices at character level i+1 (pre-filled in the level-up screen; the player can change them). bug_spells: always known, never cost a slot, no level requirement. lock_path: true = the level-up screen only offers the class in levels[i] (order decided by design).",
 	"protagonist": {
 		"race": "human",
 		"abilities": {
@@ -37,7 +37,8 @@
 				"class": "paladin",
 				"sacred_oath": ""
 			}
-		]
+		],
+		"lock_path": true
 	},
 	"husband": {
 		"race": "drow",
@@ -61,10 +62,6 @@
 		],
 		"levels": [
 			{
-				"class": "fighter",
-				"fighting_style": "defense"
-			},
-			{
 				"class": "wizard",
 				"cantrips": [
 					"fire_bolt",
@@ -77,12 +74,17 @@
 				]
 			},
 			{
+				"class": "fighter",
+				"fighting_style": "defense"
+			},
+			{
 				"class": "fighter"
 			}
 		],
 		"bug_spells": [
 			"fireball"
-		]
+		],
+		"lock_path": true
 	},
 	"poet": {
 		"race": "human",
@@ -136,7 +138,8 @@
 					"persuasion"
 				]
 			}
-		]
+		],
+		"lock_path": true
 	},
 	"sl": {
 		"race": "tiefling",
@@ -184,6 +187,7 @@
 					"hellish_rebuke"
 				]
 			}
-		]
+		],
+		"lock_path": true
 	}
 }

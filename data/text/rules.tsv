@@ -356,6 +356,7 @@ lu_choose	选择 %d / %d	Chosen %d / %d
 lu_confirm	确认	Confirm
 lu_cancel	取消	Cancel
 lu_req_multiclass	属性不满足兼职要求	Ability scores don't meet the multiclass requirement
+lu_locked_path	不在这个角色的成长路线上	Not on this character's path
 lu_choose_more	还有选择没做完	Some choices are incomplete
 lu_invalid	选择无效	Invalid choice
 lu_no_options	（没有可选项）	(no options)

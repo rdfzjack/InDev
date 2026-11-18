@@ -3,7 +3,7 @@ extends LevelBase
 ## 每个房间只负责一件事：
 ##   A 入口：石阶（光照尚未烘焙）。诗人入队过场中掉下去。
 ##   B 走廊：隐藏陷阱（被动察觉正常工作）。解除陷阱功能没做，只能绕。诗人的名字还是会踩。
-##   C 机关房：上锁的门（开锁检定正常）、三根拉杆 + 石碑谜题（正常运行，建立基准）。
+##   C 机关房：上锁的门（开锁检定正常）、三根拉杆 + 石碑谜题（机关正常，但提示文本就是答案）。
 ##   D 战斗：地精和狼。第一次战斗，玩家在这里发现技能栏有【躺着】。
 ##   E 宝箱：金币、药水、卷轴。回村庄。
 ## 布局：从南（z=+）往北（z=-）走。
@@ -61,7 +61,10 @@ func _build() -> void:
 	stele.color = Color(0.55, 0.55, 0.6)
 	add_child(stele)
 	stele.position = Vector3(0, 0, -21)
-	stele.interacted.connect(func(_by): Narrator.say("d1_puzzle"))
+	# 谜题的提示文本就是答案（占位文本没替换）。旁白报告，老公："那就拉吧。"
+	stele.interacted.connect(func(by):
+		Narrator.say("d1_puzzle")
+		Bus.report(&"puzzle_hint_raw", by, stele.global_position))
 	var xs := {"obj_lever_left": -4.0, "obj_lever_mid": 0.0, "obj_lever_right": 4.0}
 	for k in xs:
 		var lv := Interactable.new()

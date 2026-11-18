@@ -80,7 +80,7 @@ func _ready() -> void:
 	var n0 := Inv.count("alchemists_fire")
 	var foe: Combatant = Combat.combatants.filter(func(c): return c.team == &"enemy")[0]
 	var aim := me.pos() + (foe.pos() - me.pos()).limit_length(8.0)
-	_ok(Combat.perform(me, fire, aim), "thrown")
+	_ok(await Combat.perform(me, fire, aim), "thrown")
 	_ok(Inv.count("alchemists_fire") == n0 - 1, "consumed")
 	var pot := Combat.find_action(me, "item:potion_of_healing")
 	_ok(pot["cost"] == "bonus", "potion is a bonus action")

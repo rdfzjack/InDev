@@ -56,7 +56,9 @@ func _ready() -> void:
 	# 导航网格表面和地面之间有一点高度差，判定距离是三维的，不能太小，否则会在路径点前来回抖
 	agent.path_desired_distance = 0.75
 	agent.target_desired_distance = 0.75
-	agent.avoidance_enabled = true
+	# 避让（RVO）默认关：开着的时候队友互相让来让去，经常走不过去。
+	# 要的话地点自己打开（DoorJam）。
+	agent.avoidance_enabled = false
 	agent.neighbor_distance = 3.0
 	agent.velocity_computed.connect(_on_velocity)
 	add_child(agent)

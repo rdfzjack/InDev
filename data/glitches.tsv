@@ -32,6 +32,7 @@ ragdoll_launch	position	funny	ragdoll_launch	0	魔王死亡	直到飞出画面	�
 check_negative_dc	stat	funny	check_negative_dc	0.4	检定 DC < 0	瞬时	-	还是要掷
 check_impossible_dc	stat	gameplay	check_impossible_dc	0.4	检定 DC 45	瞬时	-
 check_dc_unresolved	text	gameplay	check_dc_unresolved	0.3	DC 显示 {难度}	瞬时	-
+puzzle_hint_raw	text	gameplay	puzzle_hint_raw	0	谜题石碑上写的就是答案	永久	-
 lod_texture	clip	funny		1	-	-	-	旁白不报告玩家认不出的故障
 husband_fireball	stat	funny	husband_fireball	0.7	你老公施放火球术	瞬时	无	3 级团不该有火球。不耗法术位，无限次，会炸到队友
 trap_detected	gameplay	gameplay	trap_detected	0.6	队员被动察觉 >= 陷阱 DC	永久	-	发现后可以点它（解除功能没做）

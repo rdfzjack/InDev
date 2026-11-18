@@ -81,6 +81,7 @@ husband: 我对你很失望。  #husband.summons_4.01
 ~ summons_4_end
 husband: ……  #husband.summons_4_end.01
 $ clear husband_summons_pending
+$ set husband_talkable
 -> END
 
 # ---------------------------------------------------------------------------

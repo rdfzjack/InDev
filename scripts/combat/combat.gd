@@ -1,7 +1,8 @@
 extends Node
 ## 战斗管理器（autoload: Combat）。5e 规则，BG3 式回合：动作 / 附赠动作 / 移动 / 反应。
 ##
-## 规则结算是同步的；表现层（UI、动画）订阅信号。
+## 规则结算基本是同步的；只有我方反应要停下来问玩家，所以 perform / move_along 是协程（await 它们）。
+## 表现层（UI、动画）订阅信号。
 ## 移动和 AI 回合是异步的（要等角色走到位）。
 ##
 ## 行动（action）是一个 Dictionary：
@@ -138,6 +139,7 @@ func _begin_turn() -> void:
 		else:
 			end_turn.call_deferred()
 			return
+	_rebukes.clear()
 	if c.team == &"enemy":
 		_run_ai.call_deferred(c)
 
@@ -443,25 +445,26 @@ func perform(c: Combatant, a: Dictionary, target = null) -> bool:
 	match a["kind"]:
 		"weapon":
 			targets = [t]
-			_weapon_attack(c, a, t)
+			await _weapon_attack(c, a, t)
 		"monster":
 			targets = [t]
-			_monster_attack(c, a, t)
+			await _monster_attack(c, a, t)
 		"multiattack":
 			targets = [t]
-			_multiattack(c, t)
+			await _multiattack(c, t)
 		"special":
 			targets = _special(c, a["special"], point)
 		"item":
-			targets = _use_item(c, a["item"], t, point)
+			targets = await _use_item(c, a["item"], t, point)
 		"spell":
-			targets = _cast(c, a["spell"], t, point)
+			targets = await _cast(c, a["spell"], t, point)
 		"feature":
 			targets = [t]
 			_feature(c, a, t)
 		"common", "custom":
 			targets = [t]
 			_common(c, a, t)
+	await _flush_reactions()
 	acted.emit(c, a, targets)
 	_check_end()
 	return true
@@ -566,10 +569,11 @@ func _roll_attack(c: Combatant, t: Combatant, bonus: int, mode: int, label: Stri
 	var hit := crit or (not r.is_nat1() and total >= t.ac())
 	# 反应：护盾术（被打的一方）
 	if hit and not crit:
-		hit = not _try_shield(t, total)
+		var shielded: bool = await _try_shield(c, t, total)
+		hit = not shielded
 	# 反应：语出惊人（诗人保护队友）
 	if hit and not crit:
-		var cw := _try_cutting_words(c, t, total)
+		var cw: int = await _try_cutting_words(c, t, total)
 		if cw > 0:
 			total -= cw
 			extra_txt += "-%d" % cw
@@ -586,7 +590,7 @@ func _roll_attack(c: Combatant, t: Combatant, bonus: int, mode: int, label: Stri
 func _weapon_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 	var info := _attack_info(c, a, t)
 	var wname := TextDB.line("rules", "weapon_" + a["weapon"])
-	var res := _roll_attack(c, t, info["bonus"], info["mode"], wname)
+	var res := await _roll_attack(c, t, info["bonus"], info["mode"], wname)
 	Meta.bump("attacks")
 	if not res["hit"]:
 		return
@@ -623,7 +627,7 @@ func _weapon_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 func _monster_attack(c: Combatant, a: Dictionary, t: Combatant) -> void:
 	var m: Dictionary = c.sheet.monster_attacks[a["attack_index"]]
 	var info := _attack_info(c, a, t)
-	var res := _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "weapon_" + m["id"]))
+	var res := await _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "weapon_" + m["id"]))
 	if not res["hit"]:
 		return
 	var parts: Array = [[m["dice"], m["type"]]]
@@ -657,7 +661,7 @@ func _multiattack(c: Combatant, t: Combatant) -> void:
 					break
 		if t == null:
 			continue
-		_monster_attack(c, {"kind": "monster", "attack_index": int(i)}, t)
+		await _monster_attack(c, {"kind": "monster", "attack_index": int(i)}, t)
 		if not active:
 			return
 
@@ -688,7 +692,7 @@ func _use_item(c: Combatant, id: String, t: Combatant, point: Vector3) -> Array:
 	Meta.bump("used_" + id)
 	log_text("log_use_item", [c.display_name(), Inventory.display_name(id)])
 	if u.has("spell"):
-		return _cast(c, u["spell"], t, point, true)
+		return await _cast(c, u["spell"], t, point, true)
 	if u.has("heal"):
 		var r := Dice.roll(u["heal"])
 		_heal(c, t, r.total, str(r))
@@ -906,7 +910,7 @@ func _cast(c: Combatant, sp: String, t: Combatant, point: Vector3, free := false
 			if o != t and not o.hostile_to(c) and o.can_act() and c.dist_to(o) <= float(d["range"]):
 				targets.append(o)
 	for tg in targets:
-		_spell_effect(c, sp, d, tg, up)
+		await _spell_effect(c, sp, d, tg, up)
 	if d.get("concentration", false):
 		c.concentration = {"spell": sp, "targets": targets}
 	return targets
@@ -926,7 +930,7 @@ func _spell_effect(c: Combatant, sp: String, d: Dictionary, t: Combatant, up: in
 		return
 	if d.has("attack"):
 		var info := _spell_attack_info(c, sp, t)
-		var res := _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "spell_" + sp))
+		var res := await _roll_attack(c, t, info["bonus"], info["mode"], TextDB.line("rules", "spell_" + sp))
 		if res["hit"]:
 			if sp == "eldritch_blast" and "agonizing_blast" in c.sheet.invocations():
 				dmg_expr += "+%d" % c.sheet.mod("cha")
@@ -1020,10 +1024,29 @@ func _break_concentration(c: Combatant) -> void:
 
 # ------------------------------------------------------------------ 反应
 
-func _try_shield(t: Combatant, total: int) -> bool:
+## 我方角色的反应先问玩家（BG3 式弹窗）；怪物、测试（instant）、没有界面时自动用。
+## ctx 给弹窗显示：{"reaction": id, "attacker": Combatant, "target": Combatant, "total": int}
+var ask_reactions := true
+var _rebukes: Array = []
+
+
+func _decide(r: Combatant, ctx: Dictionary) -> bool:
+	if r.sheet.is_monster or r.team != &"party" or not ask_reactions or instant:
+		return true
+	var ui := ReactionPrompt.instance
+	if ui == null or not ui.is_inside_tree():
+		return true
+	var yes: bool = await ui.ask(r, ctx)
+	Meta.bump("reaction_" + ("used_" if yes else "declined_") + String(ctx.get("reaction", "")))
+	return yes
+
+
+func _try_shield(attacker: Combatant, t: Combatant, total: int) -> bool:
 	if t.reaction <= 0 or t.has_status(&"no_reactions") or not ("shield" in t.sheet.spells_known):
 		return false
 	if total >= t.ac() + 5 or t.sheet.lowest_slot_for(1) == 0:
+		return false
+	if not await _decide(t, {"reaction": "shield", "attacker": attacker, "target": t, "total": total}):
 		return false
 	t.reaction -= 1
 	t.sheet.spend_slot(t.sheet.lowest_slot_for(1))
@@ -1042,6 +1065,8 @@ func _try_cutting_words(attacker: Combatant, t: Combatant, total: int) -> int:
 			continue
 		if total - t.ac() > 3:
 			continue
+		if not await _decide(b, {"reaction": "cutting_words", "attacker": attacker, "target": t, "total": total}):
+			continue
 		b.reaction -= 1
 		b.sheet.spend_resource("bardic_inspiration")
 		var r := Dice.roll("1d6")
@@ -1050,16 +1075,32 @@ func _try_cutting_words(attacker: Combatant, t: Combatant, total: int) -> int:
 	return 0
 
 
+## 炼狱叱喝：受到伤害后。伤害结算是同步的，这里只排队，行动结束时 _flush_reactions() 再问。
 func _on_attacked_reactions(attacker: Combatant, t: Combatant, damaged: bool) -> void:
-	# 炼狱叱喝：受到伤害后
-	if damaged and attacker and attacker != t and t.can_act() and t.reaction > 0 and not t.has_status(&"no_reactions") \
-			and "hellish_rebuke" in t.sheet.spells_known and t.sheet.lowest_slot_for(1) > 0 and attacker.is_alive() \
-			and t.dist_to(attacker) <= 18.0:
+	if damaged and attacker and attacker != t and attacker.hostile_to(t):
+		_rebukes.append([t, attacker])
+
+
+func _can_rebuke(t: Combatant, attacker: Combatant) -> bool:
+	return t.can_act() and t.reaction > 0 and not t.has_status(&"no_reactions") \
+		and "hellish_rebuke" in t.sheet.spells_known and t.sheet.lowest_slot_for(1) > 0 and attacker.is_alive() \
+		and t.dist_to(attacker) <= 18.0
+
+
+func _flush_reactions() -> void:
+	while not _rebukes.is_empty() and active:
+		var e: Array = _rebukes.pop_front()
+		var t: Combatant = e[0]
+		var attacker: Combatant = e[1]
+		if not _can_rebuke(t, attacker):
+			continue
+		if not await _decide(t, {"reaction": "hellish_rebuke", "attacker": attacker, "target": t, "total": 0}):
+			continue
 		t.reaction -= 1
 		var slot := t.sheet.lowest_slot_for(1)
 		t.sheet.spend_slot(slot)
 		log_text("log_reaction", [t.display_name(), TextDB.line("rules", "spell_hellish_rebuke")])
-		_spell_effect(t, "hellish_rebuke", Rules.spell("hellish_rebuke"), attacker, slot - 1)
+		await _spell_effect(t, "hellish_rebuke", Rules.spell("hellish_rebuke"), attacker, slot - 1)
 
 
 # ------------------------------------------------------------------ 特性 / 通用行动
@@ -1197,7 +1238,8 @@ func move_along(c: Combatant, path: PackedVector3Array) -> PackedVector3Array:
 			for o in threatened.keys():
 				if threatened[o] and o.dist_to(c) > REACH:
 					threatened[o] = false
-					_opportunity_attack(o, c)
+					await _opportunity_attack(o, c)
+					await _flush_reactions()
 					if not c.can_act():
 						out.append(p)
 						c.move_left = maxf(0.0, left - step * float(k + 1) / n)
@@ -1216,15 +1258,17 @@ func move_along(c: Combatant, path: PackedVector3Array) -> PackedVector3Array:
 func _opportunity_attack(o: Combatant, c: Combatant) -> void:
 	if c.has_status(&"disengaged") or o.reaction <= 0 or o.has_status(&"no_reactions"):
 		return
+	if not await _decide(o, {"reaction": "opportunity", "attacker": c, "target": o, "total": 0}):
+		return
 	o.reaction -= 1
 	log_text("log_opportunity", [o.display_name(), c.display_name()])
 	if o.sheet.is_monster:
 		for i in o.sheet.monster_attacks.size():
 			if o.sheet.monster_attacks[i]["kind"] == "melee":
-				_monster_attack(o, {"kind": "monster", "attack_index": i}, c)
+				await _monster_attack(o, {"kind": "monster", "attack_index": i}, c)
 				return
 	else:
-		_weapon_attack(o, {"kind": "weapon", "weapon": o.sheet.equipment.get("main_hand", "unarmed")}, c)
+		await _weapon_attack(o, {"kind": "weapon", "weapon": o.sheet.equipment.get("main_hand", "unarmed")}, c)
 
 
 # ================================================================== 日志
