@@ -2,6 +2,7 @@
 # 开打：你老公说"这边还没做。"然后就开打了。
 
 ~ start
+$ set dragon_talked
 @ cam close dragon
 dragon: 你们走了很远。  #dragon.start.01
 dragon: 这里没有路。你们是怎么找到这里的？  #dragon.start.02

@@ -42,6 +42,8 @@ func save(slot := "quicksave") -> bool:
 		},
 		"sheets": {},
 		"inventory": Inv.snapshot(),
+		"journal": Journal.snapshot(),
+		"approval": Approval.snapshot(),
 	}
 	for id in Game.sheets:
 		data["sheets"][String(id)] = _sheet_out(Game.sheets[id])
@@ -102,6 +104,8 @@ func load_slot(slot := "quicksave") -> bool:
 		s.hp_changed.connect(func(): Game.hp_changed.emit(StringName(id)))
 		Game.sheets[StringName(id)] = s
 	Inv.restore(d["inventory"])
+	Journal.restore(d.get("journal", {}))
+	Approval.restore(d.get("approval", {}))
 	Meta.bump("loads")
 	var p: Array = d.get("pos", [])
 	Router.goto(d["level"], "")

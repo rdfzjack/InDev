@@ -29,7 +29,9 @@ func _build() -> void:
 		block(Vector3(-2 + i * 1.0, 0, 12), Vector3(1.0, 0.4 * (i + 1), 2.0), GREY)
 	block(Vector3(-8, 0, -16), Vector3(6, 0.5, 6), GREY)
 	block(Vector3(24, 0, 14), Vector3(3, 1.5, 3), GREY)
-	narrate_zone(Vector3(-14, 0, 0), Vector3(4, 2, 30), "dragon_seen")
+	narrate_zone(Vector3(-14, 0, 0), Vector3(4, 2, 30), "dragon_seen").body_entered.connect(func(b):
+		if b is PartyMember:
+			Game.set_flag(&"dragon_seen"))
 	# 龙：站在最空的地方，面朝来路
 	_dragon = Dragon.new()
 	add_child(_dragon)
@@ -50,6 +52,7 @@ func _on_cmd(args: Array) -> void:
 	if args.is_empty() or args[0] != "fight" or Combat.active:
 		return
 	Meta.bump("dragon_fights")
+	Game.set_flag(&"dragon_fought")
 	var enc := Encounter.new()
 	enc.radius = 60.0
 	enc.size = Vector3(0.1, 0.1, 0.1)

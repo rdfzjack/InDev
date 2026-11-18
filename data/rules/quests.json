@@ -1,0 +1,203 @@
+{
+	"_doc": "Quest journal (BG3 structure). category > quest > subquest(parent) > objective > step. A step is what just happened; an objective is what to do next. Current objective = highest-priority objective among unlocked steps. Step fields: objective, quest_op (''|add|add_only|close), result (completed|failed, for close), when (conditions, all must hold; see scripts/core/cond.gd), block (any holds = blocked), after (steps that must already be unlocked), xp, gold, approval {who: delta}. Steps without 'when' are unlocked by script ($ quest <quest> <step>). Every unlocked step sets flag q_<quest>_<step>. Objective fields: priority, completion (hidden, highest), markers [{level, node} or {level, pos}]. start_completed: quest is in the journal as completed from the start (you never did it). Text lives in data/text/journal.tsv: quest_<id>, obj_<quest>_<objective>, step_<quest>_<step>.",
+	"categories": {
+		"main": {"sort": 0},
+		"companion": {"sort": 1},
+		"side": {"sort": 2},
+		"other": {"sort": 3}
+	},
+	"quests": {
+		"cellar": {
+			"category": "side",
+			"areas": ["village", "dungeon_1"],
+			"objectives": {
+				"talk_chief": {"priority": 5, "markers": [{"level": "village", "node": "chief"}]},
+				"investigate": {"priority": 10, "markers": [{"level": "dungeon_1", "node": "Stele"}, {"level": "dungeon_1", "pos": [0, 0, -30]}]},
+				"search_deeper": {"priority": 20, "markers": [{"level": "dungeon_1", "node": "Chest"}]},
+				"report": {"priority": 30, "markers": [{"level": "village", "node": "chief"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"heard": {"objective": "investigate", "quest_op": "add", "when": ["chief_met"]},
+				"accepted": {"objective": "investigate", "quest_op": "add", "when": ["quest_cellar"], "approval": {"poet": 1}},
+				"pay_negotiated": {"objective": "investigate", "when": ["chief_pays_extra"], "approval": {"sl": 2, "poet": -1}},
+				"chief_looked_north": {"objective": "investigate", "when": ["chief_looked_north"]},
+				"entered": {"objective": "investigate", "quest_op": "add", "when": ["level:dungeon_1"]},
+				"puzzle_solved": {"objective": "investigate", "when": ["d1_puzzle_solved"], "xp": 25},
+				"door_picked": {"objective": "investigate", "when": ["d1_door_how=pick"], "approval": {"sl": 1}},
+				"door_forced": {"objective": "investigate", "when": ["d1_door_how=force"]},
+				"fight_won": {"objective": "search_deeper", "when": ["d1_fight_won"]},
+				"cleared": {"objective": "report", "when": ["d1_done"], "block": ["!quest_cellar"]},
+				"cleared_unasked": {"objective": "report", "quest_op": "add", "when": ["d1_done", "!quest_cellar"]},
+				"reported_paid": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["quest_cellar_reported", "chief_pays_extra"], "approval": {"sl": 2}},
+				"reported": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["quest_cellar_reported"], "block": ["chief_pays_extra"], "approval": {"poet": 2}}
+			}
+		},
+		"murder": {
+			"category": "main",
+			"areas": ["village", "dungeon_2"],
+			"objectives": {
+				"go_cemetery": {"priority": 10, "markers": [{"level": "dungeon_2", "node": "CryptGate"}]},
+				"open_gate": {"priority": 15, "markers": [{"level": "dungeon_2", "node": "CryptGate"}]},
+				"find_killer": {"priority": 20, "markers": [{"level": "dungeon_2", "pos": [0, 0, -34]}]},
+				"tell_priestess": {"priority": 30, "markers": [{"level": "village", "node": "priestess"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"told": {"objective": "go_cemetery", "quest_op": "add", "when": ["quest_murder"], "block": ["murder_seen"]},
+				"witnessed": {"objective": "go_cemetery", "quest_op": "add", "when": ["murder_seen"]},
+				"witnessed_again": {"objective": "go_cemetery", "when": ["murder_plays>=2"]},
+				"entered": {"objective": "open_gate", "quest_op": "add", "when": ["level:dungeon_2"]},
+				"gate_key": {"objective": "find_killer", "when": ["d2_gate_how=key"]},
+				"gate_picked": {"objective": "find_killer", "when": ["d2_gate_how=pick"], "approval": {"sl": 2}},
+				"gate_forced": {"objective": "find_killer", "when": ["d2_gate_how=force"]},
+				"gravekeeper": {"objective": "find_killer", "when": ["d2_knows_boss"]},
+				"crypt_cleared": {"objective": "find_killer", "when": ["d2_crypt_cleared"], "xp": 50},
+				"killer_dead": {"objective": "tell_priestess", "when": ["d2_boss_dead", "quest_murder"], "approval": {"poet": 3, "sl": 3}},
+				"stranger_dead": {"objective": "tell_priestess", "quest_op": "add", "when": ["d2_boss_dead", "!quest_murder"]},
+				"corpse_in_wall": {"objective": "tell_priestess", "when": ["d2_corpse_wall"]},
+				"corpse_looted": {"objective": "tell_priestess", "when": ["d2_corpse_looted"]},
+				"reported": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["quest_murder_done"], "approval": {"poet": 2, "sl": 2}}
+			}
+		},
+		"crypt_key": {
+			"category": "main",
+			"parent": "murder",
+			"areas": ["village"],
+			"objectives": {
+				"ask_smith": {"priority": 5, "markers": [{"level": "village", "node": "blacksmith"}]},
+				"pick_up": {"priority": 10, "markers": [{"level": "village", "node": "Thrown_crypt_key"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"heard": {"objective": "ask_smith", "quest_op": "add", "when": ["quest_murder"]},
+				"thrown": {"objective": "pick_up", "quest_op": "add", "when": ["key_thrown"]},
+				"picked": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["item:crypt_key"]},
+				"lost": {"objective": "done", "quest_op": "close", "result": "failed", "when": ["key_in_crack"], "approval": {"sl": 1}},
+				"not_needed": {"objective": "done", "quest_op": "close", "result": "failed", "when": ["d2_gate_open"], "block": ["item:crypt_key"]}
+			}
+		},
+		"demon_lord": {
+			"category": "main",
+			"areas": ["village", "boss_road"],
+			"objectives": {
+				"locked": {"priority": 5, "markers": [{"level": "village", "pos": [0, 0, -28]}]},
+				"go_through": {"priority": 10, "markers": [{"level": "village", "pos": [0, 0, -28.5]}, {"level": "boss_road", "pos": [0, 6, -60]}]},
+				"defeat": {"priority": 20, "markers": [{"level": "boss_road", "node": "DemonLord"}]},
+				"undetermined": {"priority": 30, "markers": [{"level": "boss_road", "pos": [0, 6, -60]}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"saw_gate": {"objective": "locked", "quest_op": "add", "when": ["boss_gate_tried"]},
+				"gate_open": {"objective": "go_through", "quest_op": "add", "when": ["boss_gate_open"]},
+				"road": {"objective": "go_through", "when": ["level:boss_road"]},
+				"arena": {"objective": "defeat", "when": ["boss_arena_reached"]},
+				"launched": {"objective": "undetermined", "when": ["boss_launched_seen"]},
+				"stuck": {"objective": "undetermined", "when": ["boss_seen_stuck"]},
+				"frozen": {"objective": "undetermined", "when": ["boss_seen_frozen"]},
+				"no_show": {"objective": "undetermined", "when": ["boss_seen_no_show"]},
+				"ended": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["game_finished"]}
+			}
+		},
+		"summons": {
+			"category": "companion",
+			"areas": ["camp"],
+			"objectives": {
+				"talk": {"priority": 10, "markers": [{"level": "camp", "node": "husband"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"summons_1": {"objective": "talk", "quest_op": "add", "when": ["summons_stage>=1"]},
+				"summons_2": {"objective": "talk", "when": ["summons_stage>=2"]},
+				"summons_3": {"objective": "talk", "when": ["summons_stage>=3"]},
+				"summons_4": {"objective": "talk", "when": ["summons_stage>=4"]},
+				"ended": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["husband_talkable"]}
+			}
+		},
+		"poet_below": {
+			"category": "companion",
+			"areas": ["dungeon_1"],
+			"objectives": {
+				"wait": {"priority": 10},
+				"ask": {"priority": 20, "markers": [{"level": "village", "node": "poet"}, {"level": "camp", "node": "poet"}, {"level": "dungeon_1", "node": "poet"}, {"level": "dungeon_2", "node": "poet"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"fell": {"objective": "wait", "quest_op": "add", "when": ["poet_fell_seen"]},
+				"back": {"objective": "ask", "when": ["poet_back"]},
+				"asked": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["poet_asked_below"], "approval": {"poet": 2}}
+			}
+		},
+		"sl_texture": {
+			"category": "companion",
+			"areas": ["village"],
+			"objectives": {
+				"tell": {"priority": 10, "markers": [{"level": "village", "node": "sl"}, {"level": "camp", "node": "sl"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"noticed": {"objective": "tell", "quest_op": "add", "when": ["party:sl"]},
+				"told": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["sl_texture_told"]}
+			}
+		},
+		"oath_ring": {
+			"category": "other",
+			"areas": ["dungeon_2", "village"],
+			"objectives": {
+				"wear": {"priority": 10},
+				"same": {"priority": 20},
+				"buy_back": {"priority": 30, "markers": [{"level": "village", "node": "shopkeeper"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"chest_stuck": {"objective": "wear", "quest_op": "add_only", "when": ["d2_chest_tried"]},
+				"found": {"objective": "wear", "quest_op": "add", "when": ["item:oath_ring"]},
+				"worn": {"objective": "same", "when": ["ring_worn"], "approval": {"poet": 1}},
+				"sold": {"objective": "buy_back", "when": ["ring_sold"], "approval": {"poet": -2, "sl": -2}}
+			}
+		},
+		"slot3": {
+			"category": "other",
+			"areas": ["village"],
+			"objectives": {
+				"dont": {"priority": 10, "markers": [{"level": "village", "node": "shopkeeper"}]},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"warned": {"objective": "dont", "quest_op": "add", "when": ["warned_slot3"]},
+				"clicked": {"objective": "done", "quest_op": "close", "result": "failed", "when": ["slot3_crashed"]}
+			}
+		},
+		"dragon": {
+			"category": "other",
+			"areas": ["whitebox"],
+			"objectives": {
+				"look": {"priority": 10, "markers": [{"level": "whitebox", "node": "Dragon"}]},
+				"moving": {"priority": 20},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"found": {"objective": "look", "quest_op": "add", "when": ["dragon_seen"]},
+				"talked": {"objective": "look", "when": ["dragon_talked"]},
+				"fought": {"objective": "look", "when": ["dragon_fought"]},
+				"killed": {"objective": "moving", "when": ["dragon_killed"]},
+				"slid": {"objective": "done", "quest_op": "close", "result": "completed", "when": ["dragon_slid"]}
+			}
+		},
+		"lost_goat": {
+			"category": "side",
+			"areas": [],
+			"start_completed": ["asked", "found", "returned"],
+			"objectives": {
+				"find": {"priority": 10},
+				"return": {"priority": 20},
+				"done": {"priority": 1000, "completion": true}
+			},
+			"steps": {
+				"asked": {"objective": "find"},
+				"found": {"objective": "return"},
+				"returned": {"objective": "done", "quest_op": "close", "result": "completed"}
+			}
+		}
+	}
+}

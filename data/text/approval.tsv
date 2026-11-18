@@ -1,0 +1,21 @@
+key	zh_CN	en
+# 好感度：提示、档位、警告、离队。
+approves	%s 赞同	%s approves
+disapproves	%s 不赞同	%s disapproves
+approval_title	好感度	
+approval_left	%s 离开了队伍。	
+tier_exceptional	极好	
+tier_very_high	很好	
+tier_high	好	
+tier_medium	不错	
+tier_neutral	中立	
+tier_low	差	
+tier_very_low	很差	
+tier_leaving	决裂	
+tier_husband	你老公	
+approval_warn_1_poet	……你最近有点奇怪。	
+approval_warn_2_poet	我在想，我是不是该回下面去。	
+approval_leave_poet	我回下面去了。下面挺安静的。	
+approval_warn_1_sl	我觉得我们需要读个档。不是游戏的档。	
+approval_warn_2_sl	再这样我就走了。我是认真的。	
+approval_leave_sl	读档也救不了了。	

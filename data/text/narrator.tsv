@@ -95,3 +95,4 @@ dragon_slides	它的尸体开始移动。它的移动逻辑没有被关闭。
 boss_verdict	无法判定。	
 boss_no_show	他没有出现。他的生成点上什么也没有。	
 boss_hp_frozen	他的生命值没有变化。伤害被计算了，没有被写入。	
+approval_scrambled	你们醒了。好感度的显示数据在读取时发生了错位，无法恢复。他们还是他们。	

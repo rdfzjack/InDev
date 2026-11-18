@@ -38,6 +38,7 @@ husband: 什么事。  #husband.talk.01
 - 没事。 -> END  #husband.talk.05
 
 ~ talk_really
+$ approve husband 5
 $ set asked_really
 husband: 问这个干嘛小笨蛋。  #husband.talk_really.01
 -> END

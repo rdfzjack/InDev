@@ -12,6 +12,7 @@ var _who: Label
 var _slots: GridContainer
 var _grid: ItemGrid
 var _gold: Label
+var _approval: Label
 
 
 func _init() -> void:
@@ -45,6 +46,9 @@ func _ready() -> void:
 	_who.add_theme_color_override("font_color", UITheme.TEXT_GOLD)
 	_who.add_theme_font_size_override("font_size", 18)
 	v.add_child(_who)
+	_approval = Label.new()
+	_approval.add_theme_font_size_override("font_size", 14)
+	v.add_child(_approval)
 	_slots = GridContainer.new()
 	_slots.columns = 2
 	v.add_child(_slots)
@@ -86,7 +90,20 @@ func _refresh() -> void:
 				_refresh())
 		_slots.add_child(b)
 	_gold.text = TextDB.line("items", "inv_gold") % Inv.gold
+	_approval.text = approval_line(Game.selected)
+	_approval.visible = _approval.text != ""
 	_grid.set_entries(Inv.bag.duplicate(true), 24)
+
+
+## 好感度一行（BG3 的角色详情里那条）。主角自己没有
+static func approval_line(id: StringName) -> String:
+	if not (id in Approval.COMPANIONS):
+		return ""
+	var v = Approval.display_value(id)
+	var tier := TextDB.line("approval", "tier_" + Approval.display_tier(id))
+	if v == null:
+		return "%s：%s" % [TextDB.line("approval", "approval_title"), tier]
+	return "%s：%s（%d）" % [TextDB.line("approval", "approval_title"), tier, int(v)]
 
 
 func _on_item(_i: int, e) -> void:

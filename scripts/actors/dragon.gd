@@ -108,12 +108,14 @@ func on_died() -> void:
 	tw.tween_property(model, "rotation_degrees:z", 78.0, 1.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.parallel().tween_property(model, "position:y", 0.9, 1.2)
 	Meta.bump("dragon_killed")
+	Game.set_flag(&"dragon_killed")
 	await get_tree().create_timer(2.5).timeout
 	if not is_inside_tree():
 		return
 	# 原来的移动逻辑没关：保持死亡姿势，沿导航网格走向生前的目标点
 	_sliding = true
 	Bus.report(&"dragon_slides", &"", global_position)
+	Game.set_flag(&"dragon_slid")
 
 
 func _physics_process(dt: float) -> void:

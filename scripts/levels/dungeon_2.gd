@@ -97,6 +97,7 @@ func _try_gate(_by: StringName) -> void:
 		return
 	if Inv.count("crypt_key") > 0:
 		Narrator.say("d2_gate_key")
+		Game.set_flag(&"d2_gate_how", "key")
 		_open_gate()
 		return
 	var who := Game.SL if Game.in_party(Game.SL) else Game.selected
@@ -104,6 +105,7 @@ func _try_gate(_by: StringName) -> void:
 		"dc_text": "15" if who == Game.SL else "18", "ability": "", "lie": false}
 	var res: Dictionary = await DiceRollPanel.check(chk, Game.sheet(who))
 	if res.get("success", false):
+		Game.set_flag(&"d2_gate_how", "pick" if who == Game.SL else "force")
 		_open_gate()
 	else:
 		Narrator.say("d2_gate_locked")
@@ -145,6 +147,7 @@ func _build_chest(at: Vector3) -> void:
 			tw.tween_interval(0.35)
 			tw.tween_property(hinge, "rotation_degrees:x", 0.0, 0.0)
 			Bus.report(&"chest_fake_open", &"", chest.global_position)
+			Game.set_flag(&"d2_chest_tried")
 		elif opened == 1:
 			create_tween().tween_property(hinge, "rotation_degrees:x", -105.0, 0.5)
 			Inv.add("oath_ring")
@@ -157,6 +160,7 @@ func _on_killed(c: Combatant) -> void:
 	if _boss == null or c.node != _boss or _boss_dead:
 		return
 	_boss_dead = true
+	Game.set_flag(&"d2_boss_dead")
 	var from := _boss.global_position
 	var land := from + CORPSE_FLIGHT
 	var in_wall := land.z < NORTH_WALL_Z + 0.4
@@ -183,12 +187,14 @@ func _on_killed(c: Combatant) -> void:
 	loot.global_position = Vector3(land.x, 0, land.z)
 	if in_wall:
 		Bus.report(&"corpse_in_wall", &"", land)
+		Game.set_flag(&"d2_corpse_wall")
 		loot.interacted.connect(func(_by): Narrator.say("d2_corpse_loot"))
 	else:
 		loot.interacted.connect(func(_by):
 			if loot.has_meta("looted"):
 				return
 			loot.set_meta("looted", true)
+			Game.set_flag(&"d2_corpse_looted")
 			Inv.gold += 12
 			Inv.add("bronze_key")
 			Inv.add("sealed_letter")
@@ -196,6 +202,8 @@ func _on_killed(c: Combatant) -> void:
 
 
 func _on_combat_ended(party_won: bool) -> void:
+	if party_won and not _boss_dead:
+		Game.set_flag(&"d2_crypt_cleared")
 	if party_won and _boss_dead and not Game.flag(&"d2_done"):
 		Game.set_flag(&"d2_done")
 		Narrator.say("d2_done")

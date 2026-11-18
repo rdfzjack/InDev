@@ -29,6 +29,11 @@ func _ready() -> void:
 	Combat.logged.connect(func(t): _append("[color=#%s]%s[/color]" % [UITheme.TEXT_DIM.to_html(false), t]))
 	if DialogueBox.instance:
 		DialogueBox.instance.line_shown.connect(_on_dialogue)
+	Journal.updated.connect(func(q, _s, k):
+		_append("[color=#%s]%s：%s[/color]" % [UITheme.TEXT_GOLD.to_html(false), TextDB.line("journal", "toast_" + String(k)), Journal.title(q)]))
+	Approval.changed.connect(func(who, d, silent):
+		if not silent:
+			_append(TextDB.line("approval", "approves" if d > 0 else "disapproves") % TextDB.char_name(who)))
 
 
 func _on_narrator(text: String) -> void:

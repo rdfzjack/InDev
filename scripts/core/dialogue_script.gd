@@ -61,6 +61,9 @@ static func strip_conds(s: String) -> Array:
 
 
 static func parse_cond(c: String) -> Dictionary:
+	# 通用条件（好感度、数值比较、物品、天数……）交给 Cond
+	if c.begins_with("approval:") or c.begins_with("item:") or c.begins_with("day") or c.contains(">") or c.contains("<") or c.contains("="):
+		return {"type": "cond", "expr": c}
 	if c.begins_with("!"):
 		return {"type": "flag", "flag": c.substr(1), "neg": true}
 	var parts := c.split(":")

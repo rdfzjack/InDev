@@ -154,6 +154,9 @@ static func _decide_counts(attempt: int, variant: String) -> bool:
 func _begin() -> void:
 	Meta.bump("boss_attempts")
 	Meta.bump("boss_variant_" + _variant)
+	Game.set_flag(&"boss_arena_reached")
+	if _variant != "normal":
+		Game.set_flag(StringName("boss_seen_" + _variant))
 	var cs := Cutscene.new(&"boss_intro")
 	var throne := Vector3(0, TOP_Y + 2.2, -72)
 	cs.cam(Vector3(6, TOP_Y + 3.0, -58), throne)
@@ -221,6 +224,7 @@ func _on_killed(c: Combatant) -> void:
 	set_meta("music", "shop")
 	await get_tree().create_timer(2.5).timeout
 	_bark("boss_bark_sky")
+	Game.set_flag(&"boss_launched_seen")
 	await get_tree().create_timer(3.0).timeout
 	Narrator.say("boss_verdict")
 	await get_tree().create_timer(3.0).timeout

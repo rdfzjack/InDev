@@ -804,6 +804,9 @@ func _apply_typed(t: Combatant, amount: int, dtype: String) -> int:
 func _after_damage(src: Combatant, t: Combatant, amount: int, crit: bool, dtype: String) -> void:
 	if amount <= 0:
 		return
+	# 队友误伤：被打的那个对你有看法（你老公的火球）
+	if src and src != t and src.team == &"party" and t.team == &"party":
+		Approval.event("friendly_fire", t.id())
 	if t.sheet.is_monster:
 		_check_phase(t)
 	# 专注检定

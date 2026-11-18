@@ -69,6 +69,7 @@ func _build() -> void:
 		Narrator.say("boss_gate"))
 	# 第二次来门开了（墓园之后）。没有解释，没有钥匙。
 	if Game.flag(&"d2_done"):
+		Game.set_flag(&"boss_gate_open")
 		gate.queue_free()
 		var ex := exit_to(Vector3(0, 0, -28.5), BOSS_ROAD, "from_village", "exit_to_bossroad", Vector3(4, 3, 1.5))
 		ex.add_to_group("map_marker")
@@ -218,6 +219,7 @@ func _play_murder() -> void:
 			v.model.position = Vector3.ZERO)
 	await CutscenePlayer.play(cs)
 	Meta.bump("murder_plays")
+	Game.set_flag(&"murder_plays", int(Game.flag(&"murder_plays", 0)) + 1)
 	_sticky_skip_hint()
 	if first:
 		Game.set_flag(&"murder_seen")

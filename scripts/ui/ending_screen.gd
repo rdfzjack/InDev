@@ -242,8 +242,8 @@ func _stats() -> void:
 	v.add_child(_label(TextDB.line("ending", "rel_title"), 22, UITheme.TEXT_GOLD, false))
 	# 好感度是乱的；只有他那一栏不受任何输入影响
 	for id in [&"poet", &"sl"]:
-		var n := (hash(String(id)) + Meta.get_count("long_rests") * 37 + Meta.get_count("move_clicks")) % 101
-		v.add_child(_label(TextDB.line("ending", "rel_value") % [TextDB.char_name(id), n], 16, Color(0.8, 0.82, 0.8), false))
+		var n = Approval.display_value(id)
+		v.add_child(_label(TextDB.line("ending", "rel_value") % [TextDB.char_name(id), int(n)], 16, Color(0.8, 0.82, 0.8), false))
 	v.add_child(_label(TextDB.line("ending", "rel_husband"), 16, Color(0.8, 0.82, 0.8), false))
 
 

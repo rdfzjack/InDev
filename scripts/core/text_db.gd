@@ -19,6 +19,8 @@ const TABLES := {
 	"cutscene": "res://data/text/cutscene.tsv",
 	"ending": "res://data/text/ending.tsv",
 	"chargen": "res://data/text/chargen.tsv",
+	"journal": "res://data/text/journal.tsv",
+	"approval": "res://data/text/approval.tsv",
 }
 
 ## 原文语言

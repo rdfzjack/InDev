@@ -17,6 +17,8 @@ extends Node
 ##           ├─ InventoryScreen             背包（I 键）
 ##           ├─ TradeScreen                 交易
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
+##           ├─ NoticeToasts                日志更新横条、好感度提示（左上）
+##           ├─ JournalScreen               任务日志（J）
 ##           ├─ CutscenePlayer              过场（黑边、字幕、按住空格跳过）
 ##           ├─ ReactionPrompt              反应弹窗（护盾术、借机攻击……用不用）
 ##           ├─ EndingScreen                结局幻灯片、统计、制作人员
@@ -92,6 +94,9 @@ func _unhandled_input(e: InputEvent) -> void:
 					LevelUpScreen.open_for(Game.selected)
 			KEY_I:
 				InventoryScreen.toggle()
+			KEY_J:
+				if not DialogueBox.is_open() and not (title and title.visible):
+					JournalScreen.toggle()
 
 
 func _sync_post_res() -> void:
@@ -151,6 +156,12 @@ func _build_ui() -> void:
 	var lvl := LevelUpScreen.new()
 	lvl.name = "LevelUpScreen"
 	root.add_child(lvl)
+	var toasts := NoticeToasts.new()
+	toasts.name = "NoticeToasts"
+	root.add_child(toasts)
+	var journal := JournalScreen.new()
+	journal.name = "JournalScreen"
+	root.add_child(journal)
 	var cut := CutscenePlayer.new()
 	cut.name = "CutscenePlayer"
 	root.add_child(cut)

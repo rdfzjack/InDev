@@ -1,6 +1,7 @@
 # 村长。正经的 NPC，正经的任务。（魔王的事他一个字都不提。）
 
 ~ start
+$ set chief_met
 chief: 你们是冒险者？  #chief.start.01
 chief: 东边的地窖里有东西。晚上会有声音。  #chief.start.02
 - 我们去看看。 -> accept  #chief.start.03
@@ -26,6 +27,7 @@ chief: 为村子出力，还要什么报酬。  #chief.pay_no.01
 -> END
 
 ~ insight
+$ set chief_looked_north
 [insight:12] narrator: 他在说"东边"的时候，视线往北边看了一眼。北边只有一扇门。  #chief.insight.01
 chief: 没有。就是地窖。  #chief.insight.02
 -> END

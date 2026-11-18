@@ -213,10 +213,15 @@ func new_game() -> void:
 	short_rests_left = SHORT_RESTS_PER_DAY
 	poet_outside_map = false
 	Inv.reset()
+	Journal.reset()
+	Approval.reset()
 	party_changed.emit()
 	selected_changed.emit(selected)
 
 
 ## Router 在每次关卡加载完之后调用
 func on_level_loaded() -> void:
+	if poet_outside_map or flag(&"poet_fell_seen"):
+		if not flag(&"poet_back") and flag(&"poet_fell_seen") and in_party(POET):
+			set_flag(&"poet_back")
 	poet_outside_map = false

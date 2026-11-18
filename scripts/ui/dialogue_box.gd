@@ -125,6 +125,9 @@ func start(path: String, node := "start", with: Node3D = null) -> void:
 	_cam_override = {}
 	_pre_lines.clear()
 	var crash := Meta.consume_crash()
+	if crash == &"shop_slot3":
+		Game.set_flag(&"slot3_crashed")
+		Approval.event("shop_slot3_crash")
 	if crash != &"":
 		var who: String = TextDB.row("ui", "crash_" + String(crash)).get("speaker", "sl")
 		_pre_lines.append({"t": "line", "who": who, "text": TextDB.ui("crash_" + String(crash)), "conds": []})
@@ -378,6 +381,8 @@ func _cond_ok(c: Dictionary) -> bool:
 			return _player_sheet().race == c["value"]
 		"party":
 			return Game.in_party(StringName(c["value"]))
+		"cond":
+			return Cond.ok(c["expr"])
 		"passive":
 			# 被动：队里任何一个人过了就算
 			for id in Game.party:
@@ -497,6 +502,12 @@ func _run_cmd(args: Array) -> void:
 			_fall_later(a1)
 		"long_rest":
 			Game.long_rest()
+		"approve":
+			# $ approve <谁> <加减> [silent]
+			Approval.change(StringName(a1), int(args[2]) if args.size() > 2 else 0, "dialogue:" + (_ds.path.get_file() if _ds else ""), args.size() > 3 and args[3] == "silent")
+		"quest":
+			# $ quest <任务> <步骤>
+			Journal.update(a1, String(args[2]) if args.size() > 2 else "")
 		_:
 			command.emit(args)
 

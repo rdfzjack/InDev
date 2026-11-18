@@ -26,6 +26,8 @@ Combat="*res://scripts/combat/combat.gd"
 Saves="*res://scripts/core/save_system.gd"
 Music="*res://scripts/core/music.gd"
 Voice="*res://scripts/core/voice.gd"
+Approval="*res://scripts/core/approval.gd"
+Journal="*res://scripts/core/journal.gd"
 
 [display]
 

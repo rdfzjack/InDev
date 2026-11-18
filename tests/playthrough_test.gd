@@ -121,6 +121,16 @@ func _ready() -> void:
 	while box.visible:
 		box._advance()
 		await _frames(3)
+	print("== journal after the real flow")
+	await _frames(5)
+	for q in Journal.quests:
+		print("  ", q, " ", Journal.state(q), " obj=", Journal.objective(q), " ", Journal.quests[q]["steps"].map(func(e): return e[0]))
+	_ok(Journal.visited("cellar", "entered") and Journal.visited("cellar", "puzzle_solved"), "cellar steps logged from play")
+	_ok(Journal.visited("cellar", "fight_won") == bool(Game.flag(&"d1_fight_won")), "fight logged only if it was actually won")
+	_ok(Journal.visited("cellar", "cleared_unasked"), "never talked to the chief: the 'unasked' branch")
+	_ok(Journal.objective("cellar") == "report", "cellar: report to the chief")
+	_ok(Journal.visited("poet_below", "fell") and Journal.visited("poet_below", "back"), "poet fell and came back")
+	_ok(Journal.visited("summons", "summons_1") and Journal.visited("summons", "summons_2"), "summons 1 and 2")
 	print("\nRESULT: %s (%d failures)" % ["PASS" if fails == 0 else "FAIL", fails])
 	get_tree().quit(1 if fails else 0)
 

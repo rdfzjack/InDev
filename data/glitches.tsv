@@ -45,3 +45,4 @@ corpse_in_wall	position	gameplay	corpse_in_wall	0.3	boss 尸体沿固定方向�
 dragon_slides	position	funny	dragon_slides	0.5	龙死后尸体沿导航网格走向生前的目标	永久	离开这片区域	可以一路跟着你
 boss_hp_frozen	stat	gameplay	boss_hp_frozen	0.3	魔王某一次重打：血量不掉	这一次	读档 / 走开	打不完。不算数
 camera_up_failed	clip	funny	camera_up_failed	0.4	通往魔王的路，斜坡中段	斜坡中段	走过去	画面倒过来。世界没有翻转
+approval_scrambled	stat	funny	approval_scrambled	1	某一天长休醒来	永久	无	好感度显示全乱了，不能改回去。数值乱了，人没变

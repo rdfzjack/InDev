@@ -56,6 +56,7 @@ godot --headless --path . res://tests/rules_test.tscn
 godot --headless --path . res://tests/combat_test.tscn
 godot --headless --path . res://tests/shop_test.tscn
 godot --headless --path . res://tests/save_test.tscn
+godot --headless --path . res://tests/journal_test.tscn   # 任务日志分支、子任务、好感度规则
 # 需要显示器（真实鼠标事件 / 镜头构图）：
 godot --path . res://tests/input_test.tscn
 godot --path . res://tests/dialogue_test.tscn
@@ -67,6 +68,7 @@ godot --path . res://tests/dungeon2_test.tscn      # 墓园地穴
 godot --path . res://tests/whitebox_test.tscn      # 白模区和龙
 godot --path . res://tests/boss_test.tscn          # 通往魔王的路、魔王战、结局
 godot --path . res://tests/title_test.tscn         # 标题画面 + 角色创建
+godot --path . res://tests/journal_ui_test.tscn    # 任务日志界面、提示、小地图目标
 ```
 
 对话台本语法（条件、检定、镜头）见 `scripts/core/dialogue_script.gd` 顶部。

@@ -1,0 +1,136 @@
+key	zh_CN	en
+# 任务日志文字。quest_<任务> 标题；obj_<任务>_<目标> 接下来该做什么（现在时）；step_<任务>_<步骤> 刚刚发生了什么（过去时）。
+# 日志是这个游戏里写得最严谨的东西之一：它只记事实，不评论，不开玩笑。完成目标（done）不显示，不需要文字。
+# ---- 分类 / 界面
+cat_main	主线	
+cat_companion	同伴	
+cat_side	支线	
+cat_other	其他	
+cat_finished	已结束	
+journal_title	日志	
+journal_objective	当前目标	
+journal_track	追踪	
+journal_tracking	追踪中	
+journal_day	第 %d 天	
+journal_completed	已完成	
+journal_failed	失败	
+journal_empty	日志里还没有任何内容。	
+journal_here	此地	
+journal_subquests	子任务	
+toast_added	新任务	
+toast_updated	日志已更新	
+toast_completed	任务完成	
+toast_failed	任务失败	
+# ---- 地窖里的声音
+quest_cellar	地窖里的声音	
+obj_cellar_talk_chief	和村长谈谈。	
+obj_cellar_investigate	调查村子东边的地窖。	
+obj_cellar_search_deeper	搜索地窖的最深处。	
+obj_cellar_report	回村子告诉村长。	
+step_cellar_heard	村长说，东边的地窖里晚上会有声音。	
+step_cellar_accepted	你们答应了去地窖看看。	
+step_cellar_pay_negotiated	村长答应，等你们回来，会多给一些报酬。	
+step_cellar_chief_looked_north	村长说"东边"的时候，视线往北边看了一眼。北边只有一扇门。	
+step_cellar_entered	你们走下了地窖的石阶。	
+step_cellar_puzzle_solved	石碑上写着拉杆的顺序。你们照着拉了，铁栅升了起来。	
+step_cellar_door_picked	小扬打开了储藏间上锁的门。	
+step_cellar_door_forced	你们把储藏间的门砸开了。	
+step_cellar_fight_won	你们打败了地窖里的地精和狼。	
+step_cellar_cleared	地窖安静了。该回去告诉村长了。	
+step_cellar_cleared_unasked	你们清理了村子东边的地窖。没有人让你们去。也许该告诉村长一声。	
+step_cellar_reported_paid	你们向村长报告了地窖的事。他给了说好的报酬。	
+step_cellar_reported	你们向村长报告了地窖的事。他说了谢谢。	
+# ---- 南路上的谋杀
+quest_murder	南路上的谋杀	
+obj_murder_go_cemetery	前往村子南边的墓园。	
+obj_murder_open_gate	打开墓园地穴的铁门。	
+obj_murder_find_killer	在墓园地穴里找到凶手。	
+obj_murder_tell_priestess	回神殿，告诉大祭司。	
+step_murder_told	神殿的大祭司说，每到黄昏，南边的路上就有人遇害。凶手藏在墓园之下的地穴里。	
+step_murder_witnessed	你们在村子南边的路上，目睹了一个村民被杀。凶手逃向了墓园。	
+step_murder_witnessed_again	同一个村民，在同一个地方，又被杀了一次。凶手又逃向了墓园。	
+step_murder_entered	你们进入了墓园的地穴。入口的铁门锁着。	
+step_murder_gate_key	你们用铁匠的钥匙打开了铁门。	
+step_murder_gate_picked	小扬撬开了铁门的锁。	
+step_murder_gate_forced	你们把铁门硬生生地撞开了。	
+step_murder_gravekeeper	守墓人的鬼魂说，有个穿斗篷的人每天黄昏出去，回来的时候身上有血。	
+step_murder_crypt_cleared	你们打败了墓室里的僵尸。	
+step_murder_killer_dead	你们在地穴的尽头杀死了那个穿斗篷的人。南路上的凶手死了。	
+step_murder_stranger_dead	你们在墓园地穴的深处，杀死了一个穿斗篷的人。你们不知道他是谁。神殿的大祭司或许知道。	
+step_murder_corpse_in_wall	他的尸体飞进了北面的墙里。他的口袋里有十二枚金币、一把铜钥匙和一封未拆的信。你们够不到。	
+step_murder_corpse_looted	你们搜了他的尸体：十二枚金币、一把铜钥匙和一封未拆的信。	
+step_murder_reported	你们告诉了大祭司。她感谢了你们，愿光明庇佑你们。	
+# ---- 墓园的钥匙（子任务）
+quest_crypt_key	墓园的钥匙	
+obj_crypt_key_ask_smith	问问铁匠有没有墓园铁门的钥匙。	
+obj_crypt_key_pick_up	把钥匙捡起来。	
+step_crypt_key_heard	大祭司说，墓园的铁门上了锁，铁匠那里有钥匙。	
+step_crypt_key_thrown	铁匠说那扇门是他打的。他把钥匙扔了过来。	
+step_crypt_key_picked	你们捡起了墓园铁门的钥匙。	
+step_crypt_key_lost	钥匙滚进了地缝里。你们能看见它，但够不到。铁匠说，就那一把。	
+step_crypt_key_not_needed	你们没有用钥匙，铁门已经开了。	
+# ---- 魔王
+quest_demon_lord	魔王	
+obj_demon_lord_locked	那扇门锁着。	
+obj_demon_lord_go_through	穿过村子北边的那扇门。	
+obj_demon_lord_defeat	击败魔王。	
+obj_demon_lord_undetermined	无法判定。	
+step_demon_lord_saw_gate	村子北边有一扇锁着的门。门后面有音乐。	
+step_demon_lord_gate_open	那扇门开了。没有人解释为什么。	
+step_demon_lord_road	门后面是一条向上的斜坡。路边有一些人，停在离地一米的地方。	
+step_demon_lord_arena	你们走到了坡顶。王座上坐着魔王。	
+step_demon_lord_launched	魔王飞上了天空，越飞越快，飞出了视线。没有人能判定这算不算胜利。	
+step_demon_lord_stuck	你们回到坡顶。这一次，魔王的下半身卡在地里。	
+step_demon_lord_frozen	你们回到坡顶。这一次，魔王的生命值没有变化。	
+step_demon_lord_no_show	你们回到坡顶。这一次，魔王没有出现。	
+step_demon_lord_ended	这一次之后，事情结束了。	
+# ---- 约谈（你老公）
+quest_summons	约谈	
+obj_summons_talk	饭后去找你老公谈话。	
+step_summons_summons_1	你老公说：饭后我要和你谈话。	
+step_summons_summons_2	你们没有谈成。第二天，他说：你妄图蒙混过关。	
+step_summons_summons_3	你们还是没有谈成。他的措辞更正式了。	
+step_summons_summons_4	他说：我对你很失望。	
+step_summons_ended	约谈结束了。你们没有谈。	
+# ---- 下面（低低）
+quest_poet_below	下面	
+obj_poet_below_wait	等低低回来。	
+obj_poet_below_ask	问问低低，下面是什么样的。	
+step_poet_below_fell	低低加入队伍的时候，掉到了地图外面。他的名字留在原地。	
+step_poet_below_back	换了一个地方之后，低低回来了。	
+step_poet_below_asked	低低说，下面挺安静的。	
+# ---- 红色的提夫林（小扬）
+quest_sl_texture	红色的提夫林	
+obj_sl_texture_tell	告诉小扬，他的贴图不对。	
+step_sl_texture_noticed	远看，小扬是一个红色的提夫林。走近了，他是蓝色的。	
+step_sl_texture_told	你告诉了小扬。他说：哪有，现在不是对的吗。	
+# ---- 永恒誓约指环
+quest_oath_ring	永恒誓约指环	
+obj_oath_ring_wear	试着戴上它。	
+obj_oath_ring_same	你们戴着同一枚指环。	
+obj_oath_ring_buy_back	从商店老板那里把它买回来。它在第三格。	
+step_oath_ring_chest_stuck	墓园侧室的箱子打开的动画播了，但箱子没有打开。	
+step_oath_ring_found	你们在墓园侧室的箱子里找到了一枚传说中的指环。箱子第二次才打开。	
+step_oath_ring_worn	你戴上了它。背包里还有一枚。你们四个人都戴着它，是同一枚。	
+step_oath_ring_sold	你卖掉了它。四个人手上的指环同时消失了。	
+# ---- 第三格
+quest_slot3	第三格	
+obj_slot3_dont	不要点商店的第三格。	
+step_slot3_warned	有人告诉你，别点商店的第三格。	
+step_slot3_clicked	你点了。	
+# ---- 白模区的龙
+quest_dragon	白模区的龙	
+obj_dragon_look	一条龙。它没有攻击你们。	
+obj_dragon_moving	它在动。	
+step_dragon_found	小路的尽头是一片还没有做完的地方。那里有一条龙。	
+step_dragon_talked	龙说，它在等这里被做完。	
+step_dragon_fought	你老公说：这边还没做。然后你们动了手。	
+step_dragon_killed	龙死了。什么也没有掉落。	
+step_dragon_slid	龙的尸体保持着倒下的姿势，开始沿着地面移动。它朝着你们来。	
+# ---- 走失的山羊（你没做过）
+quest_lost_goat	走失的山羊	
+obj_lost_goat_find	找到农夫走失的山羊。	
+obj_lost_goat_return	把山羊还给农夫。	
+step_lost_goat_asked	一个农夫说他的山羊走丢了。	
+step_lost_goat_found	你们在河边找到了那只山羊。	
+step_lost_goat_returned	你们把山羊还给了农夫。他很高兴。	

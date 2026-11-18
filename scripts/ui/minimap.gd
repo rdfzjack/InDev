@@ -22,6 +22,7 @@ var _vp: SubViewport
 var _cam: Camera3D
 var _rect: TextureRect
 var _area: Label
+var _journal: Button
 var _t := 0.0
 
 
@@ -31,7 +32,7 @@ func _ready() -> void:
 	offset_left = -SIZE - 16
 	offset_right = -16
 	offset_top = 12
-	offset_bottom = 12 + SIZE + 26
+	offset_bottom = 12 + SIZE + 58
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vp = SubViewport.new()
 	_vp.size = Vector2i(SIZE, SIZE)
@@ -61,7 +62,23 @@ func _ready() -> void:
 	_area.add_theme_font_size_override("font_size", 13)
 	_area.add_theme_color_override("font_color", UITheme.TEXT_GOLD)
 	add_child(_area)
+	# 日志按钮（J），有没读的更新时显示数字
+	_journal = Button.new()
+	_journal.name = "JournalButton"
+	_journal.position = Vector2(SIZE * 0.5 - 50, SIZE + 26)
+	_journal.size = Vector2(100, 26)
+	_journal.add_theme_font_size_override("font_size", 13)
+	_journal.pressed.connect(JournalScreen.toggle)
+	add_child(_journal)
+	Journal.updated.connect(func(_q, _s, _k): _refresh_journal_button())
+	Journal.read_changed.connect(_refresh_journal_button)
+	_refresh_journal_button()
 	Router.level_loaded.connect(_on_level)
+
+
+func _refresh_journal_button() -> void:
+	var n := Journal.unread_count()
+	_journal.text = TextDB.line("journal", "journal_title") + (" (%d)" % n if n > 0 else "") + "  J"
 
 
 func _on_level(level: Node) -> void:
@@ -106,6 +123,16 @@ class Overlay extends Control:
 				if m.get_meta("blink", false) and int(map._t * 2.0) % 2 == 0:
 					col.a = 0.2
 				draw_circle(p, 4, col)
+			# 被追踪任务的当前目标（金色菱形，出了圈就贴边）
+			var lvl := Router.current_level
+			for wp in Journal.marker_positions(lvl):
+				var d2: Vector3 = (wp as Vector3) - l.global_position
+				var q := c + Vector2(d2.x, d2.z) * scale
+				if q.distance_to(c) > r - 7:
+					q = c + (q - c).normalized() * (r - 7)
+				var s := 5.0
+				draw_colored_polygon(PackedVector2Array([q + Vector2(0, -s), q + Vector2(s, 0), q + Vector2(0, s), q + Vector2(-s, 0)]), UITheme.TEXT_GOLD)
+				draw_polyline(PackedVector2Array([q + Vector2(0, -s), q + Vector2(s, 0), q + Vector2(0, s), q + Vector2(-s, 0), q + Vector2(0, -s)]), Color(0, 0, 0, 0.8), 1.0)
 			# 自己：中心的小三角
 			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -6), c + Vector2(5, 5), c + Vector2(-5, 5)]), Color(1, 1, 1))
 		draw_arc(c, r - 1, 0, TAU, 64, UITheme.BORDER_BRIGHT, 2.0, true)

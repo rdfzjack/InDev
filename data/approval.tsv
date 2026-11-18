@@ -1,0 +1,21 @@
+event	who	delta	cond	silent	once	global	note
+# 好感度事件表（BG3 式：队友对你的行为有看法）。
+# event：Bus 广播的故障 / 玩家行为 id，或脚本里 Approval.event("id") 的 id。
+# who：husband / poet / sl，或 instigator（事件的发起者）
+# cond：逗号分隔的条件（scripts/core/cond.gd）。silent=1 不提示。once=1 只生效一次。global=1 不受距离限制。
+# 你老公的好感度不受任何输入影响：这里写了他也没用（写了是因为写的人一开始不知道）。
+#
+# ---- 小扬：喜欢读档。不喜欢你不听他的。
+player_load	sl	2				1	他觉得你终于开窍了
+item_in_crack	sl	1		1	1		这下得他来开锁了
+corpse_in_wall	sl	1			1		读档重打的机会
+shop_slot3_crash	sl	-3			1	1	不是说了别点吗
+trap_sprung	sl	-1					他应该能解的
+# ---- 低低：无所谓。你也无所谓的时候他比较开心。
+player_idk	poet	1		1			"我不知道"
+shared_item	poet	2			1		我们戴的是同一个
+poet_fell	poet	0					他对自己掉下去没有看法
+# ---- 你老公：（不受影响）
+player_lay_down	husband	-1					你又躺下了
+# ---- 被队友误伤
+friendly_fire	instigator	-3					火球炸到自己人

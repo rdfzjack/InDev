@@ -125,6 +125,7 @@ func _equip_shared(id: String, slot: String) -> bool:
 			sh.hp_changed.emit()
 	Meta.bump("equips")
 	Bus.report(&"shared_item", &"", Vector3.ZERO)
+	Game.set_flag(&"ring_worn")
 	changed.emit()
 	return true
 
@@ -182,6 +183,7 @@ func sell(id: String, price: int) -> bool:
 		if lost.size() > 0:
 			Meta.bump("shared_item_sold")
 			Bus.report(&"shared_item_sold", &"", Vector3.ZERO)
+			Game.set_flag(&"ring_sold")
 	gold += price
 	Meta.bump("sold")
 	changed.emit()

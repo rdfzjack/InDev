@@ -131,6 +131,21 @@ func _build() -> void:
 	exit_to(Vector3(0, 0, -39), VILLAGE, "from_dungeon", "exit_to_village", Vector3(2, 2, 1.5)).requires_flag = "d1_done"
 
 
+func _ready() -> void:
+	super._ready()
+	Combat.combat_ended.connect(_on_combat_ended)
+
+
+func _exit_tree() -> void:
+	if Combat.combat_ended.is_connected(_on_combat_ended):
+		Combat.combat_ended.disconnect(_on_combat_ended)
+
+
+func _on_combat_ended(party_won: bool) -> void:
+	if party_won:
+		Game.set_flag(&"d1_fight_won")
+
+
 func _on_poet_zone(b: Node, z: Area3D) -> void:
 	var p := get_node_or_null("poet")
 	if b is PartyMember and b.char_id == Game.PROTAGONIST and not z.has_meta("done") and p and p is Npc:
@@ -151,6 +166,7 @@ func _pull(_by: StringName, k: String, lv: Interactable) -> void:
 		_portcullis = null
 		rebake()
 		Meta.bump("d1_puzzle_solved")
+		Game.set_flag(&"d1_puzzle_solved")
 		Game.award_xp(25)
 
 
@@ -163,6 +179,7 @@ func _try_door(_by: StringName) -> void:
 		"dc_text": "10" if who == Game.SL else "15", "ability": "", "lie": false}
 	var res: Dictionary = await DiceRollPanel.check(chk, Game.sheet(who))
 	if res.get("success", false):
+		Game.set_flag(&"d1_door_how", "pick" if who == Game.SL else "force")
 		_door.queue_free()
 		_door = null
 		_door_inter.queue_free()
