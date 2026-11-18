@@ -86,10 +86,15 @@
 14. **龙**：做得极其认真。多阶段动画 + **专属音乐**（只有找到这里的人会听到）。
 15. 通往魔王的斜坡 + 一路的敌人。
 16. 建卡界面的立绘和图标（做得很认真，结果不生效）。
-17. 技能图标：【躺着】（认真做）、【读取存档】、【解除陷阱】、火球等。
-18. 粉红方块图标：`Item_01` 不用做，引擎自带的缺失贴图就是粉红色。
-19. "炸弹"道具：图标是**面包**。
-20. 加载画面背景图（如果需要）。
+17. **技能图标**（战斗系统已经做好，现在是两个字的文字占位）：64×64 PNG，放 `assets/icons/`，**文件名就是 key**，放进去自动生效：
+    - 通用：`act_attack` `act_attack_ranged` `act_offhand` `act_dash` `act_disengage` `act_dodge` `act_help`
+    - 特性：`act_smite` `act_second_wind` `act_action_surge` `act_lay_on_hands` `act_bardic_inspiration` `act_cunning_dash` `act_cunning_disengage`
+    - 自定义：`act_lie_down`（**认真做**）、`act_load_save`
+    - 法术：`spell_fire_bolt` `spell_ray_of_frost` `spell_shocking_grasp` `spell_vicious_mockery` `spell_eldritch_blast` `spell_magic_missile` `spell_shield` `spell_burning_hands` `spell_healing_word` `spell_cure_wounds` `spell_dissonant_whispers` `spell_thunderwave` `spell_bless` `spell_shield_of_faith` `spell_hex` `spell_hellish_rebuke` `spell_shatter` `spell_fireball`
+18. **敌人模型**（遭遇战用）：地精（small）、狼、骷髅、僵尸、强盗、熊地精。待机 / 走 / 攻击 / 受击 / 死亡。
+19. 粉红方块图标：`Item_01` 不用做，引擎自带的缺失贴图就是粉红色。
+20. "炸弹"道具：图标是**面包**。
+21. 加载画面背景图（如果需要）。
 
 ## 不需要你做的
 
