@@ -6,6 +6,7 @@ extends Node
 ##   └─ UI (CanvasLayer, 全分辨率——UI 允许是现代的)
 ##       └─ HUD (Control, UITheme)
 ##           ├─ Nameplates / OverheadText   名牌、头顶对话
+##           ├─ CombatHUD                   先攻条、资源、命中率、飘字
 ##           ├─ NarratorLog                 旁白（屏幕上方）
 ##           ├─ PartyPortraits              左侧队伍头像
 ##           ├─ Minimap                     右上小地图
@@ -77,6 +78,10 @@ func _build_ui() -> void:
 	overhead.name = "OverheadText"
 	overhead.nameplates = plates
 	root.add_child(overhead)
+	var combat_hud := CombatHUD.new()
+	combat_hud.name = "CombatHUD"
+	combat_hud.nameplates = plates
+	root.add_child(combat_hud)
 	var narr := NarratorLog.new()
 	narr.name = "NarratorLog"
 	root.add_child(narr)

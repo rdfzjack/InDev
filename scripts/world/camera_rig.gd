@@ -24,8 +24,14 @@ func _ready() -> void:
 
 
 func _process(dt: float) -> void:
-	if target and is_instance_valid(target):
-		global_position = global_position.lerp(target.global_position, clampf(follow_speed * dt, 0, 1))
+	var follow := target
+	# 战斗中跟当前回合的单位
+	if Combat.active:
+		var c := Combat.current()
+		if c and c.node and is_instance_valid(c.node):
+			follow = c.node
+	if follow and is_instance_valid(follow):
+		global_position = global_position.lerp(follow.global_position, clampf(follow_speed * dt, 0, 1))
 	if Input.is_key_pressed(KEY_Q):
 		_yaw += 90.0 * dt
 	if Input.is_key_pressed(KEY_E):

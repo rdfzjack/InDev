@@ -12,6 +12,8 @@ const ICON_PATH := "res://assets/portraits/%s_icon.png"
 		selected = v
 		queue_redraw()
 
+## 不为空时代替角色名（怪物用）
+var name_text := ""
 var _tex: Texture2D
 
 
@@ -25,7 +27,7 @@ func setup(id: StringName) -> void:
 
 func _draw() -> void:
 	var r := Rect2(Vector2.ZERO, size)
-	var col: Color = PartyController.COLORS.get(char_id, Color.GRAY)
+	var col: Color = PartyController.COLORS.get(char_id, Color(0.55, 0.2, 0.15))
 	var border := UITheme.BORDER_BRIGHT if selected else UITheme.BORDER
 	if round:
 		var c := size * 0.5
@@ -51,7 +53,7 @@ func _draw() -> void:
 
 
 func _draw_initial(c: Vector2, rad: float) -> void:
-	var name := TextDB.char_name(char_id)
+	var name := name_text if name_text != "" else TextDB.char_name(char_id)
 	if name == "":
 		return
 	var f := get_theme_default_font()

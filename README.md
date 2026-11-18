@@ -23,11 +23,31 @@
 | F5 | 重载关卡（诗人回来） |
 | F6 | 开关老公约谈状态（约谈中点不动） |
 | T | 和你老公对话 |
+| F7 | 全队升一级（1 → 3） |
+| F8 | 立刻开战（往北走进入遭遇战范围也会开战） |
 
-命令行冒烟测试：
+战斗中（BG3 式）：
+
+| 操作 | 作用 |
+|---|---|
+| 左键点地面 | 移动（绿色路径 = 走得到，红色 = 超出移动力） |
+| 左键点敌人 | 默认近战攻击，够不着先走过去 |
+| 技能栏选行动 | 进入瞄准，悬停目标显示命中率 / 豁免失败率和优劣势原因 |
+| 右键 | 取消瞄准 |
+| 空格 / 结束按钮 | 结束回合 |
+
+命令行测试：
 
 ```bash
 godot --headless --path . res://tests/smoke_test.tscn
+godot --headless --path . res://tests/rules_test.tscn
+godot --headless --path . res://tests/combat_test.tscn
+```
+
+改了 `.dlg` 对话之后，给新台词盖 ID 并导出翻译表：
+
+```bash
+godot --headless --path . --script res://tools/dlg_tool.gd
 ```
 
 ## 目录
@@ -48,7 +68,10 @@ scripts/core/         全局系统（自动加载）
   meta_stats.gd       结算统计，独立于存档；异常退出检测
   game_state.gd       队伍、剧情标记
   scene_router.gd     关卡切换 + 加载画面
-scripts/actors/       四个角色
+data/rules/           5e 规则数据：职业、法术、武器护甲、怪物、种族、队伍升级路线（JSON）
+scripts/rules/        骰子、角色卡（等级 / 兼职 / 法术位）
+scripts/combat/       战斗管理器、AI、遭遇战、战斗输入、地面提示
+scripts/actors/       Actor 基类、四个角色、敌人
 scripts/world/        镜头、队伍控制、陷阱、门口打转、占位几何体
 scripts/ui/           名牌、旁白、banter、对话框、加载画面
 shaders/ps2.gdshader       Unlit + 顶点抖动 + affine UV + 最近邻

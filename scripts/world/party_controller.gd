@@ -27,7 +27,13 @@ var camera_rig: CameraRig
 var _pending_interact: Node3D
 
 
+var combat: CombatController
+
+
 func _ready() -> void:
+	combat = CombatController.new()
+	combat.name = "CombatController"
+	add_child(combat)
 	Game.party_changed.connect(_sync_party)
 	_sync_party.call_deferred()
 
@@ -61,7 +67,7 @@ func _sync_party() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if DialogueBox.is_open() or Router.is_busy():
+	if DialogueBox.is_open() or Router.is_busy() or Combat.active:
 		return
 	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
 		_click(e.position)
@@ -102,7 +108,7 @@ func _interactable_of(o: Object) -> Node3D:
 
 
 func _physics_process(_dt: float) -> void:
-	if leader == null:
+	if leader == null or Combat.active:
 		return
 	if _pending_interact and is_instance_valid(_pending_interact):
 		if leader.global_position.distance_to(_pending_interact.global_position) < INTERACT_RANGE:

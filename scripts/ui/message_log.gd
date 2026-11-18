@@ -26,6 +26,7 @@ func _ready() -> void:
 	add_child(_text)
 	Narrator.line_shown.connect(_on_narrator)
 	Banter.spoke.connect(_on_speak)
+	Combat.logged.connect(func(t): _append("[color=#%s]%s[/color]" % [UITheme.TEXT_DIM.to_html(false), t]))
 	if DialogueBox.instance:
 		DialogueBox.instance.line_shown.connect(_on_dialogue)
 

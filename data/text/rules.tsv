@@ -186,3 +186,8 @@ log_reaction_cutting_words	%s 语出惊人，%s 的攻击骰 -%d	%s uses Cutting
 log_opportunity	%s 对 %s 发动借机攻击	%s makes an opportunity attack against %s
 log_victory	战斗结束。	Combat is over.
 log_defeat	全队倒下了。	The party has fallen.
+# ---- 消耗 ----
+cost_action	动作	Action
+cost_bonus	附赠动作	Bonus Action
+cost_reaction	反应	Reaction
+cost_none	免费	Free

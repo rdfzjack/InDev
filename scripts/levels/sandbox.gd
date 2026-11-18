@@ -4,6 +4,8 @@ extends Node3D
 ##   F1 诗人掉出地图      F2 随机报一个故障     F3 主角躺着
 ##   F4 主角说一句"我不知道"（测试 banter）    F5 重载关卡（诗人回来）
 ##   F6 开关老公约谈（约谈中他点不动）        T  直接和老公对话
+##   F7 全队升一级（1 → 3）                    F8 立刻开战（遭遇战触发器）
+## 往北走（-Z）进入遭遇战范围也会开战。
 
 const NAV_BAKE_LAYER := 1
 
@@ -47,6 +49,23 @@ func _ready() -> void:
 	add_child(trap)
 	trap.position = Vector3(-4, 0, 0)
 
+	var enc := Encounter.new()
+	enc.name = "Encounter"
+	add_child(enc)
+	enc.position = Vector3(0, 0, -16)
+	for i in 3:
+		var g := Enemy.new()
+		g.monster_kind = "goblin"
+		g.name = "Goblin%d" % i
+		enc.add_child(g)
+		g.position = Vector3(-3 + i * 3, 0.1, -2)
+	for i in 2:
+		var w := Enemy.new()
+		w.monster_kind = "wolf"
+		w.name = "Wolf%d" % i
+		enc.add_child(w)
+		w.position = Vector3(-2 + i * 4, 0.1, 1)
+
 	var jam := DoorJam.new()
 	jam.name = "TavernDoorJam"
 	add_child(jam)
@@ -54,7 +73,7 @@ func _ready() -> void:
 
 
 func _build_geometry(parent: Node3D) -> void:
-	var floor := Placeholders.static_box(Vector3(40, 1, 40), Color(0.55, 0.62, 0.45), 0.25)
+	var floor := Placeholders.static_box(Vector3(60, 1, 60), Color(0.55, 0.62, 0.45), 0.25)
 	floor.position.y = -0.5
 	parent.add_child(floor)
 	# 一面带门洞的墙（酒馆门）
@@ -96,5 +115,11 @@ func _unhandled_input(e: InputEvent) -> void:
 		KEY_F6:
 			Game.set_flag(&"husband_summons_pending", not Game.flag(&"husband_summons_pending"))
 			print("husband_summons_pending: ", Game.flag(&"husband_summons_pending"))
+		KEY_F7:
+			print("party level -> ", Game.party_level + 1 if Game.level_up_party() else Game.party_level)
+		KEY_F8:
+			var enc: Encounter = get_node_or_null("Encounter")
+			if enc:
+				enc.start()
 		KEY_T:
 			DialogueBox.open("res://data/dialogue/husband.dlg", "talk")

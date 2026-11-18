@@ -56,9 +56,10 @@ func _refresh() -> void:
 		var it: Dictionary = _items[id]
 		it["portrait"].selected = id == Game.selected
 		var bar: ProgressBar = it["bar"]
-		bar.max_value = Game.max_hp.get(id, 1)
-		bar.value = Game.hp.get(id, 0)
-		bar.tooltip_text = TextDB.ui("hud_hp") % [Game.hp.get(id, 0), Game.max_hp.get(id, 0)]
+		var sh := Game.sheet(id)
+		bar.max_value = sh.max_hp
+		bar.value = sh.hp
+		bar.tooltip_text = TextDB.ui("hud_hp") % [sh.hp, sh.max_hp]
 
 
 func _on_input(e: InputEvent, id: StringName) -> void:

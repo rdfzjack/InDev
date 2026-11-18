@@ -31,3 +31,9 @@ hud_cooldown	冷却：%d 回合	Cooldown: %d turn(s)
 hud_hp	%d / %d	%d / %d	
 area_sandbox	测试场	Sandbox	
 hud_end_turn	结束	End	
+# ---- 战斗 HUD ----
+hud_hit_chance	命中 %d%%	%d%% to hit	
+hud_save_fail_chance	豁免失败 %d%%	%d%% to fail save	
+hud_cantrip	戏法	Cantrip	
+hud_spell_level	%d 环法术	Level %d spell	
+area_sandbox_combat	测试场	Sandbox	

@@ -23,9 +23,30 @@ var poet_outside_map := false
 ## HUD 上当前选中的角色
 var selected: StringName = PROTAGONIST
 
-## 3 级团的占位数值。战斗系统接手后改成从角色卡读。
-var hp := {PROTAGONIST: 28, HUSBAND: 64, POET: 19, SL: 22}
-var max_hp := {PROTAGONIST: 28, HUSBAND: 64, POET: 19, SL: 22}
+## 全队等级（大家一起从 1 升到 3）
+var party_level := 1
+## 角色卡，跨关卡保留
+var sheets: Dictionary = {}
+signal leveled_up(level: int)
+
+
+func sheet(id: StringName) -> CharacterSheet:
+	if not sheets.has(id):
+		var s := CharacterSheet.from_party(id, party_level)
+		s.hp_changed.connect(func(): hp_changed.emit(id))
+		sheets[id] = s
+	return sheets[id]
+
+
+## 全队升一级，按 data/rules/party.json 的路线
+func level_up_party() -> bool:
+	if party_level >= 3:
+		return false
+	party_level += 1
+	for id in sheets:
+		sheets[id].level_up_next()
+	leveled_up.emit(party_level)
+	return true
 
 
 func select(id: StringName) -> void:
@@ -35,9 +56,6 @@ func select(id: StringName) -> void:
 	selected_changed.emit(id)
 
 
-func set_hp(id: StringName, v: int) -> void:
-	hp[id] = clampi(v, 0, int(max_hp.get(id, v)))
-	hp_changed.emit(id)
 
 
 func in_party(id: StringName) -> bool:
