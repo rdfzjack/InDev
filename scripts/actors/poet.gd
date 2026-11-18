@@ -3,7 +3,7 @@ extends PartyMember
 ## 诗人。会掉出地图。
 ##
 ## 掉下去：关碰撞，重力往下拽，落速有上限，到 STOP_Y 停住（"他在下面"，不是无限下坠）。
-## 不走 Kill Z。名牌留在他真实坐标上，由 Nameplates 钳制到屏幕边缘。
+## 不走 Kill Z。名牌不跟着掉：留在他掉下去的地方（原来站着的位置头顶），飘在空中。
 ## 跟随逻辑停掉——但 TrapProxy（隐形的触发体）继续跟着队伍走，所以陷阱还是会被他踩响。
 ## 每次关卡加载他都会回来（新关卡里就是一个新的他）。
 
@@ -11,6 +11,8 @@ const STOP_Y := -45.0
 const MAX_FALL_SPEED := 18.0
 
 var outside_map := false
+## 掉下去的位置（名牌留在这里）
+var fall_origin := Vector3.ZERO
 ## 名牌系统在他不可见时也显示
 var plate_when_hidden := true
 ## 隐形触发体：陷阱检测它，而不是检测身体
@@ -43,6 +45,7 @@ func fall_out_of_map() -> void:
 	if outside_map:
 		return
 	outside_map = true
+	fall_origin = global_position
 	Game.poet_outside_map = true
 	collision_layer = 0
 	collision_mask = 0
@@ -84,6 +87,8 @@ func _physics_process(dt: float) -> void:
 	trap_proxy.global_position = p
 
 
-## 他在下面时，名牌跟着他的真实坐标（地下很远处），不跟触发体
+## 他在下面时，名牌留在原位（掉下去那一点的头顶），不跟身体、也不跟触发体
 func nameplate_position() -> Vector3:
+	if outside_map:
+		return fall_origin + Vector3.UP * (height + 0.35)
 	return super.nameplate_position()

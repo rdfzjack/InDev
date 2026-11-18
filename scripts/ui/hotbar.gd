@@ -1,6 +1,6 @@
 class_name Hotbar
 extends HBoxContainer
-## 底部居中的技能栏：左边当前角色的圆形大头像，中间两排技能格，右边结束回合。
+## 底部居中的技能栏：左边当前角色的圆形大头像，中间两排技能格，右边结束回合 + 短休（BG3）。
 ## 技能从 data/abilities.tsv 读，按当前选中的角色显示。
 ## 你老公的栏里没有【躺着】——不是灰的，是根本没有那一格。
 
@@ -11,6 +11,7 @@ const ROWS := 2
 var _portrait: Portrait
 var _grid: GridContainer
 var _end_turn: Button
+var _short_rest: Button
 
 
 func _ready() -> void:
@@ -39,14 +40,26 @@ func _ready() -> void:
 	panel.add_child(_grid)
 	_end_turn = Button.new()
 	_end_turn.custom_minimum_size = Vector2(64, 64)
-	_end_turn.size_flags_vertical = Control.SIZE_SHRINK_END
 	_end_turn.text = TextDB.ui("hud_end_turn")
 	_end_turn.add_theme_stylebox_override("normal", UITheme.panel(UITheme.BG_DEEP, UITheme.BORDER, 1, 32, 4))
 	_end_turn.disabled = true
 	_end_turn.pressed.connect(func():
 		if CombatController.instance and CombatController.instance.my_turn():
 			Combat.end_turn())
-	add_child(_end_turn)
+	# 右边一列：上面短休，下面结束回合（不加宽技能栏，免得压到右下角的日志）
+	var right := VBoxContainer.new()
+	right.size_flags_vertical = Control.SIZE_SHRINK_END
+	right.add_theme_constant_override("separation", 4)
+	add_child(right)
+	_short_rest = Button.new()
+	_short_rest.name = "ShortRest"
+	_short_rest.custom_minimum_size = Vector2(64, 26)
+	_short_rest.add_theme_font_size_override("font_size", 12)
+	_short_rest.add_theme_stylebox_override("normal", UITheme.panel(UITheme.BG_DEEP, UITheme.BORDER, 1, 4, 2))
+	_short_rest.pressed.connect(func(): Game.short_rest())
+	right.add_child(_short_rest)
+	right.add_child(_end_turn)
+	Game.rested.connect(func(_k): _rebuild.call_deferred())
 	Game.selected_changed.connect(func(_id): _rebuild())
 	Game.party_changed.connect(_rebuild)
 	Game.leveled_up.connect(func(_l): _rebuild())
@@ -120,6 +133,10 @@ func _rebuild() -> void:
 			b.disabled = true
 		_grid.add_child(b)
 	_end_turn.disabled = not (CombatController.instance and CombatController.instance.my_turn() != null)
+	_short_rest.text = TextDB.ui("hud_short_rest") % [Game.short_rests_left, Game.SHORT_RESTS_PER_DAY]
+	var why := Game.can_short_rest()
+	_short_rest.disabled = why != ""
+	_short_rest.tooltip_text = TextDB.ui("hud_short_rest_tip") + ("\n" + TextDB.ui(why) if why != "" else "")
 
 
 func _name_key(a: Dictionary) -> String:

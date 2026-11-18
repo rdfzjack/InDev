@@ -10,6 +10,7 @@ func _ready() -> void:
 	_multiclass()
 	_slots()
 	_level_up_rules()
+	_rests()
 	print("\nRESULT: %s (%d failures)" % ["PASS" if fails == 0 else "FAIL", fails])
 	get_tree().quit(1 if fails else 0)
 
@@ -171,3 +172,34 @@ func _level_up_rules() -> void:
 	var b := CharacterSheet.from_party(&"poet", 1)
 	var rp := LevelUp.plan(b, "rogue")
 	_ok(rp["choices"].any(func(c): return c["type"] == "skills"), "multiclass into rogue grants a skill choice")
+
+
+func _rests() -> void:
+	print("== short / long rest (BG3)")
+	var h := CharacterSheet.from_party(&"husband", 3)
+	h.hp = 4
+	h.spend_resource("second_wind")
+	h.spend_resource("action_surge")
+	h.spend_slot(1)
+	h.spend_slot(1)
+	h.bg3_short_rest()
+	_eq(h.hp, 4 + h.max_hp / 2, "short rest heals half max hp")
+	_ok(h.has_resource("second_wind") and h.has_resource("action_surge"), "second wind + action surge back")
+	_eq(h.slots_free(1), 1, "arcane recovery: 1 slot back (wizard 1)")
+	_ok(not h.has_resource("arcane_recovery"), "arcane recovery spent")
+	h.bg3_short_rest()
+	_eq(h.slots_free(1), 1, "arcane recovery only once per long rest")
+	_eq(h.hp, h.max_hp, "capped at max hp")
+	var sl := CharacterSheet.from_party(&"sl", 3)
+	sl.pact_used = 1
+	sl.bg3_short_rest()
+	_eq(sl.pact_used, 0, "pact slot back on short rest")
+	var b := CharacterSheet.from_party(&"poet", 3)
+	b.spend_resource("bardic_inspiration")
+	b.spend_slot(1)
+	b.bg3_short_rest()
+	_ok(b.slots_free(1) < b.slots_max[0], "bard slots need a long rest")
+	b.long_rest()
+	_ok(b.slots_free(1) == b.slots_max[0] and int(b.resources["bardic_inspiration"]) == int(b.resources_max["bardic_inspiration"]), "long rest restores everything")
+	h.long_rest()
+	_ok(h.has_resource("arcane_recovery"), "arcane recovery back after long rest")

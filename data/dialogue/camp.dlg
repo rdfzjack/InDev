@@ -1,11 +1,11 @@
-# 营地。铺盖：长休。
+# 营地。点营火：长休（BG3：要营地补给）。
 
-~ bedroll
+~ campfire
 @ no_idk
-narrator: 营火烧得很稳。  #camp.bedroll.01
-[!enough_supplies] narrator: 营地补给不够。  #camp.bedroll.02
-- [enough_supplies] 长休。 -> rest  #camp.bedroll.03
-- 再等等。 -> END  #camp.bedroll.04
+narrator: 营火烧得很稳。  #camp.campfire.01
+[!enough_supplies] narrator: 营地补给不够。长休需要 4 份。  #camp.campfire.02
+- [enough_supplies] 长休（消耗 4 份营地补给）。 -> rest  #camp.campfire.03
+- 再等等。 -> END  #camp.campfire.04
 
 ~ rest
 $ long_rest

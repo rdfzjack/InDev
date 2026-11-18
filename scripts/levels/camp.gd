@@ -22,14 +22,16 @@ func _build() -> void:
 	block(Vector3(0, 0, 0), Vector3(1.2, 0.4, 1.2), Color(0.9, 0.45, 0.15))      # 营火
 	block(Vector3(-5, 0, -4), Vector3(3, 2, 3), Color(0.6, 0.55, 0.4))           # 帐篷
 	block(Vector3(5, 0, -4), Vector3(3, 2, 3), Color(0.45, 0.4, 0.5))            # 帐篷
-	var bed := Interactable.new()
-	bed.name = "Bedroll"
-	bed.label_key = "obj_bedroll"
-	bed.size = Vector3(2, 0.3, 1)
-	bed.color = Color(0.55, 0.3, 0.25)
-	add_child(bed)
-	bed.position = Vector3(-2, 0, 3)
-	bed.interacted.connect(func(_by): DialogueBox.open("res://data/dialogue/camp.dlg", "bedroll", null))
+	block(Vector3(-2, 0, 3), Vector3(2, 0.15, 1), Color(0.55, 0.3, 0.25))         # 铺盖（只是摆设）
+	# 点营火 = 长休
+	var fire := Interactable.new()
+	fire.name = "Campfire"
+	fire.label_key = "obj_campfire"
+	fire.size = Vector3(1.8, 1.0, 1.8)
+	fire.color = Color(0.9, 0.45, 0.15, 0.0)
+	add_child(fire)
+	fire.position = Vector3(0, 0, 0)
+	fire.interacted.connect(func(_by): DialogueBox.open("res://data/dialogue/camp.dlg", "campfire", null))
 	exit_to(Vector3(0, 0, 13), VILLAGE, "from_camp", "exit_to_village")
 	spawn("from_village", Vector3(0, 0.1, 9))
 	Game.day_passed.connect(_on_day)

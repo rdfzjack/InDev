@@ -54,12 +54,46 @@ func has_rest_supplies() -> bool:
 	return Inv.count("camp_supplies") >= LONG_REST_SUPPLIES
 
 
+## 短休（BG3）：每次长休之间两次，全队一起。战斗外随时可以。
+## 每人回复一半最大生命，短休资源（回气、动作如潮、契约法术位）回满；法师自动用奥术回想。
+const SHORT_RESTS_PER_DAY := 2
+var short_rests_left := SHORT_RESTS_PER_DAY
+signal rested(kind: StringName)
+
+
+func can_short_rest() -> String:
+	if Combat.active:
+		return "rest_why_combat"
+	if short_rests_left <= 0:
+		return "rest_why_none_left"
+	return ""
+
+
+func short_rest() -> bool:
+	var why := can_short_rest()
+	if why != "":
+		Narrator.show_text(TextDB.ui(why))
+		return false
+	short_rests_left -= 1
+	for id in party:
+		if sheets.has(id):
+			sheets[id].bg3_short_rest()
+	Meta.bump("short_rests")
+	rested.emit(&"short")
+	Narrator.say("short_rest_done")
+	return true
+
+
 func long_rest() -> bool:
+	if Combat.active:
+		return false
 	if not Inv.remove("camp_supplies", LONG_REST_SUPPLIES):
 		Narrator.say("long_rest_no_supplies")
 		return false
 	for id in sheets:
 		sheets[id].long_rest()
+	short_rests_left = SHORT_RESTS_PER_DAY
+	rested.emit(&"long")
 	day += 1
 	Meta.bump("long_rests")
 	day_passed.emit(day)

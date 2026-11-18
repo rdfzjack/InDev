@@ -79,7 +79,7 @@ obj_lever_right	拉杆
 obj_stele	石碑		
 obj_door	门		
 obj_chest	箱子		
-obj_bedroll	铺盖		
+obj_campfire	营火		
 obj_chicken	鸡		
 obj_boss_gate	LockedDoorPrompt_Default		
 loot_stash	两瓶炼金火焰，25 金币。		
@@ -99,3 +99,8 @@ react_cost_shield	AC +5，直到你的下个回合开始。消耗反应和一个
 react_cost_cutting_words	攻击骰减去 1d6。消耗反应和一次诗人激励。		
 react_cost_hellish_rebuke	对方进行敏捷豁免，2d10 火焰伤害，成功减半。消耗反应和一个 1 环法术位。		
 react_cost_opportunity	用主手武器攻击一次。消耗反应。		
+# 休息
+hud_short_rest	短休 %d/%d		
+hud_short_rest_tip	短休：全队回复一半生命，回气、动作如潮、契约法术位回满；法师用奥术回想恢复法术位。每次长休之间两次。长休去营地点营火。		
+rest_why_combat	战斗中不能休息。		
+rest_why_none_left	短休次数用完了。去营地长休。		

@@ -521,6 +521,28 @@ func short_rest() -> void:
 			resources[r] = resources_max[r]
 
 
+## BG3 的短休：一半最大生命 + 短休资源 + 奥术回想（自动，恢复总环数 ≤ 法师等级的一半，向上取整）
+func bg3_short_rest() -> void:
+	if dead:
+		return
+	short_rest()
+	if hp <= 0:
+		death_successes = 0
+		death_failures = 0
+	hp = mini(max_hp, maxi(hp, 0) + max_hp / 2)
+	if has_resource("arcane_recovery"):
+		var budget := ceili(class_level("wizard") / 2.0)
+		var got := false
+		for lvl in range(mini(budget, 5), 0, -1):
+			while budget >= lvl and lvl - 1 < slots_used.size() and slots_used[lvl - 1] > 0:
+				slots_used[lvl - 1] -= 1
+				budget -= lvl
+				got = true
+		if got:
+			spend_resource("arcane_recovery")
+	hp_changed.emit()
+
+
 func long_rest() -> void:
 	short_rest()
 	long_effects.clear()

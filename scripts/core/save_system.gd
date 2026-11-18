@@ -34,6 +34,8 @@ func save(slot := "quicksave") -> bool:
 			"party": Game.party.map(func(x): return String(x)),
 			"flags": _flags_out(),
 			"party_level": Game.party_level,
+			"day": Game.day,
+			"short_rests_left": Game.short_rests_left,
 			"xp": Game.xp,
 			"selected": String(Game.selected),
 			"shops": Game.shops.duplicate(true),
@@ -85,6 +87,8 @@ func load_slot(slot := "quicksave") -> bool:
 	for k in g["flags"]:
 		Game.flags[StringName(k)] = g["flags"][k]
 	Game.party_level = int(g["party_level"])
+	Game.day = int(g.get("day", 1))
+	Game.short_rests_left = int(g.get("short_rests_left", Game.SHORT_RESTS_PER_DAY))
 	Game.xp = int(g["xp"])
 	Game.selected = StringName(g["selected"])
 	Game.shops = g["shops"].duplicate(true)

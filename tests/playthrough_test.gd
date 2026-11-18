@@ -54,6 +54,9 @@ func _ready() -> void:
 	_ok(Game.in_party(Game.POET), "poet joined")
 	await _frames(30)
 	_ok(pc.members[Game.POET].outside_map, "poet fell out of the map during his recruitment")
+	var poet: Poet = pc.members[Game.POET]
+	_ok(poet.global_position.y < -5.0, "poet is below the map")
+	_ok(poet.nameplate_position().y > 1.0 and Vector2(poet.nameplate_position().x - poet.fall_origin.x, poet.nameplate_position().z - poet.fall_origin.z).length() < 0.01, "his nameplate stays where he stood")
 	# 陷阱：老公走过去（被动察觉 11 >= DC 11）
 	var trap: Trap = lvl.get_node("CorridorTrap")
 	pc.members[Game.HUSBAND].global_position = Vector3(0, 0.1, -2)

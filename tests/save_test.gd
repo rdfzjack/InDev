@@ -12,6 +12,8 @@ func _ready() -> void:
 	Game.debug_xp_to_next_level()
 	var h := Game.sheet(&"husband")
 	LevelUp.apply(h, LevelUp.recommended(h, "fighter"))
+	_ok(Game.short_rest(), "short rest out of combat")
+	_eq_rests(1)
 	h.hp = 5
 	var bard := Game.sheet(&"poet")
 	bard.spend_slot(1)
@@ -30,7 +32,11 @@ func _ready() -> void:
 	Inv.gold = 0
 	Game.set_flag(&"test_flag", 0)
 	Game.sheets = {}
+	Game.short_rests_left = 2
+	Game.day = 9
 	await Saves.load_slot("test")
+	_eq_rests(1)
+	_ok(Game.day == 1, "day restored")
 	await _frames(10)
 	var h2 := Game.sheet(&"husband")
 	_ok(h2.level() == 2 and h2.class_levels.get("fighter", 0) == 2, "husband level/class restored")
@@ -59,3 +65,7 @@ func _ok(c: bool, what: String) -> void:
 func _frames(n: int) -> void:
 	for k in n:
 		await get_tree().process_frame
+
+
+func _eq_rests(n: int) -> void:
+	_ok(Game.short_rests_left == n, "short rests left %d (got %d)" % [n, Game.short_rests_left])

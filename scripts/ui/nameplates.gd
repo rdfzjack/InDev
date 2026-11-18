@@ -39,7 +39,8 @@ func _process(_dt: float) -> void:
 			lab.text = n.display_name
 			var wp: Vector3 = n.nameplate_position()
 			var raw := _project(cam, wp) - lab.size * Vector2(0.5, 1.0)
-			var is_party: bool = n.is_in_group("party")
+			# 掉出地图的诗人：名牌钉在原地，跟 NPC 一样出了屏幕就不显示（不钳制到屏幕边缘）
+			var is_party: bool = n.is_in_group("party") and not n.get("outside_map")
 			if not is_party:
 				var far := cam.global_position.distance_to(wp) > NPC_RANGE + 12.0
 				var off := cam.is_position_behind(wp) or raw.x < -lab.size.x or raw.x > size.x or raw.y < 0 or raw.y > size.y - BOTTOM_MARGIN
