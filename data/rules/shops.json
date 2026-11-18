@@ -1,0 +1,91 @@
+{
+	"_doc": "Shops. stock: ordered list shown left-to-right. null = an empty slot (the third slot freezes the game). restock: never.",
+	"general": {
+		"keeper": "shopkeeper",
+		"gold": 400,
+		"buy_ratio": 0.5,
+		"stock": [
+			{
+				"item": "potion_of_healing",
+				"qty": 4
+			},
+			{
+				"item": "item_01",
+				"qty": 1
+			},
+			null,
+			{
+				"item": "alchemists_fire",
+				"qty": 3
+			},
+			{
+				"item": "acid_vial",
+				"qty": 2
+			},
+			{
+				"item": "smokepowder_bomb",
+				"qty": 1
+			},
+			{
+				"item": "scroll_of_magic_missile",
+				"qty": 1
+			},
+			{
+				"item": "scroll_of_bless",
+				"qty": 1
+			},
+			{
+				"item": "potion_of_greater_healing",
+				"qty": 1
+			},
+			{
+				"item": "elixir_of_vigilance",
+				"qty": 1
+			},
+			{
+				"item": "longsword_plus_1",
+				"qty": 1
+			},
+			{
+				"item": "rapier_plus_1",
+				"qty": 1
+			},
+			{
+				"item": "dagger_plus_1",
+				"qty": 1
+			},
+			{
+				"item": "shortbow_plus_1",
+				"qty": 1
+			},
+			{
+				"item": "studded_leather",
+				"qty": 1
+			},
+			{
+				"item": "chain_shirt",
+				"qty": 1
+			},
+			{
+				"item": "ring_of_protection",
+				"qty": 1
+			},
+			{
+				"item": "camp_supplies",
+				"qty": 10
+			},
+			{
+				"item": "thieves_tools",
+				"qty": 1
+			},
+			{
+				"item": "torch",
+				"qty": 5
+			},
+			{
+				"item": "bomb",
+				"qty": 1
+			}
+		]
+	}
+}

@@ -13,6 +13,8 @@ extends Node
 ##           ├─ Hotbar                      底部技能栏
 ##           ├─ DialogueBox                 对话
 ##           ├─ MessageLog                  右下日志
+##           ├─ InventoryScreen             背包（I 键）
+##           ├─ TradeScreen                 交易
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
 ##           └─ LoadingScreen
 ##
@@ -58,8 +60,13 @@ func _build_world_view() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_L and not Combat.active:
-		LevelUpScreen.open_for(Game.selected)
+	if e is InputEventKey and e.pressed and not e.echo:
+		match e.keycode:
+			KEY_L:
+				if not Combat.active:
+					LevelUpScreen.open_for(Game.selected)
+			KEY_I:
+				InventoryScreen.toggle()
 
 
 func _sync_post_res() -> void:
@@ -107,6 +114,12 @@ func _build_ui() -> void:
 	var log := MessageLog.new()
 	log.name = "MessageLog"
 	root.add_child(log)
+	var inv := InventoryScreen.new()
+	inv.name = "InventoryScreen"
+	root.add_child(inv)
+	var trade := TradeScreen.new()
+	trade.name = "TradeScreen"
+	root.add_child(trade)
 	var lvl := LevelUpScreen.new()
 	lvl.name = "LevelUpScreen"
 	root.add_child(lvl)

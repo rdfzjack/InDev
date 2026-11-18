@@ -54,6 +54,9 @@ func start(list: Array[Combatant]) -> void:
 	combatants = list
 	round_num = 1
 	for c in combatants:
+		# 战斗外留下的激励（"炸弹"）
+		if c.sheet.long_effects.erase("inspired"):
+			c.add_status(&"inspired", 100)
 		var r := Dice.d20(c.sheet.initiative_bonus())
 		c.initiative = r.total
 		log_text("log_initiative", [c.display_name(), _d20_str(r), r.total])
@@ -91,6 +94,15 @@ func _begin_turn() -> void:
 		_death_save(c)
 		end_turn.call_deferred()
 		return
+	if c.has_status(&"burning"):
+		var r := Dice.roll("1d4")
+		var dealt := _apply_typed(c, r.total, "fire")
+		log_text("log_damage", [c.display_name(), dealt, "%s %s" % [r, TextDB.line("rules", "dmg_fire")]])
+		floated.emit(c, str(dealt), &"damage")
+		_after_damage(null, c, dealt, false, "fire")
+		if not c.can_act():
+			end_turn.call_deferred()
+			return
 	if c.has_status(&"paralyzed"):
 		# 定身：每回合尝试感知豁免，失败就跳过这个回合
 		var dc := int(c.statuses[&"paralyzed"]["data"].get("dc", 10))
@@ -212,6 +224,20 @@ func actions_for(c: Combatant) -> Array:
 	for cid in ["dash", "disengage", "dodge"]:
 		out.append({"id": cid, "kind": "common", "cost": "action", "range": 0, "target": "self"})
 	out.append({"id": "help", "kind": "common", "cost": "action", "range": TOUCH, "target": "downed_ally"})
+	# 背包里能用的物品（共享背包）
+	for e in Inv.bag:
+		var d := Inventory.def(e["id"])
+		if not d.has("use"):
+			continue
+		var u: Dictionary = d["use"]
+		var a := {"id": "item:" + e["id"], "kind": "item", "item": e["id"], "cost": u.get("cost", "action"),
+			"range": float(u.get("range", 0)), "target": u.get("target", "self"), "area": u.get("area", {})}
+		if u.has("spell"):
+			var sd := Rules.spell(u["spell"])
+			a["range"] = float(sd.get("range", 0))
+			a["target"] = sd.get("target", "creature")
+			a["area"] = sd.get("area", {})
+		out.append(a)
 	# 设计里的自定义技能（data/abilities.tsv）
 	for r in TextDB.rows("abilities"):
 		if r.get("owner", "") == String(s.id) and r["id"] in ["lie_down", "load_save"]:
@@ -258,6 +284,8 @@ func why_not(c: Combatant, a: Dictionary) -> String:
 		"smite":
 			if s.lowest_slot_for(1) == 0:
 				return "why_no_slot"
+	if a["kind"] == "item" and Inv.count(a["item"]) <= 0:
+		return "why_no_uses"
 	if a["kind"] == "special" and not c.recharge.get(a["special"]["id"], true):
 		return "why_recharging"
 	if a["kind"] == "spell":
@@ -393,6 +421,8 @@ func perform(c: Combatant, a: Dictionary, target = null) -> bool:
 			_multiattack(c, t)
 		"special":
 			targets = _special(c, a["special"], point)
+		"item":
+			targets = _use_item(c, a["item"], t, point)
 		"spell":
 			targets = _cast(c, a["spell"], t, point)
 		"feature":
@@ -618,6 +648,41 @@ func _special(c: Combatant, sp: Dictionary, point: Vector3) -> Array:
 	return targets
 
 
+## 战斗中使用物品（消耗一个）
+func _use_item(c: Combatant, id: String, t: Combatant, point: Vector3) -> Array:
+	var u: Dictionary = Inventory.def(id).get("use", {})
+	Inv.remove(id)
+	Meta.bump("used_" + id)
+	log_text("log_use_item", [c.display_name(), Inventory.display_name(id)])
+	if u.has("spell"):
+		return _cast(c, u["spell"], t, point, true)
+	if u.has("heal"):
+		var r := Dice.roll(u["heal"])
+		_heal(c, t, r.total, str(r))
+		return [t]
+	if u.has("status"):
+		t.add_status(StringName(u["status"]["id"]), int(u["status"]["turns"]), c)
+		if u["status"]["id"] == "vigilant":
+			t.sheet.long_effects["vigilant"] = true
+		log_text("log_status", [t.display_name(), TextDB.line("rules", "status_" + u["status"]["id"])])
+		return [t]
+	if u.has("area"):
+		var targets := in_area(c, u["area"], point)
+		for tg in targets:
+			var ok := _save(tg, u["save"]["ability"], int(u["save"]["dc"]))
+			var r := Dice.roll(u["damage"]["dice"])
+			var amount: int = r.total if not ok else (r.total / 2 if u["save"].get("half", false) else 0)
+			if amount > 0:
+				var dealt := _apply_typed(tg, amount, u["damage"]["type"])
+				log_text("log_damage", [tg.display_name(), dealt, "%s %s" % [r, TextDB.line("rules", "dmg_" + u["damage"]["type"])]])
+				floated.emit(tg, str(dealt), &"damage")
+				_after_damage(c, tg, dealt, false, u["damage"]["type"])
+			if not ok and u.has("on_fail_status") and tg.is_alive():
+				tg.add_status(StringName(u["on_fail_status"]["id"]), int(u["on_fail_status"]["turns"]), c)
+		return targets
+	return []
+
+
 func _check_phase(t: Combatant) -> void:
 	var md: Dictionary = Rules.monsters.get(t.sheet.monster_kind, {})
 	var phases: Array = md.get("phases", [])
@@ -779,12 +844,12 @@ func _save_mode(t: Combatant, ab: String) -> int:
 
 # ------------------------------------------------------------------ 法术
 
-func _cast(c: Combatant, sp: String, t: Combatant, point: Vector3) -> Array:
+func _cast(c: Combatant, sp: String, t: Combatant, point: Vector3, free := false) -> Array:
 	var d := Rules.spell(sp)
 	var base := int(d.get("level", 0))
 	var slot := base
 	var bug := c.sheet.is_bug_spell(sp)
-	if base > 0 and not bug:
+	if base > 0 and not bug and not free:
 		slot = c.sheet.lowest_slot_for(base)
 		c.sheet.spend_slot(slot)
 	log_text("log_cast", [c.display_name(), TextDB.line("rules", "spell_" + sp), slot])

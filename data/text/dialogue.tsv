@@ -31,3 +31,15 @@ husband.summons_4.03	我会去的。		(option)	husband
 husband.summons_4_end.01	……		husband	husband
 husband.summons_real.01	你下次能不能不要躺着？		husband	husband
 husband.summons_real.02	哈哈好。		protagonist	husband
+shopkeeper.start.01	看看吧。		shopkeeper	shopkeeper
+shopkeeper.start.02	那个 Item_01 不错。我推荐。		shopkeeper	shopkeeper
+shopkeeper.start.03	交易。		(option)	shopkeeper
+shopkeeper.start.04	你的第三格坏了。		(option)	shopkeeper
+shopkeeper.start.05	Item_01 是什么？		(option)	shopkeeper
+shopkeeper.start.06	再见。		(option)	shopkeeper
+shopkeeper.broken.01	哦。		shopkeeper	shopkeeper
+shopkeeper.item01.01	好东西。		shopkeeper	shopkeeper
+shopkeeper.item01.02	真的。		shopkeeper	shopkeeper
+shopkeeper.item01.03	它有什么用？		(option)	shopkeeper
+shopkeeper.item01.04	好的。		(option)	shopkeeper
+shopkeeper.item01_use.01	好东西。		shopkeeper	shopkeeper

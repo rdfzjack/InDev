@@ -4,6 +4,7 @@ extends Node3D
 ##   F1 诗人掉出地图      F2 随机报一个故障     F3 主角躺着
 ##   F4 主角说一句"我不知道"（测试 banter）    F5 重载关卡（诗人回来）
 ##   F6 开关老公约谈（约谈中他点不动）        T  直接和老公对话
+##   I  背包    右边那个 NPC 是商店老板（点他对话 → 交易）
 ##   F7 经验加到下一级门槛（然后按 L 或点头像角标升级）                    F8 立刻开战（遭遇战触发器）
 ## 往北走（-Z）进入遭遇战范围也会开战。
 
@@ -65,6 +66,14 @@ func _ready() -> void:
 		w.name = "Wolf%d" % i
 		enc.add_child(w)
 		w.position = Vector3(-2 + i * 4, 0.1, 1)
+
+	var keeper := Npc.new()
+	keeper.name = "Shopkeeper"
+	keeper.char_id = &"shopkeeper"
+	keeper.placeholder_color = Color(0.75, 0.6, 0.35)
+	keeper.dialogue = "res://data/dialogue/shopkeeper.dlg"
+	add_child(keeper)
+	keeper.position = Vector3(8, 0.1, 4)
 
 	var jam := DoorJam.new()
 	jam.name = "TavernDoorJam"

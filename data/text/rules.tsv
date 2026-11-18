@@ -361,3 +361,6 @@ lu_invalid	选择无效	Invalid choice
 lu_no_options	（没有可选项）	(no options)
 lu_class_level	%s %d	%s %d
 lu_ready	可以升级	Level up available
+log_use_item	%s 使用了%s	%s uses %s
+status_vigilant	警戒	Vigilant
+status_burning	燃烧	Burning

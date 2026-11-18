@@ -37,3 +37,4 @@ hud_save_fail_chance	豁免失败 %d%%	%d%% to fail save
 hud_cantrip	戏法	Cantrip	
 hud_spell_level	%d 环法术	Level %d spell	
 area_sandbox_combat	测试场	Sandbox	
+trade_warning	别点第三格。		poet

@@ -1,0 +1,66 @@
+key	zh_CN	en
+# 物品名和描述。item_<id> / item_<id>_desc
+item_potion_of_healing	治疗药水	Potion of Healing
+item_potion_of_healing_desc	附赠动作。恢复 2d4+2 生命值。也可以喂给身边的队友。	Bonus action. Regain 2d4+2 hit points. Can be given to an adjacent ally.
+item_potion_of_greater_healing	强效治疗药水	Potion of Greater Healing
+item_potion_of_greater_healing_desc	附赠动作。恢复 4d4+4 生命值。	Bonus action. Regain 4d4+4 hit points.
+item_alchemists_fire	炼金火焰	Alchemist's Fire
+item_alchemists_fire_desc	投掷。2 米半径，敏捷豁免 DC 12，1d4 火焰伤害，失败则燃烧两回合。	Thrown. 2 m radius, DC 12 Dexterity save, 1d4 fire damage; on a failure the target burns for two turns.
+item_acid_vial	酸液瓶	Acid Vial
+item_acid_vial_desc	投掷。1.5 米半径，敏捷豁免 DC 12，2d6 强酸伤害。	Thrown. 1.5 m radius, DC 12 Dexterity save, 2d6 acid damage.
+item_smokepowder_bomb	烟火药炸弹	Smokepowder Bomb
+item_smokepowder_bomb_desc	投掷。3 米半径，敏捷豁免 DC 13，3d6 火焰伤害。	Thrown. 3 m radius, DC 13 Dexterity save, 3d6 fire damage.
+item_scroll_of_magic_missile	魔法飞弹卷轴	Scroll of Magic Missile
+item_scroll_of_magic_missile_desc	施放一次魔法飞弹，不消耗法术位。	Cast Magic Missile once without a spell slot.
+item_scroll_of_bless	祝福术卷轴	Scroll of Bless
+item_scroll_of_bless_desc	施放一次祝福术，不消耗法术位。	Cast Bless once without a spell slot.
+item_elixir_of_vigilance	警戒秘药	Elixir of Vigilance
+item_elixir_of_vigilance_desc	先攻 +5，持续到下次长休。	+5 to initiative until your next long rest.
+item_longsword_plus_1	长剑 +1	Longsword +1
+item_longsword_plus_1_desc	攻击检定和伤害 +1。	+1 to attack and damage rolls.
+item_rapier_plus_1	刺剑 +1	Rapier +1
+item_rapier_plus_1_desc	攻击检定和伤害 +1。	+1 to attack and damage rolls.
+item_dagger_plus_1	匕首 +1	Dagger +1
+item_dagger_plus_1_desc	攻击检定和伤害 +1。轻型，可以副手持用。	+1 to attack and damage rolls. Light; can be wielded off-hand.
+item_shortbow_plus_1	短弓 +1	Shortbow +1
+item_shortbow_plus_1_desc	攻击检定和伤害 +1。	+1 to attack and damage rolls.
+item_studded_leather	镶钉皮甲	Studded Leather Armour
+item_studded_leather_desc	轻甲。AC 12 + 敏捷调整值。	Light armour. AC 12 + Dexterity modifier.
+item_chain_shirt	链甲衫	Chain Shirt
+item_chain_shirt_desc	中甲。AC 13 + 敏捷调整值（最多 +2）。	Medium armour. AC 13 + Dexterity modifier (max 2).
+item_ring_of_protection	守护之戒	Ring of Protection
+item_ring_of_protection_desc	AC 和所有豁免 +1。	+1 to AC and all saving throws.
+item_camp_supplies	营地补给	Camp Supplies
+item_camp_supplies_desc	长休需要消耗营地补给。	Needed to take a long rest.
+item_thieves_tools	盗贼工具	Thieves' Tools
+item_thieves_tools_desc	用于开锁和解除陷阱。	Used to pick locks and disarm traps.
+item_torch	火把	Torch
+item_torch_desc	照明。	Gives light.
+item_item_01_desc		
+item_bomb	炸弹	Bomb
+item_bomb_desc	一封信。字迹工整，没有署名。信封是蓝色的。	A letter. Neat handwriting, unsigned. The envelope is blue.
+item_shield	盾牌	Shield
+item_shield_desc	AC +2。	+2 AC.
+item_leather	皮甲	Leather Armour
+item_chain_mail	链甲	Chain Mail
+item_plate	板甲	Plate Armour
+# ---- 背包 / 交易 UI ----
+inv_title	背包	Inventory
+inv_gold	%d 金币	%d gold
+inv_equipment	装备	Equipment
+slot_main_hand	主手	Main hand
+slot_off_hand	副手	Off hand
+slot_ranged	远程	Ranged
+slot_armor	护甲	Armour
+slot_shield	盾牌	Shield
+slot_ring	戒指	Ring
+inv_use	使用	Use
+inv_equip	装备	Equip
+inv_price	价值 %d	Value %d
+trade_title	交易	Trade
+trade_buy	买入 %d	Buy %d
+trade_sell	卖出 %d	Sell %d
+trade_party	你的物品	Your items
+trade_not_enough	金币不够	Not enough gold
+trade_keeper_out	他的金币不够	The trader can't afford it
+status_burning	燃烧	Burning

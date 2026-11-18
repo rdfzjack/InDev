@@ -1,31 +1,482 @@
 {
-	"_doc": "SRD weapons and armor. range in meters: normal/long (long = disadvantage). props: finesse, light, heavy, two_handed, versatile, thrown, ammunition, reach.",
-
+	"_doc": "SRD weapons and armor + BG3-style low-level items. weapons: range in meters normal/long; magic = +N to hit and damage. items: kind = consumable/weapon/armor/shield/ring/misc. price in gold. use: what happens when used (cost, target, effect).",
 	"weapons": {
-		"unarmed":       {"cat": "simple", "kind": "melee", "dice": "1", "type": "bludgeoning", "props": []},
-		"dagger":        {"cat": "simple", "kind": "melee", "dice": "1d4", "type": "piercing", "props": ["finesse", "light", "thrown"], "range": [6, 18]},
-		"quarterstaff":  {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "bludgeoning", "props": ["versatile"], "versatile": "1d8"},
-		"mace":          {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "bludgeoning", "props": []},
-		"javelin":       {"cat": "simple", "kind": "melee", "dice": "1d6", "type": "piercing", "props": ["thrown"], "range": [9, 36]},
-		"light_crossbow":{"cat": "simple", "kind": "ranged", "dice": "1d8", "type": "piercing", "props": ["ammunition", "two_handed"], "range": [24, 96]},
-		"shortbow":      {"cat": "simple", "kind": "ranged", "dice": "1d6", "type": "piercing", "props": ["ammunition", "two_handed"], "range": [24, 96]},
-		"longsword":     {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "slashing", "props": ["versatile"], "versatile": "1d10"},
-		"greatsword":    {"cat": "martial", "kind": "melee", "dice": "2d6", "type": "slashing", "props": ["heavy", "two_handed"]},
-		"rapier":        {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "piercing", "props": ["finesse"]},
-		"shortsword":    {"cat": "martial", "kind": "melee", "dice": "1d6", "type": "piercing", "props": ["finesse", "light"]},
-		"scimitar":      {"cat": "martial", "kind": "melee", "dice": "1d6", "type": "slashing", "props": ["finesse", "light"]},
-		"morningstar":   {"cat": "martial", "kind": "melee", "dice": "1d8", "type": "piercing", "props": []},
-		"longbow":       {"cat": "martial", "kind": "ranged", "dice": "1d8", "type": "piercing", "props": ["ammunition", "heavy", "two_handed"], "range": [45, 180]}
+		"unarmed": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1",
+			"type": "bludgeoning",
+			"props": []
+		},
+		"dagger": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1d4",
+			"type": "piercing",
+			"props": [
+				"finesse",
+				"light",
+				"thrown"
+			],
+			"range": [
+				6,
+				18
+			]
+		},
+		"quarterstaff": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1d6",
+			"type": "bludgeoning",
+			"props": [
+				"versatile"
+			],
+			"versatile": "1d8"
+		},
+		"mace": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1d6",
+			"type": "bludgeoning",
+			"props": []
+		},
+		"javelin": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1d6",
+			"type": "piercing",
+			"props": [
+				"thrown"
+			],
+			"range": [
+				9,
+				36
+			]
+		},
+		"light_crossbow": {
+			"cat": "simple",
+			"kind": "ranged",
+			"dice": "1d8",
+			"type": "piercing",
+			"props": [
+				"ammunition",
+				"two_handed"
+			],
+			"range": [
+				24,
+				96
+			]
+		},
+		"shortbow": {
+			"cat": "simple",
+			"kind": "ranged",
+			"dice": "1d6",
+			"type": "piercing",
+			"props": [
+				"ammunition",
+				"two_handed"
+			],
+			"range": [
+				24,
+				96
+			]
+		},
+		"longsword": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d8",
+			"type": "slashing",
+			"props": [
+				"versatile"
+			],
+			"versatile": "1d10"
+		},
+		"greatsword": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "2d6",
+			"type": "slashing",
+			"props": [
+				"heavy",
+				"two_handed"
+			]
+		},
+		"rapier": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d8",
+			"type": "piercing",
+			"props": [
+				"finesse"
+			]
+		},
+		"shortsword": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d6",
+			"type": "piercing",
+			"props": [
+				"finesse",
+				"light"
+			]
+		},
+		"scimitar": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d6",
+			"type": "slashing",
+			"props": [
+				"finesse",
+				"light"
+			]
+		},
+		"morningstar": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d8",
+			"type": "piercing",
+			"props": []
+		},
+		"longbow": {
+			"cat": "martial",
+			"kind": "ranged",
+			"dice": "1d8",
+			"type": "piercing",
+			"props": [
+				"ammunition",
+				"heavy",
+				"two_handed"
+			],
+			"range": [
+				45,
+				180
+			]
+		},
+		"longsword_plus_1": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d8",
+			"type": "slashing",
+			"props": [
+				"versatile"
+			],
+			"versatile": "1d10",
+			"magic": 1
+		},
+		"rapier_plus_1": {
+			"cat": "martial",
+			"kind": "melee",
+			"dice": "1d8",
+			"type": "piercing",
+			"props": [
+				"finesse"
+			],
+			"magic": 1
+		},
+		"shortbow_plus_1": {
+			"cat": "simple",
+			"kind": "ranged",
+			"dice": "1d6",
+			"type": "piercing",
+			"props": [
+				"ammunition",
+				"two_handed"
+			],
+			"range": [
+				24,
+				96
+			],
+			"magic": 1
+		},
+		"dagger_plus_1": {
+			"cat": "simple",
+			"kind": "melee",
+			"dice": "1d4",
+			"type": "piercing",
+			"props": [
+				"finesse",
+				"light",
+				"thrown"
+			],
+			"range": [
+				6,
+				18
+			],
+			"magic": 1
+		}
 	},
-
 	"armor": {
-		"leather":       {"cat": "light", "base": 11, "dex_max": 99, "metal": false},
-		"studded_leather": {"cat": "light", "base": 12, "dex_max": 99, "metal": false},
-		"hide":          {"cat": "medium", "base": 12, "dex_max": 2, "metal": false},
-		"chain_shirt":   {"cat": "medium", "base": 13, "dex_max": 2, "metal": true},
-		"scale_mail":    {"cat": "medium", "base": 14, "dex_max": 2, "metal": true, "stealth_disadv": true},
-		"chain_mail":    {"cat": "heavy", "base": 16, "dex_max": 0, "metal": true, "str_req": 13, "stealth_disadv": true},
-		"plate":         {"cat": "heavy", "base": 18, "dex_max": 0, "metal": true, "str_req": 15, "stealth_disadv": true},
-		"shield":        {"cat": "shield", "bonus": 2, "metal": true}
+		"leather": {
+			"cat": "light",
+			"base": 11,
+			"dex_max": 99,
+			"metal": false
+		},
+		"studded_leather": {
+			"cat": "light",
+			"base": 12,
+			"dex_max": 99,
+			"metal": false
+		},
+		"hide": {
+			"cat": "medium",
+			"base": 12,
+			"dex_max": 2,
+			"metal": false
+		},
+		"chain_shirt": {
+			"cat": "medium",
+			"base": 13,
+			"dex_max": 2,
+			"metal": true
+		},
+		"scale_mail": {
+			"cat": "medium",
+			"base": 14,
+			"dex_max": 2,
+			"metal": true,
+			"stealth_disadv": true
+		},
+		"chain_mail": {
+			"cat": "heavy",
+			"base": 16,
+			"dex_max": 0,
+			"metal": true,
+			"str_req": 13,
+			"stealth_disadv": true
+		},
+		"plate": {
+			"cat": "heavy",
+			"base": 18,
+			"dex_max": 0,
+			"metal": true,
+			"str_req": 15,
+			"stealth_disadv": true
+		},
+		"shield": {
+			"cat": "shield",
+			"bonus": 2,
+			"metal": true
+		}
+	},
+	"items": {
+		"potion_of_healing": {
+			"kind": "consumable",
+			"price": 30,
+			"rarity": "common",
+			"use": {
+				"cost": "bonus",
+				"range": 1.5,
+				"target": "ally",
+				"heal": "2d4+2"
+			}
+		},
+		"potion_of_greater_healing": {
+			"kind": "consumable",
+			"price": 90,
+			"rarity": "uncommon",
+			"use": {
+				"cost": "bonus",
+				"range": 1.5,
+				"target": "ally",
+				"heal": "4d4+4"
+			}
+		},
+		"alchemists_fire": {
+			"kind": "consumable",
+			"price": 30,
+			"rarity": "common",
+			"use": {
+				"cost": "action",
+				"range": 9,
+				"target": "point",
+				"area": {
+					"shape": "sphere",
+					"size": 2
+				},
+				"save": {
+					"ability": "dex",
+					"dc": 12,
+					"half": true
+				},
+				"damage": {
+					"dice": "1d4",
+					"type": "fire"
+				},
+				"on_fail_status": {
+					"id": "burning",
+					"turns": 2
+				}
+			}
+		},
+		"acid_vial": {
+			"kind": "consumable",
+			"price": 25,
+			"rarity": "common",
+			"use": {
+				"cost": "action",
+				"range": 9,
+				"target": "point",
+				"area": {
+					"shape": "sphere",
+					"size": 1.5
+				},
+				"save": {
+					"ability": "dex",
+					"dc": 12,
+					"half": true
+				},
+				"damage": {
+					"dice": "2d6",
+					"type": "acid"
+				}
+			}
+		},
+		"smokepowder_bomb": {
+			"kind": "consumable",
+			"price": 60,
+			"rarity": "uncommon",
+			"use": {
+				"cost": "action",
+				"range": 9,
+				"target": "point",
+				"area": {
+					"shape": "sphere",
+					"size": 3
+				},
+				"save": {
+					"ability": "dex",
+					"dc": 13,
+					"half": true
+				},
+				"damage": {
+					"dice": "3d6",
+					"type": "fire"
+				}
+			}
+		},
+		"scroll_of_magic_missile": {
+			"kind": "consumable",
+			"price": 60,
+			"rarity": "common",
+			"use": {
+				"cost": "action",
+				"spell": "magic_missile"
+			}
+		},
+		"scroll_of_bless": {
+			"kind": "consumable",
+			"price": 60,
+			"rarity": "common",
+			"use": {
+				"cost": "action",
+				"spell": "bless"
+			}
+		},
+		"elixir_of_vigilance": {
+			"kind": "consumable",
+			"price": 70,
+			"rarity": "uncommon",
+			"use": {
+				"cost": "action",
+				"range": 0,
+				"target": "self",
+				"status": {
+					"id": "vigilant",
+					"turns": 999
+				}
+			}
+		},
+		"longsword_plus_1": {
+			"kind": "weapon",
+			"slot": "main_hand",
+			"weapon": "longsword_plus_1",
+			"price": 250,
+			"rarity": "uncommon"
+		},
+		"rapier_plus_1": {
+			"kind": "weapon",
+			"slot": "main_hand",
+			"weapon": "rapier_plus_1",
+			"price": 250,
+			"rarity": "uncommon"
+		},
+		"dagger_plus_1": {
+			"kind": "weapon",
+			"slot": "off_hand",
+			"weapon": "dagger_plus_1",
+			"price": 150,
+			"rarity": "uncommon"
+		},
+		"shortbow_plus_1": {
+			"kind": "weapon",
+			"slot": "ranged",
+			"weapon": "shortbow_plus_1",
+			"price": 250,
+			"rarity": "uncommon"
+		},
+		"studded_leather": {
+			"kind": "armor",
+			"slot": "armor",
+			"armor": "studded_leather",
+			"price": 60,
+			"rarity": "common"
+		},
+		"chain_shirt": {
+			"kind": "armor",
+			"slot": "armor",
+			"armor": "chain_shirt",
+			"price": 75,
+			"rarity": "common"
+		},
+		"ring_of_protection": {
+			"kind": "ring",
+			"slot": "ring",
+			"price": 600,
+			"rarity": "rare",
+			"ac": 1,
+			"saves": 1
+		},
+		"camp_supplies": {
+			"kind": "misc",
+			"price": 10,
+			"rarity": "common",
+			"camp": 10
+		},
+		"thieves_tools": {
+			"kind": "misc",
+			"price": 25,
+			"rarity": "common",
+			"_note": "解除陷阱功能没做。工具照卖。"
+		},
+		"torch": {
+			"kind": "misc",
+			"price": 1,
+			"rarity": "common"
+		},
+		"item_01": {
+			"kind": "misc",
+			"price": 5,
+			"rarity": "common",
+			"_note": "名字叫 Item_01，图标是粉红方块（缺失贴图），描述为空，没有任何效果。老板极力推荐。",
+			"no_name": true,
+			"missing_icon": true
+		},
+		"bomb": {
+			"kind": "consumable",
+			"price": 15,
+			"rarity": "common",
+			"icon": "bread",
+			"_note": "名字是炸弹，图标是面包，描述是第三种东西（一封信），实际效果是第四种（给使用者诗人激励）。只有一个。",
+			"use": {
+				"cost": "action",
+				"range": 0,
+				"target": "self",
+				"status": {
+					"id": "inspired",
+					"turns": 100
+				}
+			}
+		}
 	}
 }

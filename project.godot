@@ -20,6 +20,7 @@ Bus="*res://scripts/core/bug_bus.gd"
 Narrator="*res://scripts/core/narrator.gd"
 Banter="*res://scripts/core/banter.gd"
 Game="*res://scripts/core/game_state.gd"
+Inv="*res://scripts/core/inventory.gd"
 Router="*res://scripts/core/scene_router.gd"
 Combat="*res://scripts/combat/combat.gd"
 

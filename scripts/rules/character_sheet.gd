@@ -50,6 +50,8 @@ var pact_level := 0
 var pact_used := 0
 
 var resources := {}             # 每日/短休资源：剩余次数
+## 战斗外的持续效果（药剂等），长休清除。id -> true
+var long_effects := {}
 var resources_max := {}
 
 var equipment := {}
@@ -344,6 +346,7 @@ func ac() -> int:
 			base += 1
 	if equipment.get("shield", false):
 		base += int(Rules.armor["shield"]["bonus"])
+	base += int(Rules.item(equipment.get("ring", "")).get("ac", 0))
 	return base
 
 
@@ -360,7 +363,7 @@ func wears_metal_armor() -> bool:
 func save_bonus(ab: String) -> int:
 	if is_monster:
 		return int(monster_saves.get(ab, mod(ab)))
-	return mod(ab) + (proficiency() if ab in save_profs else 0)
+	return mod(ab) + (proficiency() if ab in save_profs else 0) + int(Rules.item(equipment.get("ring", "")).get("saves", 0))
 
 
 func skill_bonus(sk: String) -> int:
@@ -377,6 +380,8 @@ func skill_bonus(sk: String) -> int:
 
 func initiative_bonus() -> int:
 	var b := mod("dex")
+	if long_effects.has("vigilant"):
+		b += 5
 	if has_feature("jack_of_all_trades"):
 		b += proficiency() / 2
 	return b
@@ -386,6 +391,8 @@ func proficient_with(weapon_id: String) -> bool:
 	if is_monster:
 		return true
 	var w: Dictionary = Rules.weapon(weapon_id)
+	if w.has("magic"):
+		weapon_id = weapon_id.trim_suffix("_plus_1")
 	return w.get("cat", "") in weapon_profs or weapon_id in weapon_profs or weapon_id == "unarmed"
 
 
@@ -401,6 +408,7 @@ func weapon_ability(weapon_id: String) -> String:
 
 func weapon_attack_bonus(weapon_id: String) -> int:
 	var b := mod(weapon_ability(weapon_id)) + (proficiency() if proficient_with(weapon_id) else 0)
+	b += int(Rules.weapon(weapon_id).get("magic", 0))
 	if "archery" in fighting_styles and Rules.weapon(weapon_id).get("kind", "") == "ranged":
 		b += 2
 	return b
@@ -410,7 +418,7 @@ func weapon_attack_bonus(weapon_id: String) -> int:
 func weapon_damage_expr(weapon_id: String) -> String:
 	var w: Dictionary = Rules.weapon(weapon_id)
 	var dice: String = w.get("dice", "1")
-	var b := mod(weapon_ability(weapon_id))
+	var b := mod(weapon_ability(weapon_id)) + int(w.get("magic", 0))
 	var one_handed_melee: bool = w.get("kind", "melee") == "melee" and not ("two_handed" in w.get("props", []))
 	if "dueling" in fighting_styles and one_handed_melee and equipment.get("off_hand", "") == "":
 		b += 2
@@ -495,6 +503,7 @@ func short_rest() -> void:
 
 func long_rest() -> void:
 	short_rest()
+	long_effects.clear()
 	hp = max_hp
 	temp_hp = 0
 	death_successes = 0

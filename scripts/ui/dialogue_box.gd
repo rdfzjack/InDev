@@ -215,6 +215,11 @@ func _run_cmd(args: Array) -> void:
 			Bus.report(StringName(a1), StringName(args[2]) if args.size() > 2 else &"")
 		"narrate":
 			Narrator.say(a1)
+		"trade":
+			_end()
+			TradeScreen.open(a1)
+		"xp":
+			Game.award_xp(int(a1))
 		_:
 			command.emit(args)
 

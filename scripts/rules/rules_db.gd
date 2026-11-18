@@ -8,14 +8,18 @@ var armor: Dictionary
 var monsters: Dictionary
 var party: Dictionary
 var races: Dictionary
+var items: Dictionary
+var shops: Dictionary
 
 
 func _ready() -> void:
 	classes = _load("res://data/rules/classes.json")
 	spells = _load("res://data/rules/spells.json")
-	var items := _load("res://data/rules/items.json")
-	weapons = items.get("weapons", {})
-	armor = items.get("armor", {})
+	var it := _load("res://data/rules/items.json")
+	weapons = it.get("weapons", {})
+	armor = it.get("armor", {})
+	items = it.get("items", {})
+	shops = _load("res://data/rules/shops.json")
 	monsters = _load("res://data/rules/monsters.json")
 	party = _load("res://data/rules/party.json")
 	races = _load("res://data/rules/races.json")
@@ -33,6 +37,10 @@ func _load(path: String) -> Dictionary:
 
 func spell(id: StringName) -> Dictionary:
 	return spells.get(String(id), {})
+
+
+func item(id: String) -> Dictionary:
+	return items.get(id, {})
 
 
 func weapon(id: String) -> Dictionary:

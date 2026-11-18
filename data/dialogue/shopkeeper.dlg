@@ -1,0 +1,27 @@
+# 商店老板。永远不修第三格。
+
+~ start
+shopkeeper: 看看吧。  #shopkeeper.start.01
+shopkeeper: 那个 Item_01 不错。我推荐。  #shopkeeper.start.02
+- 交易。 -> trade  #shopkeeper.start.03
+- 你的第三格坏了。 -> broken  #shopkeeper.start.04
+- Item_01 是什么？ -> item01  #shopkeeper.start.05
+- 再见。 -> END  #shopkeeper.start.06
+
+~ trade
+$ trade general
+-> END
+
+~ broken
+shopkeeper: 哦。  #shopkeeper.broken.01
+-> END
+
+~ item01
+shopkeeper: 好东西。  #shopkeeper.item01.01
+shopkeeper: 真的。  #shopkeeper.item01.02
+- 它有什么用？ -> item01_use  #shopkeeper.item01.03
+- 好的。 -> END  #shopkeeper.item01.04
+
+~ item01_use
+shopkeeper: 好东西。  #shopkeeper.item01_use.01
+-> END

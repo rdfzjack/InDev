@@ -23,6 +23,22 @@ var poet_outside_map := false
 ## HUD 上当前选中的角色
 var selected: StringName = PROTAGONIST
 
+## 商店状态（库存永远不刷新，所以第一次打开时从数据复制一份，之后一直用这份）
+var shops: Dictionary = {}
+
+
+func shop_state(id: String) -> Dictionary:
+	if not shops.has(id):
+		var d: Dictionary = Rules.shops.get(id, {})
+		var stock: Array = []
+		for e in d.get("stock", []):
+			if e != null:
+				stock.append({"id": e["item"], "qty": int(e["qty"])})
+		shops[id] = {"keeper": d.get("keeper", ""), "gold": int(d.get("gold", 0)),
+			"buy_ratio": float(d.get("buy_ratio", 0.5)), "stock": stock}
+	return shops[id]
+
+
 ## 全队等级（大家一起从 1 升到 3）
 var party_level := 1
 ## 每人经验（5e：遭遇战经验按人头平分）。达到门槛后可以升级（升级界面里确认）。
