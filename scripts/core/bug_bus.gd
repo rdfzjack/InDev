@@ -8,10 +8,14 @@ signal reported(ev: BugEvent)
 
 ## 引擎日志式的调试输出，开发期间看触发是否正确
 var debug_print := true
+## 结局开始以后游戏就不再坏了：什么都不广播
+var muted := false
 
 
 func report(glitch_id: StringName, instigator: StringName = &"", location := Vector3.ZERO) -> BugEvent:
 	var ev := BugEvent.new()
+	if muted:
+		return ev
 	ev.glitch_id = glitch_id
 	ev.instigator = instigator
 	ev.location = location

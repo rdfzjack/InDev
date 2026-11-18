@@ -183,15 +183,15 @@ func _on_killed(c: Combatant) -> void:
 	loot.global_position = Vector3(land.x, 0, land.z)
 	if in_wall:
 		Bus.report(&"corpse_in_wall", &"", land)
-		Narrator.say("d2_corpse_loot")
 		loot.interacted.connect(func(_by): Narrator.say("d2_corpse_loot"))
 	else:
 		loot.interacted.connect(func(_by):
 			if loot.has_meta("looted"):
 				return
 			loot.set_meta("looted", true)
-			Inv.gold += 150
-			Inv.add("longsword_plus_1")
+			Inv.gold += 12
+			Inv.add("bronze_key")
+			Inv.add("sealed_letter")
 			Narrator.say("d2_corpse_loot_ok"))
 
 

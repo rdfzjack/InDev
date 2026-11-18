@@ -83,15 +83,15 @@ d2_enter	墓园的地穴。空气是冷的。这片区域的雾效使用了默�
 d2_gate_locked	铁门锁着。	
 d2_gate_key	钥匙转动了。铁门打开。	
 encounter_too_big	战斗开始了。敌人在下一个房间。这场遭遇战的触发范围比房间大。	
-dead_turn	轮到他了。他已经死了。	
 d2_chest_fake	箱盖打开的动画播放了。箱子没有打开。	
 d2_chest_real	箱子打开了。里面有一枚指环。	
 shared_item	背包里还有一个。它和他们手上戴的是同一个。	
-shared_item_sold	指环从四个人的手指上同时消失了。这个实例已经没有任何引用。	
-corpse_in_wall	他的尸体飞进了墙里。	
-d2_corpse_loot	尸体在墙的另一边。上面有 150 金币、一把 +1 长剑和一封没有署名的信。你够不到。	
-d2_corpse_loot_ok	尸体上有 150 金币、一把 +1 长剑和一封没有署名的信。	
+d2_corpse_loot	尸体在墙的另一边。他的口袋里有十二枚金币、一把铜钥匙和一封未拆的信。你够不到。	
+d2_corpse_loot_ok	他的口袋里有十二枚金币、一把铜钥匙和一封未拆的信。	
 d2_done	墓园安静了。	
 whitebox_enter	地面是白色的网格。这一片区域只完成了白模阶段。	
 dragon_seen	一条龙。	
 dragon_slides	它的尸体开始移动。它的移动逻辑没有被关闭。	
+boss_verdict	无法判定。	
+boss_no_show	他没有出现。他的生成点上什么也没有。	
+boss_hp_frozen	他的生命值没有变化。伤害被计算了，没有被写入。	

@@ -1,0 +1,34 @@
+key	zh_CN	en	speaker
+# 结局幻灯片 + 统计 + 制作人员。从这里开始游戏就不再坏了：干净、完整、一个 bug 没有。不解释为什么。
+# ---- 四个人各一段（诗人那一段没有立绘，只有名字）
+slide_protagonist	他回到了村子。村民们请他留下，他就留下了。\n每天早上，他在神殿前的台阶上坐一会儿，看孩子们跑过去。\n他的誓言那一栏仍然是空的。他守住了它。		protagonist
+slide_husband	他仍然是队长，仍然每隔几天约谈一次队员。\n约谈的内容从来没有人知道。\n但每一次之后，营火边离他最近的那个位置，都会空出来。		husband
+slide_poet	他走遍了附近的每一座村庄，唱他在下面听到的那些歌。\n有人问他，下面是什么样的。\n他想了一会儿，说：挺安静的。		poet
+slide_sl	他在村口开了一间小小的锁匠铺，门口的招牌漆成红色。\n来的人都说，这一次的锁，他总算能解了。\n他说：我一直都能解的。		sl
+slide_party	魔王的王座空了。没有人知道他去了哪里。\n村子里的音乐换了一首。孩子们还是在跑。\n那天晚上，你们四个在营火边坐到了天亮。		
+# ---- 你找到了你的真爱（必须非常真诚。一个字的自嘲都不能有）
+true_love_title	你找到了你的真爱。		
+true_love	从你醒来的第一天起，他就站在路边等你。\n他没有问过你的剑去了哪里，也没有问过你为什么躺着。\n他只是每一天都在。\n\n往后的每一天，他也都会在。		husband
+# ---- 统计（格式像调试信息，一个字的情绪都不带）
+stats_title	统计		
+stat_clicked_husband	你点了他 %d 次。		
+stat_clicked_husband_night	其中 %d 次发生在约谈的那几个晚上。		
+stat_lay_down	你躺了 %d 次。		
+stat_said_idk	你说了 %d 次"我不知道"。		
+stat_said_no_opinion	你说了 %d 次"我没意见"。		
+stat_said_haha	你说了 %d 次"哈哈哈"。		
+stat_slot3	你点了第三格 %d 次。		
+stat_loads	读档次数：%d		
+stat_murder	被害村民被害了 %d 次。		
+stat_boss	魔王战：第 %d 次。		
+stat_chargen	你在角色创建界面停留了 %d 分 %d 秒。		
+stat_loads_zero	你绝对删存档了，哪有人玩 crpg 不 sl 可恶！		sl
+stat_loads_many	你学会了。		sl
+rel_title	关系		
+rel_value	%s　%d		
+rel_husband	你老公　你老公		
+# ---- 制作人员（完全正常运行）
+credits_title	正在开发中		
+credits	策划\n【待定】\n\n美术\n【待定】\n\n程序\n【待定】\n\n文本\n【待定】\n\n音乐\n【待定】\n\n感谢游玩		
+ending_continue	点击继续		
+ending_back	返回标题		

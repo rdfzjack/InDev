@@ -14,6 +14,7 @@ const DUNGEON := "res://scenes/levels/dungeon_1.tscn"
 const CAMP := "res://scenes/levels/camp.tscn"
 const DUNGEON2 := "res://scenes/levels/dungeon_2.tscn"
 const WHITEBOX := "res://scenes/levels/whitebox.tscn"
+const BOSS_ROAD := "res://scenes/levels/boss_road.tscn"
 const MURDER_SPOT := Vector3(0, 0, 19)
 const MURDER_RADIUS := 6.0
 const SMITH_AT := Vector3(27, 0, 13)
@@ -63,7 +64,16 @@ func _build() -> void:
 	gate.color = Color(0.2, 0.15, 0.15)
 	add_child(gate)
 	gate.position = Vector3(0, 0, -28)
-	gate.interacted.connect(func(_by): Narrator.say("boss_gate"))
+	gate.interacted.connect(func(_by):
+		Game.set_flag(&"boss_gate_tried")
+		Narrator.say("boss_gate"))
+	# 第二次来门开了（墓园之后）。没有解释，没有钥匙。
+	if Game.flag(&"d2_done"):
+		gate.queue_free()
+		var ex := exit_to(Vector3(0, 0, -28.5), BOSS_ROAD, "from_village", "exit_to_bossroad", Vector3(4, 3, 1.5))
+		ex.add_to_group("map_marker")
+		ex.set_meta("blink", true)
+		ex.set_meta("color", Color(1, 0.3, 0.25))
 	gate.add_to_group("map_marker")
 	gate.set_meta("blink", true)
 	gate.set_meta("color", Color(1, 0.3, 0.25))
@@ -98,6 +108,7 @@ func _build() -> void:
 	spawn("from_camp", Vector3(-32, 0.1, 6))
 	spawn("from_dungeon2", Vector3(3, 0.1, 25.5))
 	spawn("from_whitebox", Vector3(-32, 0.1, -6))
+	spawn("from_bossgate", Vector3(0, 0.1, -24))
 
 	# NPC
 	npc(&"shopkeeper", Vector3(-16, 0.1, -13), "res://data/dialogue/shopkeeper.dlg", "start", Color(0.75, 0.6, 0.35))

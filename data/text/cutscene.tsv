@@ -9,3 +9,18 @@ murder_04	他倒在路中间。凶手向南边的墓园逃去。		narrator
 murder_04_again	他倒在路中间。凶手向南边的墓园逃去。和上次一样。		narrator
 murder_04_again	他倒在路中间。凶手向南边的墓园逃去。		narrator
 murder_04_again	他倒在路中间。这段过场的跳过功能没有接上。		narrator
+# ---- 魔王登场（跳过是好的）
+boss_intro_01	王座上坐着一个人。他等这一刻很久了。		narrator
+boss_intro_02	你们来了。		demon_lord
+boss_intro_03	这扇门为你们锁了很久。		demon_lord
+boss_intro_stuck	他站了起来。他的下半身没有跟上。		narrator
+boss_intro_04	来吧。		demon_lord
+boss_intro_empty	王座是空的。		narrator
+# ---- 魔王战里的台词（头顶冒字）
+boss_phase2	你们以为这就结束了吗。		demon_lord
+boss_bark_brainwashed	我都被它洗脑了。		sl
+boss_bark_which	第几遍了？		poet
+boss_bark_eleventh	第十一遍。		sl
+boss_bark_hum	♪ 嗯嗯，嗯嗯嗯，嗯……		poet
+boss_bark_sky	嘿快看，boss 上天了。这个是不是代表我们胜利了？		poet
+boss_bark_reload	读个档试试。		sl

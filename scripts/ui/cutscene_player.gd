@@ -234,6 +234,9 @@ func _process(dt: float) -> void:
 	if holding and not _skipped:
 		# 坏掉的跳过：转到一半停住，松开也不回去，过场照常播完
 		_skip_progress = minf(_skip_progress + dt / SKIP_HOLD_SEC, cap)
+		if cap < 1.0 and _skip_progress >= cap and not _cs.has_meta("skip_reported"):
+			_cs.set_meta("skip_reported", true)
+			Bus.report(&"skip_broken")
 		if _skip_progress >= 1.0:
 			_skipped = true
 	elif cap >= 1.0:

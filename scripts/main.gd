@@ -19,6 +19,7 @@ extends Node
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
 ##           ├─ CutscenePlayer              过场（黑边、字幕、按住空格跳过）
 ##           ├─ ReactionPrompt              反应弹窗（护盾术、借机攻击……用不用）
+##           ├─ EndingScreen                结局幻灯片、统计、制作人员
 ##           ├─ PauseMenu                   Esc 菜单，F5 快存，F9 快读
 ##           └─ LoadingScreen
 ##
@@ -139,6 +140,9 @@ func _build_ui() -> void:
 	var pause := PauseMenu.new()
 	pause.name = "PauseMenu"
 	root.add_child(pause)
+	var ending := EndingScreen.new()
+	ending.name = "EndingScreen"
+	root.add_child(ending)
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
 	root.add_child(loading)

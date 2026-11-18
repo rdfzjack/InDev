@@ -111,3 +111,5 @@ cutscene_skip_hint	按住 空格 跳过
 picked_up	捡起了 %s。		
 obj_crypt_gate	墓园铁门		
 obj_corpse	尸体		
+area_boss_road	通往魔王的路		
+exit_to_bossroad	LockedDoorPrompt_Default		

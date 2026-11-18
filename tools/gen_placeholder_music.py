@@ -138,6 +138,16 @@ def dragon(buf, beat, bars):   # 龙：只有找到白模区的人会听到
             put(buf, (b*4+i)*beat, tone(midi(mel[(b*4+i) % 16]), beat*0.95, "tri", r=0.7, vol=0.18))
             put(buf, (b*4+i)*beat, kick(0.4) * (1.0 if i % 2 == 0 else 0.5))
 
+def ending(buf, beat, bars):   # 结局：干净、温暖、一个 bug 没有
+    prog = [(48,False),(55,False),(57,True),(53,False)]
+    mel = [72,76,79,76, 74,79,83,79, 76,81,84,81, 77,81,84,88]
+    for b in range(bars):
+        r, m = prog[b % 4]
+        for n in chord(r, m) + [r-12]:
+            put(buf, b*4*beat, tone(midi(n), beat*4.4, "pad", a=0.4, r=3.5, vol=0.13))
+        for i in range(4):
+            put(buf, (b*4+i)*beat, tone(midi(mel[(b*4+i) % 16]), beat*1.6, "pluck", r=1.2, vol=0.16))
+
 np.random.seed(1)
 song("camp", 70, 12, camp)
 song("village", 100, 16, village)
@@ -146,3 +156,4 @@ song("combat", 140, 16, combat)
 song("shop", 128, 16, shop, length=30.0)
 song("boss", 84, 16, boss)
 song("dragon", 92, 16, dragon)
+song("ending", 66, 16, ending)

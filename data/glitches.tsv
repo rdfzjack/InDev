@@ -26,7 +26,6 @@ disarm_not_implemented	interact	gameplay	disarm_not_implemented	0	点击陷阱	�
 door_jam	position	funny	door_jam	0.4	2 人以上进入门口触发盒	7-8 秒	自然散开	地点属性
 shop_slot3_freeze	interact	gameplay		1	点击商店第三格	永久（直到 alt+F4）	重启游戏	真卡死。下次对话前触发"不是说了别点吗"
 skip_broken	interact	gameplay	skip_broken	0.5	被害村民过场按住跳过	过场全程	看完	进度圈转到一半停住
-corpse_in_wall	position	gameplay	corpse_in_wall	0.2	dungeon boss 死亡	永久	读档后换位置打
 corpse_floating	position	funny	corpse_floating	0.4	通往魔王的路上，死亡那帧停物理	永久	无
 ragdoll_launch	position	funny	ragdoll_launch	0	魔王死亡	直到飞出画面	无
 check_negative_dc	stat	funny	check_negative_dc	0.4	检定 DC < 0	瞬时	-	还是要掷
@@ -37,11 +36,12 @@ lod_texture	clip	funny		1	-	-	-	旁白不报告玩家认不出的故障
 husband_fireball	stat	funny	husband_fireball	0.7	你老公施放火球术	瞬时	无	3 级团不该有火球。不耗法术位，无限次，会炸到队友
 trap_detected	gameplay	gameplay	trap_detected	0.6	队员被动察觉 >= 陷阱 DC	永久	-	发现后可以点它（解除功能没做）
 item_in_crack	position	gameplay	item_in_crack	0.4	扔过来的任务道具滚进地缝	永久	读档，或者让 SL 开锁	铁匠的钥匙
-murder_skip_broken	interact	gameplay		1	被害村民过场跳过只转到一半	每次	绕开触发半径	旁白在过场里自己说了
 encounter_too_big	gameplay	gameplay	encounter_too_big	0.3	战斗触发盒比房间大	一场	-	第一轮谁都够不着谁
-dead_turn	gameplay	funny	dead_turn	0.4	死了的敌人还轮到他的回合	一回合	等一会儿，跳过	全队等他
+dead_turn	gameplay	funny	enemy_dead_turn	0.4	死了的敌人还轮到他的回合	一回合	等一会儿，跳过	全队等他
 chest_fake_open	interact	funny	d2_chest_fake	0.3	宝箱动画播了但没开	一次	再开一次	-
 shared_item	stat	gameplay	shared_item	0.3	传说装备全队共享同一个实例	永久	-	装上之后背包里还有一个
-shared_item_sold	stat	gameplay	shared_item_sold	0.2	卖掉共享实例，四个人同时掉光	永久	买回来（它在第三格）	引用计数的正常行为
+shared_item_sold	stat	gameplay	shared_instance_sold	0.2	卖掉共享实例，四个人同时掉光	永久	买回来（它在第三格）	引用计数的正常行为
 corpse_in_wall	position	gameplay	corpse_in_wall	0.3	boss 尸体沿固定方向飞进墙里	永久	换个位置打	读档重打还是往同一个方向飞
 dragon_slides	position	funny	dragon_slides	0.5	龙死后尸体沿导航网格走向生前的目标	永久	离开这片区域	可以一路跟着你
+boss_hp_frozen	stat	gameplay	boss_hp_frozen	0.3	魔王某一次重打：血量不掉	这一次	读档 / 走开	打不完。不算数
+camera_up_failed	clip	funny	camera_up_failed	0.4	通往魔王的路，斜坡中段	斜坡中段	走过去	画面倒过来。世界没有翻转

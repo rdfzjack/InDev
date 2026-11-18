@@ -12,6 +12,9 @@ extends Node3D
 var target: Node3D
 var cam: Camera3D
 var _yaw := 45.0
+## 镜头翻滚（通往魔王的路：上方向向量计算失败，画面倒过来，世界没有翻转）
+var roll_target := 0.0
+var _roll := 0.0
 
 
 func _ready() -> void:
@@ -33,6 +36,7 @@ func _process(dt: float) -> void:
 			follow = c.node
 	if follow and is_instance_valid(follow):
 		global_position = global_position.lerp(follow.global_position, clampf(follow_speed * dt, 0, 1))
+	_roll = lerpf(_roll, roll_target, clampf(dt * 1.5, 0, 1))
 	if Input.is_key_pressed(KEY_Q):
 		_yaw += 90.0 * dt
 	if Input.is_key_pressed(KEY_E):
@@ -52,4 +56,4 @@ func _apply() -> void:
 	rotation_degrees = Vector3(0, _yaw, 0)
 	var p := deg_to_rad(pitch_deg)
 	cam.position = Vector3(0, -sin(p) * distance, cos(p) * distance)
-	cam.rotation = Vector3(p, 0, 0)
+	cam.rotation = Vector3(p, 0, deg_to_rad(_roll))

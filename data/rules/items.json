@@ -494,6 +494,20 @@
 			"shared": true,
 			"icon": "oath_ring",
 			"_note": "传说装备。全队共享同一个实例：装上以后背包里还有一个，四个人都戴着。卖掉以后四个人同时掉光。商店里它在第三格。"
+		},
+		"bronze_key": {
+			"kind": "quest",
+			"price": 0,
+			"rarity": "common",
+			"icon": "bronze_key",
+			"_note": "不知道开哪扇门。哪扇门都不开。"
+		},
+		"sealed_letter": {
+			"kind": "quest",
+			"price": 0,
+			"rarity": "common",
+			"icon": "sealed_letter",
+			"_note": "未拆的信。拆不开。"
 		}
 	}
 }

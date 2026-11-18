@@ -16,6 +16,8 @@ func _ready() -> void:
 ## 被点击时调用。返回 false = 没反应。
 func interact() -> bool:
 	Meta.bump("clicked_husband")
+	if Game.flag(&"husband_summons_pending"):
+		Meta.bump("clicked_husband_summons_night")
 	if Game.flag(&"husband_summons_pending") or not Game.flag(&"husband_talkable"):
 		# 点不动
 		return false

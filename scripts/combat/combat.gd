@@ -792,6 +792,12 @@ func _deal(c: Combatant, t: Combatant, parts: Array, crit: bool) -> int:
 
 ## 抗性/易伤/免疫在 sheet.apply_damage 里处理；这里返回扣掉的血
 func _apply_typed(t: Combatant, amount: int, dtype: String) -> int:
+	# 魔王"血量不掉"的那一次：伤害照算、飘字照飘，生命值不写入
+	if t.node and is_instance_valid(t.node) and t.node.get("variant") == "frozen":
+		if not t.get_meta("frozen_reported", false):
+			t.set_meta("frozen_reported", true)
+			Bus.report(&"boss_hp_frozen", t.id(), t.pos())
+		return 0 if dtype in t.sheet.immune else (amount / 2 if dtype in t.sheet.resist else amount)
 	return t.sheet.apply_damage(amount, dtype)
 
 

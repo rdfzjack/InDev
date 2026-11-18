@@ -17,6 +17,7 @@ const TABLES := {
 	"abilities": "res://data/abilities.tsv",
 	"dialogue": "res://data/text/dialogue.tsv",
 	"cutscene": "res://data/text/cutscene.tsv",
+	"ending": "res://data/text/ending.tsv",
 }
 
 ## 原文语言
