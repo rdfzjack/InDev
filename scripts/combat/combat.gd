@@ -1076,8 +1076,9 @@ func _try_cutting_words(attacker: Combatant, t: Combatant, total: int) -> int:
 
 
 ## 炼狱叱喝：受到伤害后。伤害结算是同步的，这里只排队，行动结束时 _flush_reactions() 再问。
+## 队友伤到你也算（老公的火球 → 小扬烧回去）。这是故意留着的。
 func _on_attacked_reactions(attacker: Combatant, t: Combatant, damaged: bool) -> void:
-	if damaged and attacker and attacker != t and attacker.hostile_to(t):
+	if damaged and attacker and attacker != t:
 		_rebukes.append([t, attacker])
 
 

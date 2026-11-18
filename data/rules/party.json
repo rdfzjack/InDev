@@ -62,6 +62,13 @@
 		],
 		"levels": [
 			{
+				"class": "fighter",
+				"fighting_style": "defense"
+			},
+			{
+				"class": "fighter"
+			},
+			{
 				"class": "wizard",
 				"cantrips": [
 					"fire_bolt",
@@ -74,11 +81,7 @@
 				]
 			},
 			{
-				"class": "fighter",
-				"fighting_style": "defense"
-			},
-			{
-				"class": "fighter"
+				"class": "wizard"
 			}
 		],
 		"bug_spells": [
