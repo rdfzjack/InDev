@@ -50,6 +50,7 @@ func _ready() -> void:
 	Game.selected_changed.connect(func(_id): _rebuild())
 	Game.party_changed.connect(_rebuild)
 	Game.leveled_up.connect(func(_l): _rebuild())
+	Inv.changed.connect(func(): _rebuild.call_deferred())
 	Combat.turn_started.connect(func(_c): _rebuild.call_deferred())
 	Combat.acted.connect(func(_c, _a, _t): _rebuild.call_deferred())
 	Combat.combat_started.connect(func(): _rebuild.call_deferred())
@@ -66,7 +67,7 @@ func _who() -> Combatant:
 	return Combatant.new(s, null, &"party")
 
 
-const KIND_ORDER := {"weapon": 0, "monster": 0, "spell": 1, "feature": 2, "common": 3, "custom": 4}
+const KIND_ORDER := {"weapon": 0, "monster": 0, "spell": 1, "feature": 2, "item": 3, "common": 4, "custom": 5}
 
 
 func _rebuild() -> void:
@@ -95,12 +96,19 @@ func _rebuild() -> void:
 			var a: Dictionary = acts[i]
 			var key := _name_key(a)
 			var icon_path := "res://assets/icons/%s.png" % key
-			if ResourceLoader.exists(icon_path):
+			if a["kind"] == "item":
+				icon_path = "res://assets/icons/items/%s.png" % Inventory.def(a["item"]).get("icon", a["item"])
+			if a["kind"] == "item" and Inventory.def(a["item"]).get("missing_icon", false):
+				b.icon = ItemGrid._pink()
+				b.expand_icon = true
+			elif ResourceLoader.exists(icon_path):
 				b.icon = load(icon_path)
 				b.expand_icon = true
 			else:
-				b.text = TextDB.line("rules", key).substr(0, 2)
+				b.text = _display_name(a).substr(0, 2)
 				b.add_theme_font_size_override("font_size", 12)
+			if a["kind"] == "item":
+				b.text += "\n×%d" % Inv.count(a["item"])
 			var why := Combat.why_not(who, a) if in_combat else ""
 			var usable: bool = why == "" and (in_combat or a["id"] in ["lie_down"])
 			b.disabled = not usable
@@ -120,14 +128,20 @@ func _name_key(a: Dictionary) -> String:
 	return "act_" + a["id"]
 
 
+func _display_name(a: Dictionary) -> String:
+	if a["kind"] == "item":
+		return Inventory.display_name(a["item"])
+	return TextDB.line("rules", _name_key(a))
+
+
 func _tooltip(a: Dictionary, why: String) -> String:
 	var key := _name_key(a)
-	var t := TextDB.line("rules", key)
+	var t := _display_name(a)
 	if a["kind"] == "spell":
 		var lvl := int(Rules.spell(a["spell"]).get("level", 0))
 		t += "  " + (TextDB.ui("hud_cantrip") if lvl == 0 else TextDB.ui("hud_spell_level") % lvl)
 	t += "\n" + TextDB.line("rules", "cost_" + a.get("cost", "action"))
-	var desc := TextDB.line("rules", key + "_desc")
+	var desc := Inventory.description(a["item"]) if a["kind"] == "item" else TextDB.line("rules", key + "_desc")
 	if desc != "":
 		t += "\n\n" + desc
 	if a["kind"] == "weapon":

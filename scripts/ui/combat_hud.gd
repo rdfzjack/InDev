@@ -121,29 +121,61 @@ func world_to_screen(p: Vector3) -> Vector2:
 	return nameplates._project(cam, p)
 
 
+func _path_len(p: PackedVector3Array) -> float:
+	var l := 0.0
+	for i in range(1, p.size()):
+		l += Vector2(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z).length()
+	return l
+
+
 func _update_tip() -> void:
 	var cc := CombatController.instance
 	_tip.visible = false
-	if not Combat.active or cc == null or cc.hover_c == null:
+	if not Combat.active or cc == null:
 		return
 	var c := cc.my_turn()
 	if c == null:
 		return
+	var lines: Array = []
+	# 移动距离（悬停地面，或者近战够不着要先走过去）
+	if cc.hover_path.size() >= 2:
+		var need := _path_len(cc.hover_path)
+		var key := "hud_move" if need <= c.move_left + 0.01 else "hud_move_too_far"
+		lines.append(TextDB.ui(key) % [need, c.move_left])
 	var t := cc.hover_c
+	if t == null:
+		# 范围法术悬停地面：列出会被波及的人数
+		if not cc.pending.is_empty() and not cc.pending.get("area", {}).is_empty() and cc.hover_valid:
+			var center := c.pos() if cc.pending.get("target", "") == "self" else cc.hover_point
+			var hit := Combat.in_area(c, cc.pending["area"], center)
+			var allies := hit.filter(func(x): return not x.hostile_to(c)).size()
+			lines.append(TextDB.ui("hud_area_hits") % [hit.size() - allies, allies])
+			if float(cc.pending.get("range", 0)) > 0 and cc.pending.get("target", "") == "point" \
+					and c.pos().distance_to(cc.hover_point) > float(cc.pending["range"]):
+				lines.append(TextDB.line("rules", "why_out_of_range"))
+		_show_tip(lines)
+		return
 	var a: Dictionary = cc.pending
 	if a.is_empty():
 		if not t.hostile_to(c):
+			_show_tip(lines)
 			return
 		a = Combat.find_action(c, "attack")
-	var lines: Array = [t.display_name() + "  " + TextDB.ui("hud_hp") % [t.sheet.hp, t.sheet.max_hp] + "  AC %d" % t.ac()]
+	lines.push_front(t.display_name() + "  " + TextDB.ui("hud_hp") % [t.sheet.hp, t.sheet.max_hp] + "  AC %d" % t.ac())
 	var pv := Combat.preview(c, a, t)
 	if pv["chance"] >= 0:
 		var key := "hud_hit_chance" if pv["kind"] == "hit" else "hud_save_fail_chance"
 		lines.append(TextDB.ui(key) % roundi(pv["chance"] * 100))
 	for r in pv.get("reasons", []):
 		lines.append(("▲ " if r.begins_with("adv_") else "▼ ") + TextDB.line("rules", r))
-	if c.dist_to(t) > float(a.get("range", 0)) + 0.01:
+	if c.dist_to(t) > float(a.get("range", 0)) + 0.01 and cc.hover_path.size() < 2:
 		lines.append(TextDB.line("rules", "why_out_of_range"))
+	_show_tip(lines)
+
+
+func _show_tip(lines: Array) -> void:
+	if lines.is_empty():
+		return
 	_tip_label.text = "\n".join(lines)
 	_tip.visible = true
 	_tip.reset_size()

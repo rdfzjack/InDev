@@ -38,3 +38,6 @@ hud_cantrip	戏法	Cantrip
 hud_spell_level	%d 环法术	Level %d spell	
 area_sandbox_combat	测试场	Sandbox	
 trade_warning	别点第三格。		poet
+hud_move	移动 %.1f 米（剩余 %.1f 米）	Move %.1f m (%.1f m left)	
+hud_move_too_far	移动 %.1f 米 —— 超出剩余的 %.1f 米	Move %.1f m — more than the %.1f m left	
+hud_area_hits	波及：敌人 %d / 队友 %d	Hits: %d enemies / %d allies	

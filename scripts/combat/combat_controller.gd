@@ -98,8 +98,19 @@ func _hover(screen: Vector2) -> void:
 	if hover_c:
 		hover_point = hover_c.pos()
 		hover_valid = true
+	hover_path = PackedVector3Array()
 	var c := my_turn()
-	hover_path = CombatAI.path_to(c, hover_point) if c and hover_valid and pending.is_empty() and hover_c == null else PackedVector3Array()
+	if c and hover_valid:
+		var act := pending
+		if act.is_empty() and hover_c and hover_c.hostile_to(c) and hover_c.is_alive():
+			act = Combat.find_action(c, "attack")
+		if act.is_empty() and hover_c == null:
+			# 普通悬停地面：移动路径
+			hover_path = CombatAI.path_to(c, hover_point)
+		elif hover_c and not act.is_empty() and float(act.get("range", 0)) <= Combat.REACH + 0.1 \
+				and c.dist_to(hover_c) > float(act["range"]):
+			# 近战够不着：预览走过去的路线
+			hover_path = CombatAI.trim_path_end(CombatAI.path_to(c, hover_c.pos()), float(act["range"]) - 0.4)
 	hover_changed.emit()
 
 
@@ -152,13 +163,19 @@ func _process(_dt: float) -> void:
 	gizmos.begin()
 	if c and c.team == &"party" and c.can_act():
 		gizmos.circle(c.pos(), c.move_left, CombatGizmos.COL_MOVE, true)
-		if pending.is_empty():
-			if hover_path.size() >= 2:
-				gizmos.path(hover_path, c.move_left)
-		else:
+		if hover_path.size() >= 2:
+			gizmos.path(hover_path, c.move_left)
+		if not pending.is_empty():
 			var r := float(pending.get("range", 0))
-			if r > 0:
+			if r > 0 and r <= Combat.REACH + 0.1:
+				# 近战接触：实线小圈
+				gizmos.circle(c.pos(), r, CombatGizmos.COL_AREA)
+			elif r > 0 and pending.get("area", {}).get("shape", "") != "cone":
 				gizmos.circle(c.pos(), r, CombatGizmos.COL_RANGE, true)
+			if hover_c and pending.get("area", {}).is_empty() and pending.get("target", "") != "self":
+				# 单体目标：目标脚下画圈，够得着金色，够不着红色
+				var ok := Combat.valid_target(c, pending, hover_c)
+				gizmos.circle(hover_c.pos(), 0.7, Color(1, 0.85, 0.4) if ok else CombatGizmos.COL_PATH_BAD)
 			var area: Dictionary = pending.get("area", {})
 			if not area.is_empty() and hover_valid:
 				match area.get("shape", ""):
@@ -168,6 +185,11 @@ func _process(_dt: float) -> void:
 						gizmos.cone(c.pos(), hover_point, float(area["size"]), CombatGizmos.COL_AREA)
 					"cube":
 						gizmos.square(c.pos(), float(area["size"]), CombatGizmos.COL_AREA)
+	# 范围法术：范围内的单位脚下标红
+	if c and not pending.is_empty() and not pending.get("area", {}).is_empty() and hover_valid:
+		var center := c.pos() if pending.get("target", "") == "self" else hover_point
+		for t in Combat.in_area(c, pending["area"], center):
+			gizmos.circle(t.pos(), 0.55, CombatGizmos.COL_PATH_BAD)
 	# 当前回合的单位脚下画个圈
 	if c:
 		gizmos.circle(c.pos(), 0.6, Color(1, 0.9, 0.5) if c.team == &"party" else Color(1, 0.35, 0.3))
