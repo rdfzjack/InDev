@@ -23,7 +23,8 @@ func _ready() -> void:
 	nm.geometry_collision_mask = NAV_BAKE_LAYER
 	nm.agent_radius = 0.5
 	nm.cell_size = 0.25
-	nm.cell_height = 0.25
+	nm.cell_height = 0.1
+	nm.agent_max_climb = 0.3
 	nav.navigation_mesh = nm
 	add_child(nav)
 	_build_geometry(nav)

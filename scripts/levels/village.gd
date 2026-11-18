@@ -23,9 +23,10 @@ func _init() -> void:
 func _build() -> void:
 	# 地面：主街 + 广场
 	floor_box(Vector3(0, 0, 0), Vector2(80, 60), Color(0.5, 0.58, 0.4))
-	floor_box(Vector3(0, 0.01, 0), Vector2(70, 8), STONE)          # 主街
-	floor_box(Vector3(0, 0.02, -2), Vector2(16, 16), STONE.lightened(0.1))  # 广场
-	floor_box(Vector3(0, 0.01, -18), Vector2(6, 20), STONE)        # 去魔王门的路
+	# 路面只是画面层（不重叠碰撞、不做台阶），层间留几厘米，避免 z-fighting
+	ground_decal(Vector3(0, 0, 0), Vector2(70, 8), STONE, 0.04)                    # 主街
+	ground_decal(Vector3(0, 0, -2), Vector2(16, 16), STONE.lightened(0.1), 0.08)   # 广场
+	ground_decal(Vector3(0, 0, -18), Vector2(6, 20), STONE, 0.04)                  # 去魔王门的路
 	block(Vector3(0, 0, -2), Vector3(2.5, 1.2, 2.5), STONE.darkened(0.2))   # 广场中间的井
 
 	# 商店（西北）

@@ -53,8 +53,9 @@ func _ready() -> void:
 	agent.radius = 0.4
 	agent.height = height
 	agent.max_speed = move_speed
-	agent.path_desired_distance = 0.3
-	agent.target_desired_distance = 0.4
+	# 导航网格表面和地面之间有一点高度差，判定距离是三维的，不能太小，否则会在路径点前来回抖
+	agent.path_desired_distance = 0.75
+	agent.target_desired_distance = 0.75
 	agent.avoidance_enabled = true
 	agent.neighbor_distance = 3.0
 	agent.velocity_computed.connect(_on_velocity)
@@ -83,6 +84,10 @@ func move_to(p: Vector3) -> void:
 func stop() -> void:
 	_has_target = false
 	velocity = Vector3.ZERO
+	# 避让系统会一直用最后一次设置的速度回调，必须清零，不然人会继续滑
+	if agent:
+		agent.velocity = Vector3.ZERO
+		agent.target_position = global_position
 
 
 ## 战斗移动：沿固定路径走，不用导航避让
@@ -127,6 +132,8 @@ func _physics_process(dt: float) -> void:
 		else:
 			_on_velocity(want)
 	else:
+		if _has_target and agent.avoidance_enabled:
+			agent.velocity = Vector3.ZERO
 		_has_target = false
 		_on_velocity(Vector3.ZERO)
 	_post_physics(dt)

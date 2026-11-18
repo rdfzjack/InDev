@@ -60,6 +60,7 @@ godot --headless --path . res://tests/save_test.tscn
 godot --path . res://tests/input_test.tscn
 godot --path . res://tests/dialogue_test.tscn
 godot --path . res://tests/playthrough_test.tscn   # 村庄 → 地窖 → 营地完整流程
+godot --path . res://tests/move_test.tscn          # 战斗外点击地面移动
 ```
 
 对话台本语法（条件、检定、镜头）见 `scripts/core/dialogue_script.gd` 顶部。

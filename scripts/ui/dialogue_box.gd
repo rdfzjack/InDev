@@ -146,6 +146,10 @@ func _enter_cinematic() -> void:
 	cinematic_changed.emit(true)
 	if not _cinematic:
 		return
+	# 所有人站住（不然还在往队形位置走，镜头构好以后人走出画面）
+	for n in get_tree().get_nodes_in_group("party") + get_tree().get_nodes_in_group("npc"):
+		if n.has_method("stop"):
+			n.stop()
 	var player := actor_of(player_id)
 	_prev_cam = partner.get_viewport().get_camera_3d()
 	_cam = DialogueCamera.new()

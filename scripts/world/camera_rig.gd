@@ -17,7 +17,8 @@ var _yaw := 45.0
 func _ready() -> void:
 	cam = Camera3D.new()
 	cam.fov = fov
-	cam.far = 300.0
+	cam.near = 0.3
+	cam.far = 150.0
 	add_child(cam)
 	cam.make_current()
 	_apply()

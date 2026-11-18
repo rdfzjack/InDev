@@ -25,7 +25,8 @@ func _ready() -> void:
 	nm.geometry_collision_mask = 1
 	nm.agent_radius = 0.5
 	nm.cell_size = 0.25
-	nm.cell_height = 0.25
+	nm.cell_height = 0.1
+	nm.agent_max_climb = 0.3
 	nav.navigation_mesh = nm
 	add_child(nav)
 	_build()
@@ -70,6 +71,15 @@ func floor_box(center: Vector3, size: Vector2, color := Color(0.55, 0.6, 0.45)) 
 	b.position = center - Vector3(0, 0.5, 0)
 	nav.add_child(b)
 	return b
+
+
+## 只有画面、没有碰撞的地面层（路、广场、地毯）。放在走路的地面上方几厘米：
+## 几乎共面的两层在 PS2 顶点抖动下会 z-fighting；做成台阶又会挡路。
+func ground_decal(center: Vector3, size: Vector2, color: Color, lift := 0.04) -> MeshInstance3D:
+	var m := Placeholders.box(Vector3(size.x, 0.02, size.y), color, Vector2(maxf(size.x, size.y), maxf(size.x, size.y)) * 0.25)
+	m.position = center + Vector3(0, lift, 0)
+	add_child(m)
+	return m
 
 
 func block(center: Vector3, size: Vector3, color := Color(0.7, 0.6, 0.48)) -> StaticBody3D:

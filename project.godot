@@ -45,6 +45,10 @@ texture={
 "mipmaps/generate": false
 }
 
+[navigation]
+
+3d/default_cell_height=0.1
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
