@@ -65,7 +65,7 @@ static func parse_cond(c: String) -> Dictionary:
 		return {"type": "flag", "flag": c.substr(1), "neg": true}
 	var parts := c.split(":")
 	match parts[0]:
-		"class", "race":
+		"class", "race", "party":
 			return {"type": parts[0], "value": parts[1]}
 		"insight", "perception":
 			return {"type": "passive", "skill": parts[0], "dc": int(parts[1])}

@@ -8,6 +8,7 @@ func _ready() -> void:
 	Dice.rng.seed = 5
 	out = OS.get_cmdline_user_args()[0] if OS.get_cmdline_user_args().size() > 0 else ""
 	var main: Node = load("res://scenes/main.tscn").instantiate()
+	main.first_level = "res://scenes/levels/sandbox.tscn"
 	add_child(main)
 	await Router.level_loaded
 	await _frames(40)

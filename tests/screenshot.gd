@@ -2,6 +2,7 @@ extends Node
 ## Screenshot: xvfb-run godot --path . res://tests/screenshot.tscn -- out_dir
 func _ready() -> void:
 	var main: Node = load("res://scenes/main.tscn").instantiate()
+	main.first_level = "res://scenes/levels/sandbox.tscn"
 	add_child(main)
 	await Router.level_loaded
 	await _frames(120)

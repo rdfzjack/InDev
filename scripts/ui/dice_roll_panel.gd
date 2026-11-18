@@ -12,6 +12,8 @@ extends Control
 
 signal finished(result: Dictionary)
 
+static var instance: DiceRollPanel
+
 const SPIN_SEC := 1.1
 
 var _title: Label
@@ -27,6 +29,15 @@ var _check: Dictionary
 var _sheet: CharacterSheet
 var _state := "idle"   # idle / ready / spinning / done
 var _res := {}
+
+
+func _init() -> void:
+	instance = self
+
+
+## 对话之外也能用（开锁、搜查……）。await DiceRollPanel.check({...}, sheet)
+static func check(chk: Dictionary, s: CharacterSheet) -> Dictionary:
+	return await instance.roll(chk, s)
 
 
 func _ready() -> void:

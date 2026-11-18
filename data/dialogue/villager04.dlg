@@ -1,0 +1,17 @@
+# NPC_Villager_04。大家就这么叫他，他对这个名字没有意见。
+
+~ start
+NPC_Villager_04: 你好。  #villager04.start.01
+- 你叫什么名字？ -> name  #villager04.start.02
+- 村子里最近怎么样？ -> village  #villager04.start.03
+- 再见。 -> END  #villager04.start.04
+
+~ name
+NPC_Villager_04: NPC_Villager_04。  #villager04.name.01
+NPC_Villager_04: 大家都这么叫我。  #villager04.name.02
+-> END
+
+~ village
+NPC_Villager_04: 挺好的。  #villager04.village.01
+NPC_Villager_04: 就是音乐有点吵。  #villager04.village.02
+-> END

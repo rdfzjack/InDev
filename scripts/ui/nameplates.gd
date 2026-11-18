@@ -8,6 +8,8 @@ extends Control
 const MARGIN := 12.0
 ## 底部留给技能栏
 const BOTTOM_MARGIN := 125.0
+## 非队员的名牌：超过这个距离不显示；出屏不显示（只有队员会钳到屏幕边缘）
+const NPC_RANGE := 22.0
 
 var world_view: SubViewportContainer
 var _labels: Dictionary = {}   # instance_id -> Label
@@ -35,8 +37,16 @@ func _process(_dt: float) -> void:
 				lab = _make_label()
 				_labels[id] = lab
 			lab.text = n.display_name
-			lab.position = _project(cam, n.nameplate_position()) - lab.size * Vector2(0.5, 1.0)
-			lab.position = lab.position.clamp(Vector2(MARGIN, MARGIN), size - lab.size - Vector2(MARGIN, BOTTOM_MARGIN))
+			var wp: Vector3 = n.nameplate_position()
+			var raw := _project(cam, wp) - lab.size * Vector2(0.5, 1.0)
+			var is_party: bool = n.is_in_group("party")
+			if not is_party:
+				var far := cam.global_position.distance_to(wp) > NPC_RANGE + 12.0
+				var off := cam.is_position_behind(wp) or raw.x < -lab.size.x or raw.x > size.x or raw.y < 0 or raw.y > size.y - BOTTOM_MARGIN
+				lab.visible = not (far or off)
+			else:
+				lab.visible = true
+			lab.position = raw.clamp(Vector2(MARGIN, MARGIN), size - lab.size - Vector2(MARGIN, BOTTOM_MARGIN))
 			var cid = n.get("char_id")
 			if cid != null:
 				_by_char[cid] = lab

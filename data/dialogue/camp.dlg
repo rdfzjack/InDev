@@ -1,0 +1,13 @@
+# 营地。铺盖：长休。
+
+~ bedroll
+@ no_idk
+narrator: 营火烧得很稳。  #camp.bedroll.01
+[!enough_supplies] narrator: 营地补给不够。  #camp.bedroll.02
+- [enough_supplies] 长休。 -> rest  #camp.bedroll.03
+- 再等等。 -> END  #camp.bedroll.04
+
+~ rest
+$ long_rest
+narrator: 夜晚过去了。  #camp.rest.01
+-> END

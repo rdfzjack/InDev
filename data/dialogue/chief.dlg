@@ -1,0 +1,38 @@
+# 村长。正经的 NPC，正经的任务。（魔王的事他一个字都不提。）
+
+~ start
+chief: 你们是冒险者？  #chief.start.01
+chief: 东边的地窖里有东西。晚上会有声音。  #chief.start.02
+- 我们去看看。 -> accept  #chief.start.03
+- [check:persuasion:12] 报酬呢？ -> pay_ok | pay_no  #chief.start.04
+- [insight:12] 你好像没说全。 -> insight  #chief.start.05
+- [d1_done] 地窖清理干净了。 -> done  #chief.start.06
+- 再见。 -> END  #chief.start.07
+
+~ accept
+$ set quest_cellar
+chief: 小心。路在村子东边。  #chief.accept.01
+-> END
+
+~ pay_ok
+$ set quest_cellar
+$ set chief_pays_extra
+chief: ……好吧。回来以后我多给你们一些。  #chief.pay_ok.01
+-> END
+
+~ pay_no
+$ set quest_cellar
+chief: 为村子出力，还要什么报酬。  #chief.pay_no.01
+-> END
+
+~ insight
+[insight:12] narrator: 他在说"东边"的时候，视线往北边看了一眼。北边只有一扇门。  #chief.insight.01
+chief: 没有。就是地窖。  #chief.insight.02
+-> END
+
+~ done
+$ set quest_cellar_reported
+$ xp 150
+chief: 谢谢你们。  #chief.done.01
+[chief_pays_extra] chief: 这是说好的。  #chief.done.02
+-> END

@@ -31,6 +31,7 @@ var _pre_lines: Array = []
 
 # 电影模式
 var partner: Node3D
+var partner_id: StringName = &""
 var player_id: StringName = &"protagonist"
 var _cam: DialogueCamera
 var _prev_cam: Camera3D
@@ -99,10 +100,12 @@ func _ready() -> void:
 	_options.anchor_bottom = 0.99
 	_options.add_theme_constant_override("separation", 1)
 	add_child(_options)
-	_dice = DiceRollPanel.new()
-	_dice.name = "DiceRollPanel"
-	add_child(_dice)
 	visible = false
+	_bind_dice.call_deferred()
+
+
+func _bind_dice() -> void:
+	_dice = DiceRollPanel.instance
 
 
 # ================================================================== 开始 / 结束
@@ -117,6 +120,7 @@ func start(path: String, node := "start", with: Node3D = null) -> void:
 	visible = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	partner = with
+	partner_id = StringName(with.get("char_id")) if with and with.get("char_id") != null else &""
 	player_id = Game.selected if Game.in_party(Game.selected) else Game.PROTAGONIST
 	_cam_override = {}
 	_pre_lines.clear()
@@ -177,9 +181,22 @@ func _face(a: Node3D, b: Node3D) -> void:
 		m.look_at(t, Vector3.UP, true)
 
 
+## 对话对象被换掉了（NPC 入队变成队员节点），重新找
+func _refresh_partner() -> void:
+	if partner_id == &"":
+		return
+	if partner and is_instance_valid(partner) and not partner.is_queued_for_deletion():
+		return
+	partner = null
+	for n in get_tree().get_nodes_in_group("party"):
+		if n.get("char_id") == partner_id and not n.is_queued_for_deletion():
+			partner = n
+
+
 ## 场景里某个角色 id 对应的节点
 func actor_of(id) -> Node3D:
 	var sid := StringName(String(id))
+	_refresh_partner()
 	if partner and is_instance_valid(partner) and partner.get("char_id") == sid:
 		return partner
 	for g in ["party", "npc"]:
@@ -349,6 +366,8 @@ func _cond_ok(c: Dictionary) -> bool:
 			return _player_sheet().class_level(c["value"]) > 0
 		"race":
 			return _player_sheet().race == c["value"]
+		"party":
+			return Game.in_party(StringName(c["value"]))
 		"passive":
 			# 被动：队里任何一个人过了就算
 			for id in Game.party:
@@ -385,6 +404,9 @@ func _passive_tag(conds: Array) -> String:
 func _frame_for(who: String) -> void:
 	if not _cinematic or _cam == null:
 		return
+	_refresh_partner()
+	if partner == null:
+		return
 	var player := actor_of(player_id)
 	var shot: String = _cam_override.get("shot", "auto")
 	var args: Array = _cam_override.get("args", [])
@@ -404,6 +426,11 @@ func _frame_for(who: String) -> void:
 			return
 		"wide":
 			_cam.shot("wide", player, partner)
+			return
+		"track":
+			var tr := actor_of(args[0] if args.size() > 0 else who)
+			if tr:
+				_cam.track(tr)
 			return
 		"ots":
 			var a := actor_of(args[0]) if args.size() > 0 else partner
@@ -456,8 +483,21 @@ func _run_cmd(args: Array) -> void:
 			Game.award_xp(int(a1))
 		"music":
 			Music.play(StringName(a1))
+		"fall":
+			_fall_later(a1)
+		"long_rest":
+			Game.long_rest()
 		_:
 			command.emit(args)
+
+
+## 入队之后队员节点下一帧才出现，等一下再让他掉下去（台词照常继续）
+func _fall_later(id: String) -> void:
+	for i in 3:
+		await get_tree().process_frame
+	var p := actor_of(id)
+	if p and p.has_method("fall_out_of_map"):
+		p.fall_out_of_map()
 
 
 # ================================================================== 输入

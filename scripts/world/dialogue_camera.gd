@@ -26,7 +26,21 @@ func _ready() -> void:
 	far = 200.0
 
 
+var _track: Node3D
+
+
+## 跟拍：每帧重新对准（诗人掉下去时镜头忠实跟随）
+func track(n: Node3D) -> void:
+	_track = n
+	_drift = Vector3.ZERO
+
+
 func _process(dt: float) -> void:
+	if _track and is_instance_valid(_track):
+		var h := head_of(_track)
+		if global_position.distance_to(h) > 0.5:
+			look_at(h, Vector3.UP)
+		return
 	# 极慢的推镜，让画面不死
 	_t += dt
 	if _drift != Vector3.ZERO and _t < 6.0:
@@ -46,6 +60,7 @@ static func _flat(v: Vector3) -> Vector3:
 
 
 func shot(kind: String, a: Node3D, b: Node3D = null) -> void:
+	_track = null
 	_t = 0.0
 	_drift = Vector3.ZERO
 	match kind:

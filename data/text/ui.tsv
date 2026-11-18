@@ -65,3 +65,21 @@ dice_crit_success	大成功	Critical Success
 dice_crit_fail	大失败	Critical Failure	
 dice_proficiency	熟练	Proficiency	
 dice_expertise	专精	Expertise	
+# ---- 地点 / 物件 ----
+area_village	村庄		
+area_camp	营地		
+area_dungeon_1	地窖		
+exit_to_dungeon1	地窖（东）		
+exit_to_village	村庄		
+exit_to_camp	营地		
+exit_to_whitebox	小路（西）		
+obj_lever_left	拉杆		
+obj_lever_mid	拉杆		
+obj_lever_right	拉杆		
+obj_stele	石碑		
+obj_door	门		
+obj_chest	箱子		
+obj_bedroll	铺盖		
+obj_chicken	鸡		
+obj_boss_gate	LockedDoorPrompt_Default		
+loot_stash	两瓶炼金火焰，25 金币。		

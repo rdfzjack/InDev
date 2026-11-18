@@ -41,3 +41,31 @@ poet: 下次吧。  #poet.sing_no.01
 [insight:11] narrator: 他的视线时不时往地面看。不是在找什么。是在确认它还在。  #poet.mood.01
 poet: 没有啊。  #poet.mood.02
 -> END
+
+# ---------------------------------------------------------------------------
+# 招募（Dungeon 1 入口）。入队过场中直接掉下去：关掉碰撞，让重力把他拽下去，台词照常播完，镜头忠实跟随。
+
+~ recruit
+@ cam close poet
+poet: 啊，有人来了。  #poet.recruit.01
+poet: 我是吟游诗人。我在这里等了很久，想找一支队伍。  #poet.recruit.02
+- 你可以跟我们走。 -> recruit_join  #poet.recruit.03
+- 你在这里干什么？ -> recruit_why  #poet.recruit.04
+
+~ recruit_why
+poet: 写歌。这里回声很好。  #poet.recruit_why.01
+-> recruit_join
+
+~ recruit_join
+$ join poet
+@ cam close poet
+poet: 太好了。我叫低低。  #poet.recruit_join.01
+$ fall poet
+@ cam track poet
+poet: 我会弹琴，会一点治疗，也会唱  #poet.recruit_join.02
+poet: 总之以后请多关照。  #poet.recruit_join.03
+@ cam wide
+[party:husband] husband: ……  #poet.recruit_join.04
+[party:sl] sl: ……  #poet.recruit_join.05
+narrator: 低低 加入了队伍。  #poet.recruit_join.06
+-> END

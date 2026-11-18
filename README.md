@@ -8,7 +8,15 @@
 
 ## 运行
 
-用 Godot 4.7 打开项目，按 F5。目前主场景会进入测试场 `sandbox`。
+用 Godot 4.7 打开项目，按 F5。从村庄开始（白模）。
+
+当前能玩的 demo 流程：
+
+1. **村庄**：广场上的小扬（点他入队）、西边路口等着的你老公（点他入队）、商店（老板 → 交易）、村长（任务，[游说] 检定，【洞悉】）、NPC_Villager_04、卡在墙里的鸡、北边一直锁着的魔王门（门后放着店铺 BGM，小地图上一直在闪）。村庄的 BGM 是 boss 战音乐。
+2. **地窖（Dungeon 1）**：入口诗人入队并掉出地图 → 走廊隐藏陷阱（被动察觉）→ 机关房：上锁的门（开锁检定）+ 三根拉杆谜题 → 战斗 → 宝箱。
+3. **营地**（村庄西边）：地窖打完后你老公约谈，那一晚他点不动；铺盖长休（4 份营地补给）→ 第二天措辞升级。
+
+村庄西边"小路（西）"暂时通往测试场（以后是白模区和龙）。
 
 测试场调试键：
 
@@ -51,11 +59,14 @@ godot --headless --path . res://tests/save_test.tscn
 # 需要显示器（真实鼠标事件 / 镜头构图）：
 godot --path . res://tests/input_test.tscn
 godot --path . res://tests/dialogue_test.tscn
+godot --path . res://tests/playthrough_test.tscn   # 村庄 → 地窖 → 营地完整流程
 ```
 
 对话台本语法（条件、检定、镜头）见 `scripts/core/dialogue_script.gd` 顶部。
 
 占位 BGM 用 `python3 tools/gen_placeholder_music.py` 生成（需要 numpy + ffmpeg），正式曲子直接覆盖 `assets/audio/music/<id>.ogg`。
+
+关卡用 `scripts/levels/level_base.gd` 的白模工具搭（墙、房间、出口、NPC、遭遇战、旁白触发区）。美术到了把白模换成 .glb，交互节点保留。
 
 改了 `.dlg` 对话之后，给新台词盖 ID 并导出翻译表：
 

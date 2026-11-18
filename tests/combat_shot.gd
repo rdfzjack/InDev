@@ -4,6 +4,7 @@ func _ready() -> void:
 	Dice.rng.seed = 3
 	Game.party_level = 3
 	var main: Node = load("res://scenes/main.tscn").instantiate()
+	main.first_level = "res://scenes/levels/sandbox.tscn"
 	add_child(main)
 	await Router.level_loaded
 	await _frames(60)

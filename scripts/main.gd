@@ -12,6 +12,7 @@ extends Node
 ##           ├─ Minimap                     右上小地图
 ##           ├─ Hotbar                      底部技能栏
 ##           ├─ DialogueBox                 对话
+##           ├─ DiceRollPanel               检定骰子（对话内外通用）
 ##           ├─ MessageLog                  右下日志
 ##           ├─ InventoryScreen             背包（I 键）
 ##           ├─ TradeScreen                 交易
@@ -25,7 +26,7 @@ extends Node
 const SHRINK := 2
 const POST_SHADER := preload("res://shaders/ps2_post.gdshader")
 
-@export_file("*.tscn") var first_level := "res://scenes/levels/sandbox.tscn"
+@export_file("*.tscn") var first_level := "res://scenes/levels/village.tscn"
 
 var world_view: SubViewportContainer
 var viewport: SubViewport
@@ -112,6 +113,9 @@ func _build_ui() -> void:
 	hotbar.name = "Hotbar"
 	root.add_child(hotbar)
 	root.add_child(dlg)
+	var dice := DiceRollPanel.new()
+	dice.name = "DiceRollPanel"
+	root.add_child(dice)
 	var log := MessageLog.new()
 	log.name = "MessageLog"
 	root.add_child(log)

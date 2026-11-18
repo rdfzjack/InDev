@@ -12,6 +12,7 @@ func _ready() -> void:
 	Banter.silence_weight = 0.0
 	Banter.global_cooldown = 0.0
 	main = load("res://scenes/main.tscn").instantiate()
+	main.first_level = "res://scenes/levels/sandbox.tscn"
 	add_child(main)
 	await Router.level_loaded
 	await _frames(10)

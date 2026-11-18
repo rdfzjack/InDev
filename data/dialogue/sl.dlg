@@ -39,3 +39,23 @@ sl: 读个档试试。  #sl.lie_ok.02
 sl: 有人走路外八，有人说话大声，有人总是迟到。没人因为这个不跟他玩。  #sl.lie_no.01
 sl: 读档。  #sl.lie_no.02
 -> END
+
+# ---------------------------------------------------------------------------
+# 招募（村庄广场）。他是被塞进队伍的。
+
+~ recruit
+sl: 你们就是去地窖的那几个？  #sl.recruit.01
+sl: 村长让我跟着你们。  #sl.recruit.02
+sl: 他说反正你们超空的。  #sl.recruit.03
+- 好吧。 -> recruit_join  #sl.recruit.04
+- 你会什么？ -> recruit_what  #sl.recruit.05
+
+~ recruit_what
+sl: 开锁。解陷阱。  #sl.recruit_what.01
+sl: 还有读档。  #sl.recruit_what.02
+-> recruit_join
+
+~ recruit_join
+$ join sl
+narrator: 小扬 加入了队伍。  #sl.recruit_join.01
+-> END

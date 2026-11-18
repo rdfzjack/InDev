@@ -134,6 +134,9 @@ static func trim_path_end(p: PackedVector3Array, stop_dist: float) -> PackedVect
 static func animate(c: Combatant, walked: PackedVector3Array) -> void:
 	if walked.size() < 2 or c.node == null or not c.node.has_method("follow_path"):
 		return
+	if Combat.instant:
+		c.node.global_position = walked[walked.size() - 1]
+		return
 	var end := walked[walked.size() - 1]
 	# 逻辑位置已经到终点；先把节点放回起点再走过去
 	c.node.global_position = walked[0]

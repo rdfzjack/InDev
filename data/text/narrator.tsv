@@ -63,3 +63,15 @@ husband_fireball	该法术不在这个等级可以学会的列表中。它仍然
 husband_fireball	火球术是三环法术。他没有三环法术位。火球照常落下。	
 trap_detected	地面上有一块颜色略深的石板。它的边缘有缝隙。	
 trap_detected	你注意到一块压力板。它被做得很仔细，只是没有被做完。	
+# ---- 关卡 ----
+village_enter	村子的主街向两边延伸。孩子们在跑。音乐轨道索引错误。	
+boss_gate	一扇门。门后面有音乐。	
+camp_enter	营地。火还没有熄。	
+d1_stairs	你推开门。石阶向下延伸，消失在黑暗中。这段区域的光照尚未烘焙。	
+d1_puzzle	石碑上刻着一段文字："日出于东，落于西，正午在其间。"	
+d1_puzzle_solved	机关发出沉闷的声响。铁栅升起。	
+d1_door_locked	门锁着。	
+d1_chest	箱子里有一些金币，一瓶药水，一卷羊皮纸。	
+d1_done	地窖安静了。	
+chicken	一只鸡卡在墙里。只有头露在外面。它在正常地叫。	
+long_rest_no_supplies	营地补给不够。	

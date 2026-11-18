@@ -56,8 +56,13 @@ func _sync_party() -> void:
 		var m: PartyMember = SCENES[id].new()
 		m.name = String(id)
 		m.placeholder_color = COLORS[id]
-		get_parent().add_child.call_deferred(m)
 		m.position = base + FORMATION[mini(i, FORMATION.size() - 1)]
+		# 招募：场景里站着的同名 NPC 换成队员，站在原地
+		for n in get_tree().get_nodes_in_group("npc"):
+			if n.get("char_id") == id:
+				m.position = n.global_position
+				n.queue_free()
+		get_parent().add_child.call_deferred(m)
 		members[id] = m
 	for id in members.keys():
 		if not Game.in_party(id):

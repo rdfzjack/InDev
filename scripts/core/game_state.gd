@@ -41,6 +41,31 @@ func shop_state(id: String) -> Dictionary:
 	return shops[id]
 
 
+## 天数（每次长休 +1）。约谈按天推进。
+var day := 1
+signal day_passed(day: int)
+
+
+## 长休：要 40 点营地补给（营地补给每个 10 点）
+const LONG_REST_SUPPLIES := 4
+
+
+func has_rest_supplies() -> bool:
+	return Inv.count("camp_supplies") >= LONG_REST_SUPPLIES
+
+
+func long_rest() -> bool:
+	if not Inv.remove("camp_supplies", LONG_REST_SUPPLIES):
+		Narrator.say("long_rest_no_supplies")
+		return false
+	for id in sheets:
+		sheets[id].long_rest()
+	day += 1
+	Meta.bump("long_rests")
+	day_passed.emit(day)
+	return true
+
+
 ## 全队等级（大家一起从 1 升到 3）
 var party_level := 1
 ## 每人经验（5e：遭遇战经验按人头平分）。达到门槛后可以升级（升级界面里确认）。
@@ -136,6 +161,8 @@ func set_flag(f: StringName, v: Variant = true) -> void:
 
 
 func flag(f: StringName, default: Variant = false) -> Variant:
+	if f == &"enough_supplies":
+		return has_rest_supplies()
 	return flags.get(f, default)
 
 
