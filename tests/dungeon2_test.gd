@@ -131,6 +131,7 @@ func _ready() -> void:
 	_ok(shown[2] != null and shown[2]["id"] == "oath_ring", "buying it back: it's in the third slot")
 	ts._on_buy(2, shown[2])
 	_ok(ts._msg.text.contains("FROZEN"), "clicking it freezes")
+	Meta.consume_crash()   # 别让下一个测试的对话开头冒出"不是说了别点吗"
 	ts.close()
 
 	print("== boss corpse flies into the wall")
