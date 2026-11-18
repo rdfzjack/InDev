@@ -41,3 +41,15 @@ trade_warning	别点第三格。		poet
 hud_move	移动 %.1f 米（剩余 %.1f 米）	Move %.1f m (%.1f m left)	
 hud_move_too_far	移动 %.1f 米 —— 超出剩余的 %.1f 米	Move %.1f m — more than the %.1f m left	
 hud_area_hits	波及：敌人 %d / 队友 %d	Hits: %d enemies / %d allies	
+# ---- 菜单 ----
+menu_continue	继续	Continue	
+menu_save	存档	Save	
+menu_load	读档	Load	
+menu_settings	设置	Settings	
+menu_quit	退出	Quit	
+menu_saved	已保存。	Saved.	
+menu_empty_slot	%s    —	%s    —	
+menu_no_saves	没有存档。	No saves.	
+menu_language	语言	Language	
+lang_zh_CN	中文	中文	
+lang_en	English	English	

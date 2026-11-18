@@ -23,6 +23,7 @@ Game="*res://scripts/core/game_state.gd"
 Inv="*res://scripts/core/inventory.gd"
 Router="*res://scripts/core/scene_router.gd"
 Combat="*res://scripts/combat/combat.gd"
+Saves="*res://scripts/core/save_system.gd"
 
 [display]
 

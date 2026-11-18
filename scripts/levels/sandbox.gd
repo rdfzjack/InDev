@@ -2,7 +2,7 @@ extends Node3D
 ## 测试场：几何体 + 名字牌，先把时机跑通。
 ## 调试键：
 ##   F1 诗人掉出地图      F2 随机报一个故障     F3 主角躺着
-##   F4 主角说一句"我不知道"（测试 banter）    F5 重载关卡（诗人回来）
+##   F4 有人问"你武器呢"                       F10 重载关卡（诗人回来）
 ##   F6 开关老公约谈（约谈中他点不动）        T  直接和老公对话
 ##   I  背包    右边那个 NPC 是商店老板（点他对话 → 交易）
 ##   F7 经验加到下一级门槛（然后按 L 或点头像角标升级）                    F8 立刻开战（遭遇战触发器）
@@ -119,7 +119,7 @@ func _unhandled_input(e: InputEvent) -> void:
 			Bus.report(&"player_lay_down", Game.PROTAGONIST)
 		KEY_F4:
 			Bus.report(&"weapon_missing", Game.PROTAGONIST)
-		KEY_F5:
+		KEY_F10:
 			Router.goto(Router.current_path)
 		KEY_F6:
 			Game.set_flag(&"husband_summons_pending", not Game.flag(&"husband_summons_pending"))

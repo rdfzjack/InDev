@@ -20,7 +20,10 @@
 | F2 | 随机报一个故障 |
 | F3 | 主角躺着 |
 | F4 | 有人问"你武器呢" |
-| F5 | 重载关卡（诗人回来） |
+| F10 | 重载关卡（诗人回来） |
+| Esc | 菜单（存档 / 读档 / 设置） |
+| F5 / F9 | 快速存档 / 快速读档 |
+| I | 背包（右边那个 NPC 是商店老板，点他对话 → 交易） |
 | F6 | 开关老公约谈状态（约谈中点不动） |
 | T | 和你老公对话 |
 | F7 | 经验加到下一级门槛 |
@@ -43,6 +46,10 @@
 godot --headless --path . res://tests/smoke_test.tscn
 godot --headless --path . res://tests/rules_test.tscn
 godot --headless --path . res://tests/combat_test.tscn
+godot --headless --path . res://tests/shop_test.tscn
+godot --headless --path . res://tests/save_test.tscn
+# 需要显示器（用真实鼠标事件）：
+godot --path . res://tests/input_test.tscn
 ```
 
 改了 `.dlg` 对话之后，给新台词盖 ID 并导出翻译表：

@@ -16,6 +16,7 @@ extends Node
 ##           ├─ InventoryScreen             背包（I 键）
 ##           ├─ TradeScreen                 交易
 ##           ├─ LevelUpScreen               升级界面（L 键 / 头像角标）
+##           ├─ PauseMenu                   Esc 菜单，F5 快存，F9 快读
 ##           └─ LoadingScreen
 ##
 ## 节点在代码里搭，tscn 只挂这个脚本，避免手改场景文件。
@@ -123,6 +124,9 @@ func _build_ui() -> void:
 	var lvl := LevelUpScreen.new()
 	lvl.name = "LevelUpScreen"
 	root.add_child(lvl)
+	var pause := PauseMenu.new()
+	pause.name = "PauseMenu"
+	root.add_child(pause)
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
 	root.add_child(loading)
