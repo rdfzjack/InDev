@@ -15,3 +15,19 @@ load_skill	读取存档
 load_skill_desc	战斗回到开始时的状态。		
 skip_hold	按住 空格 跳过		
 speaker_sep	：	: 	
+# ---- 技能 ----
+ability_attack_name	攻击	Attack	
+ability_attack_desc	用你的武器攻击。	Attack with your weapon.	
+ability_lie_down_name	躺着	Lie Down	
+ability_lie_down_desc	你躺着。	You lie down.	
+ability_fireball_name	火球术	Fireball	
+ability_fireball_desc	一团火焰在目标点爆开。8d6 火焰伤害。	A bright streak flashes to a point and blossoms into an explosion of flame. 8d6 fire damage.	
+ability_load_save_name	读取存档	Load Save	
+ability_load_save_desc	战斗回到开始时的状态。	Combat returns to how it was when it began.	
+ability_disarm_name	解除陷阱	Disarm Trap	
+ability_disarm_desc	解除一个已发现的陷阱。	Disarm a detected trap.	
+# ---- HUD ----
+hud_cooldown	冷却：%d 回合	Cooldown: %d turn(s)	
+hud_hp	%d / %d	%d / %d	
+area_sandbox	测试场	Sandbox	
+hud_end_turn	结束	End	

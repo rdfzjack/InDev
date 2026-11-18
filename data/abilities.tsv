@@ -1,0 +1,12 @@
+id	owner	slot	cooldown	icon	glitch	note
+# 技能栏。名字和描述在 data/text/ui.tsv：ability_<id>_name / ability_<id>_desc
+# owner: 角色 id，或 all（所有人都有，除非在 exclude 里）
+# icon: res://assets/icons/<icon>.png，没有就画文字占位
+# glitch: 使用时报的故障/行为 id（走广播，旁白和队友会反应）
+attack	all	0	0	attack
+lie_down	protagonist	1	1	lie_down	player_lay_down	冷却一回合，AC+2。主角每场战斗都有
+lie_down	poet	1	1	lie_down	player_lay_down	另外三个人真的可以躺着
+lie_down	sl	1	1	lie_down	player_lay_down
+fireball	husband	1	0	fireball		3 级法师本来没有火球，数值没改。他的技能栏里没有躺着——不是灰的，是根本没有
+load_save	sl	2	0	load_save	player_load	战斗回到开始时的状态。没有缺陷，没有代价
+disarm	sl	3	0	disarm	disarm_not_implemented	功能没做

@@ -7,6 +7,7 @@ extends Control
 ## 不特殊标注，语气平。节点写了 @ no_idk 就不插。
 
 signal finished(script_path: String)
+signal line_shown(who: String, text: String)
 signal command(args: Array)
 
 static var instance: DialogueBox
@@ -43,22 +44,17 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_panel = PanelContainer.new()
-	_panel.anchor_left = 0.08
-	_panel.anchor_right = 0.92
-	_panel.anchor_top = 0.66
+	_panel.anchor_left = 0.1
+	_panel.anchor_right = 0.78
+	_panel.anchor_top = 0.62
 	_panel.anchor_bottom = 0.97
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.05, 0.04, 0.03, 0.88)
-	sb.border_color = Color(0.55, 0.45, 0.28)
-	sb.set_border_width_all(2)
-	sb.set_content_margin_all(14)
-	_panel.add_theme_stylebox_override("panel", sb)
+	_panel.add_theme_stylebox_override("panel", UITheme.panel(UITheme.BG_DEEP, UITheme.BORDER, 1, 3, 16))
 	add_child(_panel)
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 8)
 	_panel.add_child(vb)
 	_speaker = Label.new()
-	_speaker.add_theme_color_override("font_color", Color(0.95, 0.8, 0.45))
+	_speaker.add_theme_color_override("font_color", UITheme.TEXT_GOLD)
 	_speaker.add_theme_font_size_override("font_size", 20)
 	vb.add_child(_speaker)
 	_text = RichTextLabel.new()
@@ -137,10 +133,11 @@ func _show_line(op: Dictionary) -> void:
 	var body := TextDB.dialogue_line(op.get("id", ""), op["text"])
 	if who == "narrator":
 		_speaker.text = ""
-		_text.text = "[i][color=#d8c9a3]%s[/color][/i]" % body
+		_text.text = "[i][color=#%s]%s[/color][/i]" % [UITheme.NARRATOR.to_html(false), body]
 	else:
 		_speaker.text = TextDB.char_name(StringName(who))
 		_text.text = body
+	line_shown.emit(who, body)
 	_waiting_click = true
 
 

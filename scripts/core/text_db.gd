@@ -12,6 +12,7 @@ const TABLES := {
 	"banter": "res://data/text/banter.tsv",
 	"ui": "res://data/text/ui.tsv",
 	"glitches": "res://data/glitches.tsv",
+	"abilities": "res://data/abilities.tsv",
 	"dialogue": "res://data/text/dialogue.tsv",
 }
 
@@ -20,7 +21,7 @@ const SOURCE_LOCALE := "zh_CN"
 
 signal locale_changed
 
-## 当前语言。默认跟随系统，取不到就用原文。
+## 当前语言。默认原文；设置菜单里切换。翻译齐了之后再考虑跟随系统。
 var locale := SOURCE_LOCALE:
 	set(v):
 		locale = v
@@ -31,8 +32,6 @@ var _by_key: Dictionary = {}     # table -> { key: Array[Dictionary] }
 
 
 func _ready() -> void:
-	var sys := TranslationServer.get_locale()
-	locale = "zh_CN" if sys.begins_with("zh") else ("en" if sys.begins_with("en") else SOURCE_LOCALE)
 	for t in TABLES:
 		_load(t, TABLES[t])
 

@@ -4,11 +4,15 @@ extends Node
 ##   ├─ WorldView (SubViewportContainer, 低分辨率 + 后处理)
 ##   │   └─ SubViewport  ← 关卡挂在这里
 ##   └─ UI (CanvasLayer, 全分辨率——UI 允许是现代的)
-##       ├─ Nameplates
-##       ├─ BanterLog
-##       ├─ NarratorLog
-##       ├─ DialogueBox
-##       └─ LoadingScreen
+##       └─ HUD (Control, UITheme)
+##           ├─ Nameplates / OverheadText   名牌、头顶对话
+##           ├─ NarratorLog                 旁白（屏幕上方）
+##           ├─ PartyPortraits              左侧队伍头像
+##           ├─ Minimap                     右上小地图
+##           ├─ Hotbar                      底部技能栏
+##           ├─ DialogueBox                 对话
+##           ├─ MessageLog                  右下日志
+##           └─ LoadingScreen
 ##
 ## 节点在代码里搭，tscn 只挂这个脚本，避免手改场景文件。
 
@@ -59,20 +63,42 @@ func _build_ui() -> void:
 	ui = CanvasLayer.new()
 	ui.name = "UI"
 	add_child(ui)
+	var root := Control.new()
+	root.name = "HUD"
+	root.theme = UITheme.get_theme()
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui.add_child(root)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var plates := Nameplates.new()
 	plates.name = "Nameplates"
 	plates.world_view = world_view
-	ui.add_child(plates)
-	var banter := BanterLog.new()
-	banter.name = "BanterLog"
-	ui.add_child(banter)
+	root.add_child(plates)
+	var overhead := OverheadText.new()
+	overhead.name = "OverheadText"
+	overhead.nameplates = plates
+	root.add_child(overhead)
 	var narr := NarratorLog.new()
 	narr.name = "NarratorLog"
-	ui.add_child(narr)
+	root.add_child(narr)
+	# 对话框要先于日志创建（日志订阅它的信号）
 	var dlg := DialogueBox.new()
 	dlg.name = "DialogueBox"
-	ui.add_child(dlg)
+	var portraits := PartyPortraits.new()
+	portraits.name = "PartyPortraits"
+	root.add_child(portraits)
+	var minimap := Minimap.new()
+	minimap.name = "Minimap"
+	root.add_child(minimap)
+	var hotbar := Hotbar.new()
+	hotbar.name = "Hotbar"
+	root.add_child(hotbar)
+	root.add_child(dlg)
+	var log := MessageLog.new()
+	log.name = "MessageLog"
+	root.add_child(log)
 	var loading := LoadingScreen.new()
 	loading.name = "LoadingScreen"
-	ui.add_child(loading)
+	root.add_child(loading)
+	# 对话时隐藏技能栏（BG3 也是这样）
+	dlg.visibility_changed.connect(func(): hotbar.visible = not dlg.visible)
 	Router.register_host(viewport, loading)

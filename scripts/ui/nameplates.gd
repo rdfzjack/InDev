@@ -6,9 +6,12 @@ extends Control
 ## 名牌永远钳制在屏幕内：诗人在地下很远处时，他的名字贴在屏幕底边，跟着他的 X 走。
 
 const MARGIN := 12.0
+## 底部留给技能栏
+const BOTTOM_MARGIN := 125.0
 
 var world_view: SubViewportContainer
 var _labels: Dictionary = {}   # instance_id -> Label
+var _by_char: Dictionary = {}  # char_id -> Label（给头顶对话用）
 
 
 func _ready() -> void:
@@ -18,6 +21,7 @@ func _ready() -> void:
 
 func _process(_dt: float) -> void:
 	var seen := {}
+	_by_char.clear()
 	var vp := world_view.get_child(0) as SubViewport if world_view and world_view.get_child_count() > 0 else null
 	var cam := vp.get_camera_3d() if vp else null
 	if cam:
@@ -32,11 +36,22 @@ func _process(_dt: float) -> void:
 				_labels[id] = lab
 			lab.text = n.display_name
 			lab.position = _project(cam, n.nameplate_position()) - lab.size * Vector2(0.5, 1.0)
-			lab.position = lab.position.clamp(Vector2(MARGIN, MARGIN), size - lab.size - Vector2(MARGIN, MARGIN))
+			lab.position = lab.position.clamp(Vector2(MARGIN, MARGIN), size - lab.size - Vector2(MARGIN, BOTTOM_MARGIN))
+			var cid = n.get("char_id")
+			if cid != null:
+				_by_char[cid] = lab
 	for id in _labels.keys():
 		if not seen.has(id):
 			_labels[id].queue_free()
 			_labels.erase(id)
+
+
+## 某个角色名牌的屏幕位置（名牌上沿中点）。不在场返回 (-1, -1)。
+func plate_screen_pos(char_id: StringName) -> Vector2:
+	var lab: Label = _by_char.get(char_id)
+	if lab == null or not is_instance_valid(lab):
+		return Vector2(-1, -1)
+	return lab.position + Vector2(lab.size.x * 0.5, 0)
 
 
 func _project(cam: Camera3D, p: Vector3) -> Vector2:
