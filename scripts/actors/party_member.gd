@@ -1,0 +1,101 @@
+class_name PartyMember
+extends CharacterBody3D
+## 队员。走路用 NavigationAgent3D（门口打转要用它的避让）。
+## 没有美术模型时自动生成占位胶囊。美术到了之后把模型作为子节点放进 "Model" 节点即可。
+
+@export var char_id: StringName = &""
+@export var placeholder_color := Color(0.8, 0.8, 0.8)
+@export var move_speed := 4.0
+@export var height := 1.8
+
+var display_name: String:
+	get:
+		return TextDB.char_name(char_id)
+
+var agent: NavigationAgent3D
+var model: Node3D
+var _has_target := false
+
+
+func _ready() -> void:
+	add_to_group("nameplated")
+	add_to_group("party")
+	collision_layer = 2
+	collision_mask = 1
+	if get_node_or_null("Shape") == null:
+		var cs := CollisionShape3D.new()
+		cs.name = "Shape"
+		var cap := CapsuleShape3D.new()
+		cap.radius = 0.35
+		cap.height = height
+		cs.shape = cap
+		cs.position.y = height * 0.5
+		add_child(cs)
+	model = get_node_or_null("Model")
+	if model == null:
+		model = Node3D.new()
+		model.name = "Model"
+		add_child(model)
+		_build_placeholder()
+	agent = NavigationAgent3D.new()
+	agent.name = "Agent"
+	agent.radius = 0.4
+	agent.height = height
+	agent.max_speed = move_speed
+	agent.path_desired_distance = 0.3
+	agent.target_desired_distance = 0.4
+	agent.avoidance_enabled = true
+	agent.neighbor_distance = 3.0
+	agent.velocity_computed.connect(_on_velocity)
+	add_child(agent)
+
+
+## 子类覆盖：比如 SL 的两套 LOD
+func _build_placeholder() -> void:
+	model.add_child(Placeholders.capsule(placeholder_color, height))
+
+
+func nameplate_position() -> Vector3:
+	return global_position + Vector3.UP * (height + 0.35)
+
+
+func move_to(p: Vector3) -> void:
+	agent.target_position = p
+	_has_target = true
+
+
+func stop() -> void:
+	_has_target = false
+	velocity = Vector3.ZERO
+
+
+func _physics_process(dt: float) -> void:
+	if not is_on_floor():
+		velocity += get_gravity() * dt
+	if _has_target and not agent.is_navigation_finished():
+		var next := agent.get_next_path_position()
+		var dir := next - global_position
+		dir.y = 0
+		var want := dir.normalized() * move_speed
+		if agent.avoidance_enabled:
+			agent.velocity = want
+		else:
+			_on_velocity(want)
+	else:
+		_has_target = false
+		_on_velocity(Vector3.ZERO)
+	_post_physics(dt)
+
+
+func _on_velocity(v: Vector3) -> void:
+	velocity.x = v.x
+	velocity.z = v.z
+	if Vector2(v.x, v.z).length() > 0.1:
+		var look := global_position + Vector3(v.x, 0, v.z)
+		model.look_at(look, Vector3.UP, true)
+	move_and_slide()
+
+
+## 子类钩子
+func _post_physics(_dt: float) -> void:
+	pass

@@ -1,0 +1,35 @@
+id	type	severity	narrator	silence	trigger	duration	recovery	note
+# 故障总表。这份表格大概是这个游戏唯一一个完全严谨的东西。
+# type: clip 穿模 / interact 交互失效 / stat 数值异常 / position 位置异常 / text 文本缺失 / audio 音频 / player 玩家行为（不是故障，但走同一个广播）
+# severity: gameplay 影响玩法 / funny 只是好笑
+# narrator: data/text/narrator.tsv 的 key，空 = 旁白不说
+# silence: 本条沉默概率（0-1），空 = 默认 0.3
+#
+# ---- 角色 ----
+poet_fell	position	funny	poet_fell	0	诗人入队过场；之后脚本随机触发（待定频率）	直到下一次关卡加载	场景切换	只显示名字，名牌钳在屏幕边缘
+poet_returned	position	funny		0.6	关卡加载完成且上一关他在外面	瞬时	-
+weapon_missing	clip	funny	weapon_missing	0.4	NPC 首次看到主角 / 队友随机	永久	无	武器绑在不存在的骨骼，留在脚底原点
+husband_unclickable	interact	gameplay	husband_unclickable	0.5	约谈期间点击你老公	约谈当天	第二天	约谈升级措辞
+sl_lod_wrong	clip	funny		1	一直存在，不广播	永久	无	走近看不出来，只有远处是红的
+# ---- 玩家行为 ----
+player_lay_down	player	funny	player_lay_down	0.2	战斗中选【躺着】	1 回合	-	AC+2
+player_idk	player	funny		0.85	选了三个选项之一	瞬时	-	大多数时候没人说话
+player_load	player	funny	player_load	0.5	SL 的【读取存档】/ 玩家读档	瞬时	-
+# ---- 环境 ----
+clip_wall	clip	funny	clip_wall	0.3	随机/脚本	瞬时	-
+interact_failed	interact	gameplay	interact_failed	0.3	交互点在墙另一边等	-	换位置
+text_key_missing	text	gameplay	text_key_missing	0.3	任务/物品引用了不存在的字符串	永久	无
+music_index_wrong	audio	funny	music_index_wrong	0.5	进村庄	村庄内	离开村庄	村庄 BGM 是 boss 战音乐
+lighting_unbaked	clip	funny	lighting_unbaked	0.3	进入未烘焙房间	房间内	离开房间
+trap_sprung	gameplay	gameplay	trap_sprung	0.2	陷阱被触发	瞬时	-	诗人在下面时也会响
+disarm_not_implemented	interact	gameplay	disarm_not_implemented	0	点击陷阱	瞬时	绕路	"该功能尚未实现"
+door_jam	position	funny	door_jam	0.4	2 人以上进入门口触发盒	7-8 秒	自然散开	地点属性
+shop_slot3_freeze	interact	gameplay		1	点击商店第三格	永久（直到 alt+F4）	重启游戏	真卡死。下次对话前触发"不是说了别点吗"
+skip_broken	interact	gameplay	skip_broken	0.5	被害村民过场按住跳过	过场全程	看完	进度圈转到一半停住
+corpse_in_wall	position	gameplay	corpse_in_wall	0.2	dungeon boss 死亡	永久	读档后换位置打
+corpse_floating	position	funny	corpse_floating	0.4	通往魔王的路上，死亡那帧停物理	永久	无
+ragdoll_launch	position	funny	ragdoll_launch	0	魔王死亡	直到飞出画面	无
+check_negative_dc	stat	funny	check_negative_dc	0.4	检定 DC < 0	瞬时	-	还是要掷
+check_impossible_dc	stat	gameplay	check_impossible_dc	0.4	检定 DC 45	瞬时	-
+check_dc_unresolved	text	gameplay	check_dc_unresolved	0.3	DC 显示 {难度}	瞬时	-
+lod_texture	clip	funny		1	-	-	-	旁白不报告玩家认不出的故障

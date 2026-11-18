@@ -1,0 +1,62 @@
+class_name Placeholders
+## 占位几何体，都用 PS2 材质，这样占位阶段就能看到最终的抖动和贴图手感。
+
+const PS2 := preload("res://shaders/ps2.gdshader")
+const CHECKER := preload("res://assets/textures/placeholder_checker.svg")
+
+
+static func material(color: Color, tex: Texture2D = null, uv_scale := Vector2.ONE) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = PS2
+	m.set_shader_parameter("albedo_tex", tex if tex else CHECKER)
+	m.set_shader_parameter("tint", color)
+	m.set_shader_parameter("uv_scale", uv_scale)
+	m.set_shader_parameter("use_vertex_color", false)
+	return m
+
+
+static func capsule(color: Color, height := 1.8) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var cm := CapsuleMesh.new()
+	cm.radius = 0.35
+	cm.height = height
+	cm.radial_segments = 8
+	cm.rings = 2
+	mi.mesh = cm
+	mi.position.y = height * 0.5
+	mi.material_override = material(color)
+	# 脸朝向（-Z）的小方块，看得出朝哪边
+	var nose := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(0.15, 0.12, 0.2)
+	nose.mesh = bm
+	nose.position = Vector3(0, height * 0.3, -0.35)
+	nose.material_override = material(color.darkened(0.5))
+	mi.add_child(nose)
+	return mi
+
+
+static func box(size: Vector3, color: Color, uv_scale := Vector2.ONE) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = size
+	# PS2 时代的大面都要细分，不然 affine 贴图会拉扯到看不清
+	bm.subdivide_width = int(size.x / 2.0)
+	bm.subdivide_height = int(size.y / 2.0)
+	bm.subdivide_depth = int(size.z / 2.0)
+	mi.mesh = bm
+	mi.material_override = material(color, null, uv_scale)
+	return mi
+
+
+## 带碰撞的静态方块（地面、墙）
+static func static_box(size: Vector3, color: Color, uv_per_meter := 0.5) -> StaticBody3D:
+	var sb := StaticBody3D.new()
+	sb.collision_layer = 1
+	var cs := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	cs.shape = shape
+	sb.add_child(cs)
+	sb.add_child(box(size, color, Vector2(maxf(size.x, size.z), maxf(size.y, size.z)) * uv_per_meter))
+	return sb

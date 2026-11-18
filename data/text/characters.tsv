@@ -1,0 +1,8 @@
+id	zh_CN	en	note
+# name 是头顶名牌和对话框说话人显示的文字
+protagonist	圣骑士		【待定】主角的默认名。建卡界面输入的名字不生效
+husband	你老公		关系字段显示成了名字。全游戏不出现别的称呼
+poet	低低		【待定】诗人的游戏内名字
+sl	小扬		【待定】SL 的游戏内名字
+narrator			旁白不显示说话人
+NPC_Villager_04	NPC_Villager_04		大家就这么叫他

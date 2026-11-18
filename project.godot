@@ -1,0 +1,52 @@
+; Engine configuration file.
+; 《正在开发中》 / InDev
+
+config_version=5
+
+[application]
+
+config/name="正在开发中"
+config/version="0.9.1"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+TextDB="*res://scripts/core/text_db.gd"
+Meta="*res://scripts/core/meta_stats.gd"
+Bus="*res://scripts/core/bug_bus.gd"
+Narrator="*res://scripts/core/narrator.gd"
+Banter="*res://scripts/core/banter.gd"
+Game="*res://scripts/core/game_state.gd"
+Router="*res://scripts/core/scene_router.gd"
+
+[display]
+
+window/size/viewport_width=1024
+window/size/viewport_height=768
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[filesystem]
+
+import/blender/enabled=false
+
+[importer_defaults]
+
+texture={
+"compress/mode": 0,
+"detect_3d/compress_to": 0,
+"mipmaps/generate": false
+}
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+anti_aliasing/quality/msaa_3d=0

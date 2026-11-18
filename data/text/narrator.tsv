@@ -1,0 +1,60 @@
+key	zh_CN	en
+# 旁白文本。庄严文学腔，内容是引擎日志。
+# 它从不撒谎，它只是不管用。它只报告它看得懂的。
+# 同一个 key 多行 = 多个变体，随机取。
+#
+# ---- 设计文档原句 ----
+door_dark_stairs	你推开门。石阶向下延伸，消失在黑暗中。这段区域的光照尚未烘焙。	
+blendshape_missing	他看着你，眼中有某种你无法读懂的东西。他的面部混合形状没有被正确导入。	
+touch_no_collider	你伸手去触碰他。碰撞体不在那里。	
+vram_full	那只小怪占用了当前可用的全部显存。你们身上所有的贴图都模糊了。你依然认得他们。	
+text_key_missing	该任务引用的字符串键值未能解析。原始数据不可访问。	
+camera_up_failed	摄像机的上方向向量计算失败。世界没有翻转。	
+ragdoll_launch	他的物理体在切换 ragdoll 的瞬间继承了动画的末帧速度。他正在以每秒四十米的速度垂直上升。	
+player_lay_down	你躺着。这是允许的。	
+downed_following	你已倒下。你正在跟随队伍。	
+marker_wrong_phase	该标记不应在此阶段显示。	
+#
+# ---- 角色 ----
+poet_fell	他脚下的碰撞体没有加载。他向下坠去，台词没有中断。	
+poet_fell	地面没有接住他。重力完成了它被要求的工作。	
+poet_fell	他离开了可行走区域。他的名字留了下来。	
+weapon_missing	你的武器绑定在一根不存在的骨骼上。它待在骨架的原点，也就是你的脚下。	
+weapon_missing	你握着你的剑。从你的角度看，一切都在它该在的地方。	
+husband_unclickable	你点击了他。输入没有被转发给任何对象。	
+husband_unclickable	他的交互体积与另一个体积重叠。你的请求落在了那个体积上。那里什么也没有。	
+#
+# ---- 玩家行为 ----
+player_lay_down	你躺着。这不在任何人的计划之中，也不违反任何人的计划。	
+player_load	时间回到了它被保存的那一刻。所有人都记得，又都不记得。	
+player_load	世界从磁盘中被重新读取。它和你离开时一模一样。	
+#
+# ---- 环境 ----
+clip_wall	他的胶囊体嵌入了墙壁的碰撞网格。他没有停下来。	
+clip_wall	墙壁的法线朝向了错误的方向。从这一侧，它是不存在的。	
+interact_failed	交互点位于墙壁的另一侧。你看得见它。	
+interact_failed	该物体的交互半径为零。你需要站在它的内部。	
+music_index_wrong	音乐轨道索引错误。	
+lighting_unbaked	这个房间的光照贴图没有被烘焙。黑暗是均匀的，没有任何来源。	
+lighting_unbaked	光照尚未烘焙。你们在这里，但没有影子能证明这一点。	
+trap_sprung	压力板被激活了。一支弩箭从墙中射出。	
+trap_sprung	机关发出咔哒一声。有什么东西踩了上去。	
+disarm_not_implemented	该功能尚未实现。	
+door_jam	四个导航代理试图同时通过一个宽度为一的门洞。它们在互相避让。	
+door_jam	避让半径设置过大。他们彼此尊重，以至于没有人能进门。	
+skip_broken	跳过的请求已被接收。它没有被处理。	
+corpse_in_wall	他的尸体穿过了墙壁的碰撞网格。他的口袋里有十二枚金币、一把铜钥匙和一封未拆的信。	
+corpse_in_wall	物理模拟在他死亡的那一帧赋予了他一个过大的冲量。他在墙的另一面。他身上的东西也在。	
+corpse_floating	她的物理模拟在死亡的那一帧被停止了。她停在了那里，离地面一米。	
+check_negative_dc	本次检定的难度等级为负数。请掷骰。	
+check_impossible_dc	本次检定的难度等级为四十五。	
+check_dc_unresolved	本次检定的难度等级尚未被替换为数值。	
+puzzle_hint_raw	该谜题的提示文本尚未替换。	
+loot_inside_chest	箱子的开启动画已播放完毕。箱盖仍然关着。里面有一瓶治疗药水。	
+shared_instance_sold	该物品的全部引用已被释放。你们身上的那四件也随之消失了。	
+enemy_dead_turn	轮到他行动了。他已经死了。回合在等待一个不会到来的指令。	
+#
+# ---- 检定评语（偶尔和结果相反）----
+check_praise	干得漂亮。	
+check_praise	你的手法娴熟，无可挑剔。	
+check_fail_plain	你失败了。	

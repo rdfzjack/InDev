@@ -1,0 +1,7 @@
+.godot/
+/android/
+*.translation
+export/
+export_presets.cfg
+.DS_Store
+Thumbs.db

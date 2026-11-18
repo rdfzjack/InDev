@@ -1,0 +1,92 @@
+# 你老公
+# 说话人永远是「你老公」。他是全游戏唯一一个不变的东西。
+
+~ recruit
+narrator: 一个高大的卓尔站在路边。他穿着重甲，长发披在肩上。他看起来已经等了很久。  #husband.recruit.01
+husband: 你来了。  #husband.recruit.02
+- 你是谁？ -> recruit_who  #husband.recruit.03
+- 你在等我？ -> recruit_wait  #husband.recruit.04
+- 我们走吧。 -> recruit_join  #husband.recruit.05
+
+~ recruit_who
+husband: 你老公。  #husband.recruit_who.01
+- 我们认识吗？ -> recruit_know  #husband.recruit_who.02
+- 好的。 -> recruit_join  #husband.recruit_who.03
+
+~ recruit_know
+husband: 走吧。  #husband.recruit_know.01
+-> recruit_join
+
+~ recruit_wait
+husband: 嗯。  #husband.recruit_wait.01
+-> recruit_join
+
+~ recruit_join
+$ join husband
+$ set husband_recruited
+narrator: 你老公 加入了队伍。  #husband.recruit_join.01
+-> END
+
+# ---------------------------------------------------------------------------
+# 营地闲聊
+
+~ talk
+husband: 什么事。  #husband.talk.01
+- 你真的是我老公吗？ -> talk_really  #husband.talk.02
+- [asked_really] 我是你第几个配偶？ -> talk_eighth  #husband.talk.03
+- 你的技能栏里为什么没有【躺着】？ -> talk_liedown  #husband.talk.04
+- 没事。 -> END  #husband.talk.05
+
+~ talk_really
+$ set asked_really
+husband: 问这个干嘛小笨蛋。  #husband.talk_really.01
+-> END
+
+~ talk_eighth
+husband: 你就是。  #husband.talk_eighth.01
+narrator: 你是他的第八个配偶。  #husband.talk_eighth.02
+-> END
+
+~ talk_liedown
+@ no_idk
+husband: 什么？  #husband.talk_liedown.01
+-> END
+
+# ---------------------------------------------------------------------------
+# 约谈（点不动的那段）。这些节点由营地脚本按天数触发。
+
+~ summons_1
+husband: 饭后我要和你谈话。  #husband.summons_1.01
+$ set husband_summons_pending
+-> END
+
+~ summons_2
+husband: 你妄图蒙混过关。  #husband.summons_2.01
+husband: 今晚，饭后。  #husband.summons_2.02
+$ set husband_summons_pending
+-> END
+
+~ summons_3
+husband: 我已经通知过你两次了。  #husband.summons_3.01
+husband: 今晚饭后，营地北侧。这次不是商量。  #husband.summons_3.02
+$ set husband_summons_pending
+-> END
+
+~ summons_4
+husband: 我对你很失望。  #husband.summons_4.01
+- 对不起。 -> summons_4_end  #husband.summons_4.02
+- 我会去的。 -> summons_4_end  #husband.summons_4.03
+@ idk -> summons_4_end
+
+~ summons_4_end
+husband: ……  #husband.summons_4_end.01
+$ clear husband_summons_pending
+-> END
+
+# ---------------------------------------------------------------------------
+# 约谈的真正内容。没有任何路径能到这里。
+
+~ summons_real
+husband: 你下次能不能不要躺着？  #husband.summons_real.01
+protagonist: 哈哈好。  #husband.summons_real.02
+-> END

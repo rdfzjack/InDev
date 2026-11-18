@@ -1,0 +1,17 @@
+key	zh_CN	en	speaker
+# 界面文字。
+loading_tip	你知道吗？圣骑士可以使用重甲。		
+idk_dont_know	我不知道		
+idk_no_opinion	我没意见		
+idk_haha	哈哈哈		
+# 异常退出后下一次对话开头的台词。speaker 列 = 谁说
+crash_shop_slot3	不是说了别点吗。		sl
+locked_door_default	LockedDoorPrompt_Default		
+settings_locked	暂未开放		
+disarm_skill	解除陷阱		
+lie_down_skill	躺着		
+lie_down_desc	你躺着。		
+load_skill	读取存档		
+load_skill_desc	战斗回到开始时的状态。		
+skip_hold	按住 空格 跳过		
+speaker_sep	：	: 	
